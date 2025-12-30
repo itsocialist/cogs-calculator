@@ -175,6 +175,9 @@ function App() {
             retailMargin={calc.retailMargin}
             wholesalePrice={calc.pricing.wholesale}
             msrp={calc.pricing.msrp}
+            totalUnits={calc.skuCalculations.reduce((sum, s) => sum + s.quantity, 0)}
+            totalRevenue={calc.skuCalculations.reduce((sum, s) => sum + (s.wholesalePrice * s.quantity), 0)}
+            totalCOGS={calc.skuCalculations.reduce((sum, s) => sum + (s.fullyLoadedCost * s.quantity), 0)}
           />
         </div>
       </div>
