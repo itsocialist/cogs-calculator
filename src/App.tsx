@@ -11,6 +11,8 @@ import { useCalculator } from './hooks/useCalculator';
 function App() {
   const [activeTab, setActiveTab] = useState<'manufacturing' | 'logistics' | 'ai' | 'snapshots'>('manufacturing');
   const [showActions, setShowActions] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [password, setPassword] = useState('');
 
   const calc = useCalculator();
 
@@ -69,6 +71,41 @@ function App() {
     batch: calc.batchConfig
   });
 
+  // Password gate
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen bg-neutral-900 flex items-center justify-center p-4">
+        <div className="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md">
+          <h1 className="text-2xl font-black text-neutral-900 mb-2">ROLOS KITCHEN</h1>
+          <p className="text-neutral-500 mb-6">COGS & Potency Calculator</p>
+          <form onSubmit={(e) => {
+            e.preventDefault();
+            if (password === 'black50') {
+              setIsAuthenticated(true);
+            } else {
+              alert('Incorrect password');
+            }
+          }}>
+            <input
+              type="password"
+              placeholder="Enter password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full border border-neutral-300 rounded-lg px-4 py-3 mb-4 focus:outline-none focus:ring-2 focus:ring-yellow-500"
+              autoFocus
+            />
+            <button
+              type="submit"
+              className="w-full bg-neutral-900 text-white rounded-lg px-4 py-3 font-bold hover:bg-neutral-800 transition-colors"
+            >
+              Enter
+            </button>
+          </form>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-neutral-100 p-4 md:p-8 font-sans print:bg-white print:p-0">
       <div className="max-w-7xl mx-auto space-y-6">
@@ -76,7 +113,7 @@ function App() {
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 print:hidden">
           <div>
-            <h1 className="text-3xl font-black tracking-tight text-neutral-900">DAWSON BROS.</h1>
+            <h1 className="text-3xl font-black tracking-tight text-neutral-900">ROLOS KITCHEN</h1>
             <p className="text-neutral-500 font-medium">COGS & Potency Calculator</p>
           </div>
 
