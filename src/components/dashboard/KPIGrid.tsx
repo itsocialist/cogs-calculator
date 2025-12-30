@@ -33,60 +33,91 @@ export const KPIGrid = ({
 }: KPIGridProps) => {
     const batchProfit = totalRevenue - totalCOGS;
     const grossMarginPercent = totalRevenue > 0 ? ((totalRevenue - totalCOGS) / totalRevenue) * 100 : 0;
+    const wsMarginPercent = wholesalePrice > 0 ? (wholesaleMargin / wholesalePrice) * 100 : 0;
+    const retailMarginPercent = msrp > 0 ? (retailMargin / msrp) * 100 : 0;
+
+    // Potency severity - how far off are we?
+    const potencyRatio = actualPotencyMg / targetPotencyMg;
+    const isPotencyCritical = potencyRatio > 2 || potencyRatio < 0.5;
 
     return (
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 md:gap-4 print:grid-cols-6 print:gap-4">
-            {/* Potency */}
-            <div className="bg-white p-4 rounded-xl shadow-sm border border-neutral-200 text-center print:shadow-none print:border print:border-neutral-300">
-                <div className="text-xs font-bold text-neutral-400 uppercase mb-1 print:text-black">Potency</div>
-                <div className={`text-xl font-bold flex items-center justify-center gap-1 ${isPotencySafe ? 'text-green-600 print:text-black' : 'text-red-500'}`}>
-                    {Math.round(actualPotencyMg)}mg
-                    {isPotencySafe ? <CheckCircle2 size={16} className="print:hidden" /> : <AlertTriangle size={16} className="print:hidden" />}
+        <div className="space-y-3">
+            {/* PRIMARY ROW - Hero KPIs */}
+            <div className="grid grid-cols-2 lg:grid-cols-3 gap-3">
+                {/* Unit Cost - HERO */}
+                <div className={`p-5 rounded-xl shadow-md border-2 text-center ${fullyLoadedCost > 12 ? 'bg-red-50 border-red-300' : 'bg-green-50 border-green-300'} print:bg-white print:border-neutral-300`}>
+                    <div className="text-xs font-bold text-neutral-500 uppercase mb-1 print:text-black">Unit Cost</div>
+                    <div className="text-3xl font-black text-neutral-900 print:text-black">${fullyLoadedCost.toFixed(2)}</div>
+                    <div className="text-sm text-neutral-600 mt-1 print:text-black">
+                        Mfg ${manufCostPerUnit.toFixed(2)} + Dist ${totalLogisticsPerUnit.toFixed(2)}
+                    </div>
                 </div>
-                <div className="text-xs text-neutral-500 mt-1 print:text-black">Target: {targetPotencyMg}mg</div>
+
+                {/* Batch Profit - HERO */}
+                <div className={`p-5 rounded-xl shadow-md border-2 text-center ${batchProfit >= 0 ? 'bg-emerald-50 border-emerald-300' : 'bg-red-50 border-red-300'} print:bg-white print:border-neutral-300`}>
+                    <div className="text-xs font-bold text-neutral-500 uppercase mb-1 flex items-center justify-center gap-1 print:text-black">
+                        <DollarSign size={14} /> Batch Profit
+                    </div>
+                    <div className={`text-3xl font-black ${batchProfit >= 0 ? 'text-emerald-600' : 'text-red-600'} print:text-black`}>
+                        ${batchProfit.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
+                    </div>
+                    <div className="text-sm text-neutral-600 mt-1 print:text-black">
+                        {totalUnits.toLocaleString()} units @ ${wholesalePrice.toFixed(2)}
+                    </div>
+                </div>
+
+                {/* Gross Margin - HERO */}
+                <div className={`p-5 rounded-xl shadow-md border-2 text-center col-span-2 lg:col-span-1 ${grossMarginPercent >= 30 ? 'bg-blue-50 border-blue-300' : 'bg-orange-50 border-orange-300'} print:bg-white print:border-neutral-300`}>
+                    <div className="text-xs font-bold text-neutral-500 uppercase mb-1 flex items-center justify-center gap-1 print:text-black">
+                        <TrendingUp size={14} /> Gross Margin
+                    </div>
+                    <div className={`text-3xl font-black ${grossMarginPercent >= 30 ? 'text-blue-600' : 'text-orange-600'} print:text-black`}>
+                        {grossMarginPercent.toFixed(0)}%
+                    </div>
+                    <div className="text-sm text-neutral-600 mt-1 print:text-black">
+                        ${batchProfit.toLocaleString(undefined, { maximumFractionDigits: 0 })} on ${totalRevenue.toLocaleString(undefined, { maximumFractionDigits: 0 })} rev
+                    </div>
+                </div>
             </div>
 
-            {/* Unit Cost */}
-            <div className={`p-4 rounded-xl shadow-sm border text-center ${fullyLoadedCost > 12 ? 'bg-red-50 border-red-200' : 'bg-green-50 border-green-200'} print:bg-white print:border-neutral-300`}>
-                <div className="text-xs font-bold text-neutral-500 uppercase mb-1 print:text-black">Unit Cost</div>
-                <div className="text-xl font-bold text-neutral-900 print:text-black">${fullyLoadedCost.toFixed(2)}</div>
-                <div className="text-xs text-neutral-500 mt-1 print:text-black">Mfg: ${manufCostPerUnit.toFixed(2)} | Dist: ${totalLogisticsPerUnit.toFixed(2)}</div>
-            </div>
-
-            {/* Wholesale Margin */}
-            <div className="bg-neutral-800 p-4 rounded-xl shadow-sm border border-neutral-700 text-white text-center print:bg-white print:text-black print:border-neutral-300">
-                <div className="text-xs font-bold text-neutral-400 uppercase mb-1 print:text-black">WS Margin</div>
-                <div className="text-xl font-bold text-yellow-500 print:text-black">{wholesalePrice > 0 ? Math.round((wholesaleMargin / wholesalePrice) * 100) : 0}%</div>
-                <div className="text-xs text-neutral-400 mt-1 print:text-black">${wholesaleMargin.toFixed(2)} / unit</div>
-            </div>
-
-            {/* Retail Margin */}
-            <div className="bg-neutral-900 p-4 rounded-xl shadow-sm border border-neutral-800 text-white text-center print:bg-white print:text-black print:border-neutral-300">
-                <div className="text-xs font-bold text-neutral-400 uppercase mb-1 print:text-black">Retail Margin</div>
-                <div className="text-xl font-bold text-green-400 print:text-black">{msrp > 0 ? Math.round((retailMargin / msrp) * 100) : 0}%</div>
-                <div className="text-xs text-neutral-400 mt-1 print:text-black">${retailMargin.toFixed(2)} / unit</div>
-            </div>
-
-            {/* Batch Profit */}
-            <div className={`p-4 rounded-xl shadow-sm border text-center ${batchProfit >= 0 ? 'bg-emerald-50 border-emerald-200' : 'bg-red-50 border-red-200'} print:bg-white print:border-neutral-300`}>
-                <div className="text-xs font-bold text-neutral-500 uppercase mb-1 flex items-center justify-center gap-1 print:text-black">
-                    <DollarSign size={12} /> Batch Profit
+            {/* SECONDARY ROW - Supporting KPIs */}
+            <div className="grid grid-cols-3 gap-2">
+                {/* Potency - with enhanced warning */}
+                <div className={`p-3 rounded-lg shadow-sm border text-center transition-all ${isPotencyCritical
+                        ? 'bg-red-100 border-red-400 animate-pulse'
+                        : isPotencySafe
+                            ? 'bg-white border-neutral-200'
+                            : 'bg-yellow-50 border-yellow-300'
+                    } print:bg-white print:border-neutral-300`}>
+                    <div className="text-xs font-bold text-neutral-400 uppercase mb-0.5 print:text-black">Potency</div>
+                    <div className={`text-lg font-bold flex items-center justify-center gap-1 ${isPotencyCritical ? 'text-red-600' : isPotencySafe ? 'text-green-600' : 'text-yellow-600'
+                        } print:text-black`}>
+                        {Math.round(actualPotencyMg)}mg
+                        {isPotencyCritical ? <AlertTriangle size={14} className="animate-bounce" /> :
+                            isPotencySafe ? <CheckCircle2 size={14} /> : <AlertTriangle size={14} />}
+                    </div>
+                    <div className={`text-xs mt-0.5 ${isPotencyCritical ? 'text-red-600 font-bold' : 'text-neutral-500'} print:text-black`}>
+                        {isPotencyCritical ? `${potencyRatio.toFixed(1)}x target!` : `Target: ${targetPotencyMg}mg`}
+                    </div>
                 </div>
-                <div className={`text-xl font-bold ${batchProfit >= 0 ? 'text-emerald-600' : 'text-red-600'} print:text-black`}>
-                    ${batchProfit.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
-                </div>
-                <div className="text-xs text-neutral-500 mt-1 print:text-black">{totalUnits.toLocaleString()} units</div>
-            </div>
 
-            {/* Gross Margin % */}
-            <div className={`p-4 rounded-xl shadow-sm border text-center ${grossMarginPercent >= 30 ? 'bg-blue-50 border-blue-200' : 'bg-orange-50 border-orange-200'} print:bg-white print:border-neutral-300`}>
-                <div className="text-xs font-bold text-neutral-500 uppercase mb-1 flex items-center justify-center gap-1 print:text-black">
-                    <TrendingUp size={12} /> Gross Margin
+                {/* Wholesale Margin - with $ context */}
+                <div className="bg-neutral-800 p-3 rounded-lg shadow-sm border border-neutral-700 text-white text-center print:bg-white print:text-black print:border-neutral-300">
+                    <div className="text-xs font-bold text-neutral-400 uppercase mb-0.5 print:text-black">Wholesale</div>
+                    <div className="text-lg font-bold text-yellow-500 print:text-black">{Math.round(wsMarginPercent)}%</div>
+                    <div className="text-xs text-neutral-400 mt-0.5 print:text-black">
+                        ${wholesalePrice.toFixed(0)} → ${wholesaleMargin.toFixed(2)}
+                    </div>
                 </div>
-                <div className={`text-xl font-bold ${grossMarginPercent >= 30 ? 'text-blue-600' : 'text-orange-600'} print:text-black`}>
-                    {grossMarginPercent.toFixed(0)}%
+
+                {/* Retail Margin - with $ context */}
+                <div className="bg-neutral-900 p-3 rounded-lg shadow-sm border border-neutral-800 text-white text-center print:bg-white print:text-black print:border-neutral-300">
+                    <div className="text-xs font-bold text-neutral-400 uppercase mb-0.5 print:text-black">Retail</div>
+                    <div className="text-lg font-bold text-green-400 print:text-black">{Math.round(retailMarginPercent)}%</div>
+                    <div className="text-xs text-neutral-400 mt-0.5 print:text-black">
+                        ${msrp.toFixed(0)} → ${retailMargin.toFixed(2)}
+                    </div>
                 </div>
-                <div className="text-xs text-neutral-500 mt-1 print:text-black">Rev: ${totalRevenue.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}</div>
             </div>
         </div>
     );
