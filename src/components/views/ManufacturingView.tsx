@@ -3,8 +3,9 @@ import { Card } from '../ui/Card';
 import { NumberInput } from '../ui/NumberInput';
 import { ActiveIngredientsList } from '../ingredients/ActiveIngredientsList';
 import { InactiveIngredientsList } from '../ingredients/InactiveIngredientsList';
-import { PackagingList } from '../ingredients/PackagingList';
-import type { BatchConfig, ActiveIngredient, InactiveIngredient, PackagingItem } from '../../lib/types';
+import { SKUConfiguration } from '../ingredients/SKUConfiguration';
+import type { BatchConfig, ActiveIngredient, InactiveIngredient, SKU, PackagingItem } from '../../lib/types';
+import type { SKUCalculation } from '../../hooks/useCalculator';
 
 interface Props {
     batchConfig: BatchConfig;
@@ -17,19 +18,26 @@ interface Props {
     addInactive: (item: Omit<InactiveIngredient, 'id'>) => void;
     removeInactive: (id: number) => void;
     setInactiveIngredients: (items: InactiveIngredient[]) => void;
-    packaging: PackagingItem[];
-    addPackaging: (item: Omit<PackagingItem, 'id'>) => void;
-    removePackaging: (id: number) => void;
-    setPackaging: (items: PackagingItem[]) => void;
+    skus: SKU[];
+    skuCalculations: SKUCalculation[];
     totalBatchWeightGrams: number;
+    totalWeightAllocated: number;
+    isOverAllocated: boolean;
+    defaultPackaging: PackagingItem[];
+    addSKU: (sku: Omit<SKU, 'id'>) => void;
+    removeSKU: (id: number) => void;
+    updateSKU: (id: number, updates: Partial<SKU>) => void;
+    updateSKUPackaging: (skuId: number, packaging: PackagingItem[]) => void;
+    addSKUPackagingItem: (skuId: number, item: Omit<PackagingItem, 'id'>) => void;
+    removeSKUPackagingItem: (skuId: number, itemId: number) => void;
 }
 
 export const ManufacturingView = ({
     batchConfig, setBatchConfig,
     activeIngredients, addActive, removeActive, setActiveIngredients,
     inactiveIngredients, addInactive, removeInactive, setInactiveIngredients,
-    packaging, addPackaging, removePackaging, setPackaging,
-    totalBatchWeightGrams
+    skus, skuCalculations, totalBatchWeightGrams, totalWeightAllocated, isOverAllocated, defaultPackaging,
+    addSKU, removeSKU, updateSKU, updateSKUPackaging, addSKUPackagingItem, removeSKUPackagingItem
 }: Props) => {
     const updateBatch = (field: keyof BatchConfig, value: number) => {
         setBatchConfig({ ...batchConfig, [field]: value });
@@ -37,7 +45,7 @@ export const ManufacturingView = ({
 
     return (
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 animate-in fade-in">
-            {/* Left Column: Config & Packaging */}
+            {/* Left Column: Batch Config */}
             <div className="lg:col-span-4 space-y-6">
                 <Card title="Batch Configuration" icon={Settings}>
                     <div className="space-y-4">
@@ -53,11 +61,12 @@ export const ManufacturingView = ({
 
                         <div className="grid grid-cols-2 gap-4">
                             <NumberInput label="Batch Size (kg)" value={batchConfig.batchSizeKg} onChange={(v) => updateBatch('batchSizeKg', v)} suffix="kg" />
-                            <NumberInput label="Unit Size (g)" value={batchConfig.unitSizeGrams} onChange={(v) => updateBatch('unitSizeGrams', v)} suffix="g" />
                             <NumberInput label="Target Potency" value={batchConfig.targetPotencyMg} onChange={(v) => updateBatch('targetPotencyMg', v)} suffix="mg" />
                             <NumberInput label="Labor Rate / Hr" value={batchConfig.laborRate} onChange={(v) => updateBatch('laborRate', v)} prefix="$" />
                             <NumberInput label="Labor Hours" value={batchConfig.laborHours} onChange={(v) => updateBatch('laborHours', v)} suffix="hrs" />
-                            <NumberInput label="3PL / Unit" value={batchConfig.fulfillmentCost} onChange={(v) => updateBatch('fulfillmentCost', v)} prefix="$" />
+                            <div className="col-span-2">
+                                <NumberInput label="3PL Fulfillment / Unit" value={batchConfig.fulfillmentCost} onChange={(v) => updateBatch('fulfillmentCost', v)} prefix="$" />
+                            </div>
                         </div>
 
                         <div className="pt-4 border-t border-neutral-100">
@@ -74,11 +83,7 @@ export const ManufacturingView = ({
                     </div>
                 </Card>
 
-                <PackagingList items={packaging} onAdd={addPackaging} onRemove={removePackaging} onUpdate={setPackaging} />
-            </div>
-
-            {/* Right Column: Ingredients */}
-            <div className="lg:col-span-8 space-y-6">
+                {/* Ingredients (moved here for better layout) */}
                 <ActiveIngredientsList
                     ingredients={activeIngredients}
                     onAdd={addActive}
@@ -90,6 +95,24 @@ export const ManufacturingView = ({
                     onAdd={addInactive}
                     onRemove={removeInactive}
                     onUpdate={setInactiveIngredients}
+                />
+            </div>
+
+            {/* Right Column: SKU Configuration */}
+            <div className="lg:col-span-8 space-y-6">
+                <SKUConfiguration
+                    skus={skus}
+                    skuCalculations={skuCalculations}
+                    totalBatchWeightGrams={totalBatchWeightGrams}
+                    totalWeightAllocated={totalWeightAllocated}
+                    isOverAllocated={isOverAllocated}
+                    defaultPackaging={defaultPackaging}
+                    onAdd={addSKU}
+                    onRemove={removeSKU}
+                    onUpdate={updateSKU}
+                    onUpdatePackaging={updateSKUPackaging}
+                    onAddPackagingItem={addSKUPackagingItem}
+                    onRemovePackagingItem={removeSKUPackagingItem}
                 />
             </div>
         </div>

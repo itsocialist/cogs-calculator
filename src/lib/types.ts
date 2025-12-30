@@ -20,15 +20,23 @@ export interface PackagingItem {
     costPerUnit: number;
 }
 
+export interface SKU {
+    id: number;
+    name: string;
+    unitSizeGrams: number;
+    quantity: number;
+    packaging: PackagingItem[];
+}
+
 export interface BatchConfig {
     productName: string;
     batchSizeKg: number;
-    unitSizeGrams: number;
     targetPotencyMg: number;
     laborRate: number;
     laborHours: number;
     fulfillmentCost: number;
 }
+
 
 export interface LogisticsConfig {
     labTestingFee: number;
@@ -49,9 +57,10 @@ export interface Snapshot {
         batchConfig: BatchConfig;
         activeIngredients: ActiveIngredient[];
         inactiveIngredients: InactiveIngredient[];
-        packaging: PackagingItem[];
+        skus: SKU[];
         logistics: LogisticsConfig;
         pricing: PricingConfig;
     };
     cost: number;
 }
+

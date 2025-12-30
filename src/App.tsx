@@ -22,8 +22,10 @@ function App() {
     calc.activeIngredients.forEach(i => rows.push(["Active Ingredient", i.name, i.gramsInBatch, "g", ((i.gramsInBatch / 1000) * i.costPerKg).toFixed(2), (((i.gramsInBatch / 1000) * i.costPerKg) / calc.unitsProduced).toFixed(4)]));
     calc.inactiveIngredients.forEach(i => rows.push(["Inactive Ingredient", i.name, i.gramsInBatch, "g", ((i.gramsInBatch / 1000) * i.costPerKg).toFixed(2), (((i.gramsInBatch / 1000) * i.costPerKg) / calc.unitsProduced).toFixed(4)]));
 
-    // Packaging
-    calc.packaging.forEach(p => rows.push(["Packaging", p.name, "1", "unit", (p.costPerUnit * calc.unitsProduced).toFixed(2), p.costPerUnit.toFixed(4)]));
+    // Packaging (from SKUs)
+    calc.skus.forEach(sku => {
+      sku.packaging.forEach(p => rows.push([`Packaging (${sku.name})`, p.name, sku.quantity, "unit", (p.costPerUnit * sku.quantity).toFixed(2), p.costPerUnit.toFixed(4)]));
+    });
 
     // Labor
     rows.push(["Labor", "Manufacturing Labor", calc.batchConfig.laborHours, "hours", (calc.batchConfig.laborRate * calc.batchConfig.laborHours).toFixed(2), calc.laborCostPerUnit.toFixed(4)]);
@@ -63,7 +65,7 @@ function App() {
   const bomSummary = JSON.stringify({
     actives: calc.activeIngredients,
     inactives: calc.inactiveIngredients,
-    packaging: calc.packaging,
+    skus: calc.skus,
     batch: calc.batchConfig
   });
 
@@ -145,11 +147,18 @@ function App() {
             addInactive={calc.addInactive}
             removeInactive={calc.removeInactive}
             setInactiveIngredients={calc.setInactiveIngredients}
-            packaging={calc.packaging}
-            addPackaging={calc.addPackaging}
-            removePackaging={calc.removePackaging}
-            setPackaging={calc.setPackaging}
+            skus={calc.skus}
+            skuCalculations={calc.skuCalculations}
             totalBatchWeightGrams={calc.totalBatchWeightGrams}
+            totalWeightAllocated={calc.totalWeightAllocated}
+            isOverAllocated={calc.isOverAllocated}
+            defaultPackaging={calc.defaultPackaging}
+            addSKU={calc.addSKU}
+            removeSKU={calc.removeSKU}
+            updateSKU={calc.updateSKU}
+            updateSKUPackaging={calc.updateSKUPackaging}
+            addSKUPackagingItem={calc.addSKUPackagingItem}
+            removeSKUPackagingItem={calc.removeSKUPackagingItem}
           />
         )}
 
