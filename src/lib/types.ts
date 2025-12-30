@@ -38,11 +38,16 @@ export interface BatchConfig {
 }
 
 
+export interface DistroFee {
+    id: number;
+    name: string;
+    percent: number;
+}
+
 export interface LogisticsConfig {
     labTestingFee: number;
     shippingToDistro: number;
-    distributorFeePercent: number;
-    salesCommissionPercent: number;
+    distroFees: DistroFee[];
 }
 
 export interface PricingConfig {

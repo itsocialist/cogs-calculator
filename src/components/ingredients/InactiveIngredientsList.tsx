@@ -40,10 +40,10 @@ export const InactiveIngredientsList = ({ ingredients, onAdd, onRemove, onUpdate
                 <table className="w-full text-sm">
                     <thead>
                         <tr className="text-left text-neutral-400 text-xs border-b border-neutral-100">
-                            <th className="pb-2 font-medium">Ingredient Name</th>
-                            <th className="pb-2 font-medium w-24">Type</th>
-                            <th className="pb-2 font-medium w-32">Cost / Kg</th>
-                            <th className="pb-2 font-medium w-32">Grams</th>
+                            <th className="pb-2 font-medium min-w-[140px]">Ingredient Name</th>
+                            <th className="pb-2 font-medium w-28">Type</th>
+                            <th className="pb-2 font-medium w-36">Cost / Kg</th>
+                            <th className="pb-2 font-medium w-36">Grams</th>
                             <th className="pb-2 w-10"></th>
                         </tr>
                     </thead>

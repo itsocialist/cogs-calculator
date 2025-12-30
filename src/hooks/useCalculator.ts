@@ -55,8 +55,11 @@ const DEFAULT_SKUS: SKU[] = [
 const DEFAULT_LOGISTICS: LogisticsConfig = {
     labTestingFee: 700,
     shippingToDistro: 150,
-    distributorFeePercent: 15,
-    salesCommissionPercent: 5,
+    distroFees: [
+        { id: 1, name: "Distributor Fee", percent: 15 },
+        { id: 2, name: "Sales Commission", percent: 5 },
+        { id: 3, name: "Distro Transfer Fee", percent: 0 },
+    ]
 };
 
 // Per-SKU calculation result
@@ -143,9 +146,8 @@ export function useCalculator() {
             // Logistics allocated by unit count
             const labTestPerUnit = sku.quantity > 0 ? (logistics.labTestingFee * unitRatio) / sku.quantity : 0;
             const shippingPerUnit = sku.quantity > 0 ? (logistics.shippingToDistro * unitRatio) / sku.quantity : 0;
-            const distroFeePerUnit = (logistics.distributorFeePercent / 100) * pricing.wholesale;
-            const commissionsPerUnit = (logistics.salesCommissionPercent / 100) * pricing.wholesale;
-            const logisticsCostPerUnit = labTestPerUnit + shippingPerUnit + distroFeePerUnit + commissionsPerUnit;
+            const totalDistroFeesPerUnit = logistics.distroFees.reduce((sum, fee) => sum + (fee.percent / 100) * pricing.wholesale, 0);
+            const logisticsCostPerUnit = labTestPerUnit + shippingPerUnit + totalDistroFeesPerUnit;
 
             const fullyLoadedCost = manufCostPerUnit + logisticsCostPerUnit;
             const wholesaleMargin = pricing.wholesale - fullyLoadedCost;
@@ -216,8 +218,7 @@ export function useCalculator() {
             goopCostPerUnit: skuCalculations.length > 0 ? skuCalculations[0].formulaCostPerUnit : 0,
             labTestPerUnit: totalUnitsAcrossSkus > 0 ? logistics.labTestingFee / totalUnitsAcrossSkus : 0,
             shippingPerUnit: totalUnitsAcrossSkus > 0 ? logistics.shippingToDistro / totalUnitsAcrossSkus : 0,
-            distroFeePerUnit: (logistics.distributorFeePercent / 100) * pricing.wholesale,
-            commissionsPerUnit: (logistics.salesCommissionPercent / 100) * pricing.wholesale,
+            totalDistroFeesPerUnit: logistics.distroFees.reduce((sum, fee) => sum + (fee.percent / 100) * pricing.wholesale, 0),
             potencyDiff: actualPotencyMg - batchConfig.targetPotencyMg
         };
     }, [batchConfig, activeIngredients, inactiveIngredients, skus, logistics, pricing]);
@@ -261,6 +262,28 @@ export function useCalculator() {
             if (s.id !== skuId) return s;
             return { ...s, packaging: s.packaging.filter(p => p.id !== itemId) };
         }));
+    };
+
+    // Actions - Distribution Fees
+    const addDistroFee = (fee: Omit<import('../lib/types').DistroFee, 'id'>) => {
+        setLogistics({
+            ...logistics,
+            distroFees: [...logistics.distroFees, { ...fee, id: Date.now() }]
+        });
+    };
+
+    const removeDistroFee = (id: number) => {
+        setLogistics({
+            ...logistics,
+            distroFees: logistics.distroFees.filter(f => f.id !== id)
+        });
+    };
+
+    const updateDistroFee = (id: number, updates: Partial<import('../lib/types').DistroFee>) => {
+        setLogistics({
+            ...logistics,
+            distroFees: logistics.distroFees.map(f => f.id === id ? { ...f, ...updates } : f)
+        });
     };
 
     // Snapshots
@@ -308,6 +331,9 @@ export function useCalculator() {
         updateSKUPackaging,
         addSKUPackagingItem,
         removeSKUPackagingItem,
+        addDistroFee,
+        removeDistroFee,
+        updateDistroFee,
         saveSnapshot,
         loadSnapshot,
 

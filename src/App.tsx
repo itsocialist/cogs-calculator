@@ -207,10 +207,12 @@ function App() {
             setPricing={calc.setPricing}
             fullyLoadedCost={calc.fullyLoadedCost}
             manufCostPerUnit={calc.manufCostPerUnit}
-            distroFeePerUnit={calc.distroFeePerUnit}
-            commissionsPerUnit={calc.commissionsPerUnit}
+            totalDistroFeesPerUnit={calc.totalDistroFeesPerUnit}
             labTestPerUnit={calc.labTestPerUnit}
             shippingPerUnit={calc.shippingPerUnit}
+            addDistroFee={calc.addDistroFee}
+            removeDistroFee={calc.removeDistroFee}
+            updateDistroFee={calc.updateDistroFee}
           />
         )}
 
