@@ -108,31 +108,32 @@ export const ActiveIngredientsList = ({ ingredients, onAdd, onRemove, onUpdate }
                 )}
 
                 {/* Header Row */}
-                <div className="grid grid-cols-12 gap-2 text-xs font-bold text-neutral-400 uppercase border-b border-neutral-100 pb-2">
-                    <div className="col-span-3">Ingredient</div>
+                <div className="grid grid-cols-12 gap-1 text-xs font-bold text-neutral-400 uppercase border-b border-neutral-100 pb-2">
+                    <div className="col-span-2">Name</div>
                     <div className="col-span-1">Type</div>
                     <div className="col-span-2">$/Kg</div>
-                    <div className="col-span-2">Amount</div>
-                    <div className="col-span-2">Purity</div>
+                    <div className="col-span-4">Amount</div>
+                    <div className="col-span-1">Purity</div>
                     <div className="col-span-2">= Grams</div>
                 </div>
 
                 {/* Ingredient Rows */}
                 {ingredients.map((item) => (
-                    <div key={item.id} className="grid grid-cols-12 gap-2 items-center">
-                        <div className="col-span-3">
+                    <div key={item.id} className="grid grid-cols-12 gap-1 items-center">
+                        <div className="col-span-2">
                             <input
                                 type="text"
                                 value={item.name}
                                 onChange={(e) => handleNameChange(item.id, e.target.value)}
-                                className="w-full bg-transparent font-medium text-neutral-900 text-sm focus:outline-none focus:bg-yellow-50 rounded px-1"
+                                className="w-full bg-transparent font-medium text-neutral-900 text-sm focus:outline-none focus:bg-yellow-50 rounded px-1 truncate"
+                                title={item.name}
                             />
                         </div>
                         <div className="col-span-1">
                             <select
                                 value={item.cannabinoid}
                                 onChange={(e) => updateItem(item.id, { cannabinoid: e.target.value as CannabinoidType })}
-                                className="w-full bg-neutral-50 border border-neutral-300 rounded px-1 py-1 text-xs font-bold"
+                                className="w-full bg-neutral-50 border border-neutral-300 rounded px-0.5 py-1 text-xs font-bold"
                             >
                                 {CANNABINOID_OPTIONS.map(opt => (
                                     <option key={opt.value} value={opt.value}>{opt.label}</option>
@@ -142,7 +143,7 @@ export const ActiveIngredientsList = ({ ingredients, onAdd, onRemove, onUpdate }
                         <div className="col-span-2">
                             <NumberInput value={item.costPerKg} onChange={(v) => updateItem(item.id, { costPerKg: v })} prefix="$" />
                         </div>
-                        <div className="col-span-2 flex gap-1">
+                        <div className="col-span-4 flex gap-1">
                             <div className="flex-1">
                                 <NumberInput
                                     value={item.amountInUnit}
@@ -153,14 +154,14 @@ export const ActiveIngredientsList = ({ ingredients, onAdd, onRemove, onUpdate }
                             <select
                                 value={item.unit}
                                 onChange={(e) => updateItem(item.id, { unit: e.target.value as VolumeUnit })}
-                                className="bg-neutral-50 border border-neutral-300 rounded px-1 py-1 text-xs font-bold text-neutral-600"
+                                className="bg-neutral-50 border border-neutral-300 rounded px-1 py-1 text-xs font-bold text-neutral-600 w-14"
                             >
                                 {UNIT_OPTIONS.map(opt => (
                                     <option key={opt.value} value={opt.value}>{opt.label}</option>
                                 ))}
                             </select>
                         </div>
-                        <div className="col-span-2">
+                        <div className="col-span-1">
                             <NumberInput value={item.purityPercent} onChange={(v) => updateItem(item.id, { purityPercent: v })} suffix="%" />
                         </div>
                         <div className="col-span-2 flex items-center gap-1">
@@ -174,11 +175,11 @@ export const ActiveIngredientsList = ({ ingredients, onAdd, onRemove, onUpdate }
 
                 {/* Add Row */}
                 {isAdding && (
-                    <div className="grid grid-cols-12 gap-2 items-center bg-yellow-50 p-2 rounded-lg animate-in fade-in">
-                        <div className="col-span-3">
+                    <div className="grid grid-cols-12 gap-1 items-center bg-yellow-50 p-2 rounded-lg animate-in fade-in">
+                        <div className="col-span-2">
                             <input
                                 autoFocus
-                                placeholder="Ingredient name"
+                                placeholder="Name"
                                 className="w-full bg-white border border-neutral-300 rounded px-2 py-1.5 text-sm"
                                 value={newItem.name}
                                 onChange={(e) => {
@@ -193,7 +194,7 @@ export const ActiveIngredientsList = ({ ingredients, onAdd, onRemove, onUpdate }
                             <select
                                 value={newItem.cannabinoid}
                                 onChange={(e) => setNewItem({ ...newItem, cannabinoid: e.target.value as CannabinoidType })}
-                                className="w-full bg-white border border-neutral-300 rounded px-1 py-1 text-xs"
+                                className="w-full bg-white border border-neutral-300 rounded px-0.5 py-1 text-xs"
                             >
                                 {CANNABINOID_OPTIONS.map(opt => (
                                     <option key={opt.value} value={opt.value}>{opt.label}</option>
@@ -203,21 +204,21 @@ export const ActiveIngredientsList = ({ ingredients, onAdd, onRemove, onUpdate }
                         <div className="col-span-2">
                             <NumberInput value={newItem.costPerKg} onChange={(v) => setNewItem({ ...newItem, costPerKg: v })} prefix="$" />
                         </div>
-                        <div className="col-span-2 flex gap-1">
+                        <div className="col-span-4 flex gap-1">
                             <div className="flex-1">
                                 <NumberInput value={newItem.amountInUnit} onChange={(v) => setNewItem({ ...newItem, amountInUnit: v })} step={0.25} />
                             </div>
                             <select
                                 value={newItem.unit}
                                 onChange={(e) => setNewItem({ ...newItem, unit: e.target.value as VolumeUnit })}
-                                className="bg-white border border-neutral-300 rounded px-1 py-1 text-xs"
+                                className="bg-white border border-neutral-300 rounded px-1 py-1 text-xs w-14"
                             >
                                 {UNIT_OPTIONS.map(opt => (
                                     <option key={opt.value} value={opt.value}>{opt.label}</option>
                                 ))}
                             </select>
                         </div>
-                        <div className="col-span-2">
+                        <div className="col-span-1">
                             <NumberInput value={newItem.purityPercent} onChange={(v) => setNewItem({ ...newItem, purityPercent: v })} suffix="%" />
                         </div>
                         <div className="col-span-2 flex items-center gap-1">
