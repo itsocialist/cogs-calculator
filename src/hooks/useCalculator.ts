@@ -30,16 +30,16 @@ const DEFAULT_BATCH_CONFIG: BatchConfig = {
 };
 
 const DEFAULT_ACTIVES: ActiveIngredient[] = [
-    { id: 1, name: "CBD Isolate", costPerKg: 550, gramsInBatch: 100, purityPercent: 99.5, type: 'active' },
-    { id: 2, name: "CBG Distillate", costPerKg: 1200, gramsInBatch: 10, purityPercent: 85, type: 'active' },
+    { id: 1, name: "CBD Isolate", costPerKg: 550, unit: 'g', amountInUnit: 100, densityGPerMl: 1.0, gramsInBatch: 100, purityPercent: 99.5, type: 'active' },
+    { id: 2, name: "CBG Distillate", costPerKg: 1200, unit: 'g', amountInUnit: 10, densityGPerMl: 1.0, gramsInBatch: 10, purityPercent: 85, type: 'active' },
 ];
 
 const DEFAULT_INACTIVES: InactiveIngredient[] = [
-    { id: 101, name: "Organic Shea Butter", costPerKg: 18, gramsInBatch: 4000, type: 'base' },
-    { id: 102, name: "Beeswax Pellets", costPerKg: 22, gramsInBatch: 2500, type: 'base' },
-    { id: 103, name: "MCT Oil", costPerKg: 12, gramsInBatch: 3200, type: 'carrier' },
-    { id: 104, name: "Menthol Crystals", costPerKg: 45, gramsInBatch: 150, type: 'terpene' },
-    { id: 105, name: "Lavender Essential Oil", costPerKg: 120, gramsInBatch: 50, type: 'terpene' },
+    { id: 101, name: "Organic Shea Butter", costPerKg: 18, unit: 'cup', amountInUnit: 2, densityGPerMl: 0.95, gramsInBatch: 449.5, type: 'base' },
+    { id: 102, name: "Beeswax Pellets", costPerKg: 22, unit: 'cup', amountInUnit: 1.5, densityGPerMl: 0.95, gramsInBatch: 337.1, type: 'base' },
+    { id: 103, name: "MCT Oil", costPerKg: 12, unit: 'cup', amountInUnit: 2, densityGPerMl: 0.92, gramsInBatch: 435.3, type: 'carrier' },
+    { id: 104, name: "Menthol Crystals", costPerKg: 45, unit: 'tsp', amountInUnit: 6, densityGPerMl: 1.0, gramsInBatch: 29.6, type: 'terpene' },
+    { id: 105, name: "Lavender Essential Oil", costPerKg: 120, unit: 'tsp', amountInUnit: 3, densityGPerMl: 0.9, gramsInBatch: 13.3, type: 'terpene' },
 ];
 
 const DEFAULT_SKUS: SKU[] = [
