@@ -11,7 +11,7 @@ import type {
 } from '../lib/types';
 
 // Default Packaging (used as template for new SKUs)
-const DEFAULT_PACKAGING_TEMPLATE: PackagingItem[] = [
+const DEFAULT_PACKAGING: PackagingItem[] = [
     { id: 1, name: "Amber Glass Jar (2oz)", costPerUnit: 1.15 },
     { id: 2, name: "Plastic Lid (Black)", costPerUnit: 0.25 },
     { id: 3, name: "Vinyl Label (Waterproof)", costPerUnit: 0.18 },
@@ -23,6 +23,7 @@ const DEFAULT_PACKAGING_TEMPLATE: PackagingItem[] = [
 const DEFAULT_BATCH_CONFIG: BatchConfig = {
     productName: "Recovery Salve",
     batchSizeKg: 10,
+    targetPotencyMg: 500,
     laborRate: 25,
     laborHours: 6,
     fulfillmentCost: 2.50
@@ -47,8 +48,7 @@ const DEFAULT_SKUS: SKU[] = [
         name: "Recovery Salve 50g",
         unitSizeGrams: 50,
         quantity: 200,
-        targetPotencyMg: 500,
-        packaging: [...DEFAULT_PACKAGING_TEMPLATE]
+        packaging: [...DEFAULT_PACKAGING]
     }
 ];
 
@@ -65,8 +65,7 @@ export interface SKUCalculation {
     name: string;
     unitSizeGrams: number;
     quantity: number;
-    targetPotencyMg: number;
-    actualPotencyMg: number;
+    potencyMg: number;
     isPotencySafe: boolean;
     formulaCostPerUnit: number;
     packagingCostPerUnit: number;
@@ -85,7 +84,6 @@ export function useCalculator() {
     const [activeIngredients, setActiveIngredients] = useState<ActiveIngredient[]>(DEFAULT_ACTIVES);
     const [inactiveIngredients, setInactiveIngredients] = useState<InactiveIngredient[]>(DEFAULT_INACTIVES);
     const [skus, setSkus] = useState<SKU[]>(DEFAULT_SKUS);
-    const [defaultPackaging, setDefaultPackaging] = useState<PackagingItem[]>(DEFAULT_PACKAGING_TEMPLATE);
     const [logistics, setLogistics] = useState<LogisticsConfig>(DEFAULT_LOGISTICS);
     const [pricing, setPricing] = useState({ wholesale: 25, msrp: 55 });
     const [snapshots, setSnapshots] = useState<Snapshot[]>([]);
@@ -124,9 +122,9 @@ export function useCalculator() {
             const weightRatio = totalBatchWeightGrams > 0 ? skuWeightGrams / totalBatchWeightGrams : 0;
             const unitRatio = totalUnitsAcrossSkus > 0 ? sku.quantity / totalUnitsAcrossSkus : 0;
 
-            // Potency per unit for this SKU (based on its unit size)
-            const actualPotencyMg = sku.quantity > 0 ? (totalActiveMg * weightRatio) / sku.quantity : 0;
-            const isPotencySafe = Math.abs(actualPotencyMg - sku.targetPotencyMg) < (sku.targetPotencyMg * 0.1);
+            // Potency per unit for this SKU
+            const potencyMg = sku.quantity > 0 ? (totalActiveMg * weightRatio) / sku.quantity : 0;
+            const isPotencySafe = Math.abs(potencyMg - batchConfig.targetPotencyMg) < (batchConfig.targetPotencyMg * 0.1);
 
             // Formula cost allocated by weight
             const formulaCostPerUnit = sku.quantity > 0 ? (totalFormulaCost * weightRatio) / sku.quantity : 0;
@@ -158,8 +156,7 @@ export function useCalculator() {
                 name: sku.name,
                 unitSizeGrams: sku.unitSizeGrams,
                 quantity: sku.quantity,
-                targetPotencyMg: sku.targetPotencyMg,
-                actualPotencyMg,
+                potencyMg,
                 isPotencySafe,
                 formulaCostPerUnit,
                 packagingCostPerUnit,
@@ -180,9 +177,8 @@ export function useCalculator() {
         const avgWholesaleMargin = pricing.wholesale - avgFullyLoadedCost;
         const avgRetailMargin = pricing.msrp - avgFullyLoadedCost;
 
-        // For backward compatibility, use first SKU's potency
-        const actualPotencyMg = skuCalculations.length > 0 ? skuCalculations[0].actualPotencyMg : 0;
-        const targetPotencyMg = skuCalculations.length > 0 ? skuCalculations[0].targetPotencyMg : 500;
+        // For backward compatibility, use first SKU's potency or average
+        const actualPotencyMg = skuCalculations.length > 0 ? skuCalculations[0].potencyMg : 0;
         const isPotencySafe = skuCalculations.every(s => s.isPotencySafe);
 
         return {
@@ -207,7 +203,6 @@ export function useCalculator() {
             // Backward-compatible aggregates
             unitsProduced: totalUnitsAcrossSkus,
             actualPotencyMg,
-            targetPotencyMg,
             isPotencySafe,
             fullyLoadedCost: avgFullyLoadedCost,
             wholesaleMargin: avgWholesaleMargin,
@@ -223,9 +218,9 @@ export function useCalculator() {
             shippingPerUnit: totalUnitsAcrossSkus > 0 ? logistics.shippingToDistro / totalUnitsAcrossSkus : 0,
             distroFeePerUnit: (logistics.distributorFeePercent / 100) * pricing.wholesale,
             commissionsPerUnit: (logistics.salesCommissionPercent / 100) * pricing.wholesale,
-            potencyDiff: actualPotencyMg - targetPotencyMg
+            potencyDiff: actualPotencyMg - batchConfig.targetPotencyMg
         };
-    }, [batchConfig, activeIngredients, inactiveIngredients, skus, defaultPackaging, logistics, pricing]);
+    }, [batchConfig, activeIngredients, inactiveIngredients, skus, logistics, pricing]);
 
     // Actions - Ingredients
     const addActive = (item: Omit<ActiveIngredient, 'id' | 'type'>) => {
@@ -238,12 +233,6 @@ export function useCalculator() {
 
     const removeActive = (id: number) => setActiveIngredients(activeIngredients.filter(i => i.id !== id));
     const removeInactive = (id: number) => setInactiveIngredients(inactiveIngredients.filter(i => i.id !== id));
-
-    // Actions - Default Packaging Template
-    const addDefaultPackagingItem = (item: Omit<PackagingItem, 'id'>) => {
-        setDefaultPackaging([...defaultPackaging, { ...item, id: Date.now() }]);
-    };
-    const removeDefaultPackagingItem = (id: number) => setDefaultPackaging(defaultPackaging.filter(i => i.id !== id));
 
     // Actions - SKUs
     const addSKU = (sku: Omit<SKU, 'id'>) => {
@@ -301,7 +290,6 @@ export function useCalculator() {
         activeIngredients, setActiveIngredients,
         inactiveIngredients, setInactiveIngredients,
         skus, setSkus,
-        defaultPackaging, setDefaultPackaging,
         logistics, setLogistics,
         pricing, setPricing,
         snapshots, setSnapshots,
@@ -314,8 +302,6 @@ export function useCalculator() {
         addInactive,
         removeActive,
         removeInactive,
-        addDefaultPackagingItem,
-        removeDefaultPackagingItem,
         addSKU,
         removeSKU,
         updateSKU,
@@ -323,6 +309,9 @@ export function useCalculator() {
         addSKUPackagingItem,
         removeSKUPackagingItem,
         saveSnapshot,
-        loadSnapshot
+        loadSnapshot,
+
+        // Template
+        defaultPackaging: DEFAULT_PACKAGING
     };
 }

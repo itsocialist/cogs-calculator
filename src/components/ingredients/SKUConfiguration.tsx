@@ -36,7 +36,7 @@ export const SKUConfiguration = ({
 }: Props) => {
     const [expandedSku, setExpandedSku] = useState<number | null>(null);
     const [isAdding, setIsAdding] = useState(false);
-    const [newSku, setNewSku] = useState({ name: "", unitSizeGrams: 30, quantity: 100, targetPotencyMg: 500 });
+    const [newSku, setNewSku] = useState({ name: "", unitSizeGrams: 30, quantity: 100 });
 
     const handleAdd = () => {
         if (!newSku.name) return;
@@ -44,10 +44,9 @@ export const SKUConfiguration = ({
             name: newSku.name,
             unitSizeGrams: newSku.unitSizeGrams,
             quantity: newSku.quantity,
-            targetPotencyMg: newSku.targetPotencyMg,
             packaging: defaultPackaging.map(p => ({ ...p, id: Date.now() + Math.random() }))
         });
-        setNewSku({ name: "", unitSizeGrams: 30, quantity: 100, targetPotencyMg: 500 });
+        setNewSku({ name: "", unitSizeGrams: 30, quantity: 100 });
         setIsAdding(false);
     };
 
@@ -93,7 +92,7 @@ export const SKUConfiguration = ({
 
                     return (
                         <div key={sku.id} className="border border-neutral-200 rounded-lg overflow-hidden">
-                            {/* SKU Header Row */}
+                            {/* SKU Header */}
                             <div className="p-3 bg-white">
                                 <div className="flex items-center gap-3">
                                     <button
@@ -103,7 +102,7 @@ export const SKUConfiguration = ({
                                         {isExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
                                     </button>
 
-                                    <div className="flex-1 grid grid-cols-2 md:grid-cols-5 gap-3 items-end">
+                                    <div className="flex-1 grid grid-cols-1 md:grid-cols-4 gap-3">
                                         <input
                                             type="text"
                                             value={sku.name}
@@ -121,12 +120,6 @@ export const SKUConfiguration = ({
                                             label="Qty"
                                             value={sku.quantity}
                                             onChange={(v) => onUpdate(sku.id, { quantity: v })}
-                                        />
-                                        <NumberInput
-                                            label="Target Potency"
-                                            value={sku.targetPotencyMg}
-                                            onChange={(v) => onUpdate(sku.id, { targetPotencyMg: v })}
-                                            suffix="mg"
                                         />
                                         <div className="text-right">
                                             <div className="text-xs text-neutral-400">COGS/Unit</div>
@@ -146,13 +139,8 @@ export const SKUConfiguration = ({
 
                                 {/* Quick Stats */}
                                 {calc && (
-                                    <div className="mt-2 flex flex-wrap gap-4 text-xs text-neutral-500">
-                                        <span>
-                                            Actual: <span className={calc.isPotencySafe ? 'text-green-600' : 'text-red-500'}>
-                                                {calc.actualPotencyMg.toFixed(0)}mg
-                                            </span>
-                                            {!calc.isPotencySafe && <span className="text-red-500"> (target: {calc.targetPotencyMg}mg)</span>}
-                                        </span>
+                                    <div className="mt-2 flex gap-4 text-xs text-neutral-500">
+                                        <span>Potency: <span className={calc.isPotencySafe ? 'text-green-600' : 'text-red-500'}>{calc.potencyMg.toFixed(0)}mg</span></span>
                                         <span>WS Margin: <span className={calc.wholesaleMargin >= 0 ? 'text-green-600' : 'text-red-500'}>${calc.wholesaleMargin.toFixed(2)}</span></span>
                                         <span>Retail Margin: ${calc.retailMargin.toFixed(2)}</span>
                                     </div>
@@ -217,10 +205,10 @@ export const SKUConfiguration = ({
                 {/* Add New SKU Form */}
                 {isAdding && (
                     <div className="border border-yellow-300 bg-yellow-50/50 rounded-lg p-3 animate-in fade-in">
-                        <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+                        <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
                             <input
                                 autoFocus
-                                placeholder="SKU Name (e.g., 15ml Travel)"
+                                placeholder="SKU Name (e.g., 15ml Travel Size)"
                                 className="bg-white border border-neutral-300 rounded px-2 py-1 text-sm"
                                 value={newSku.name}
                                 onChange={(e) => setNewSku({ ...newSku, name: e.target.value })}
@@ -235,12 +223,6 @@ export const SKUConfiguration = ({
                                 label="Qty"
                                 value={newSku.quantity}
                                 onChange={(v) => setNewSku({ ...newSku, quantity: v })}
-                            />
-                            <NumberInput
-                                label="Target Potency"
-                                value={newSku.targetPotencyMg}
-                                onChange={(v) => setNewSku({ ...newSku, targetPotencyMg: v })}
-                                suffix="mg"
                             />
                             <button
                                 onClick={handleAdd}

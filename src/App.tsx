@@ -124,7 +124,7 @@ function App() {
 
         <KPIGrid
           actualPotencyMg={calc.actualPotencyMg}
-          targetPotencyMg={calc.targetPotencyMg}
+          targetPotencyMg={calc.batchConfig.targetPotencyMg}
           isPotencySafe={calc.isPotencySafe}
           fullyLoadedCost={calc.fullyLoadedCost}
           manufCostPerUnit={calc.manufCostPerUnit}
@@ -153,9 +153,6 @@ function App() {
             totalWeightAllocated={calc.totalWeightAllocated}
             isOverAllocated={calc.isOverAllocated}
             defaultPackaging={calc.defaultPackaging}
-            setDefaultPackaging={calc.setDefaultPackaging}
-            addDefaultPackagingItem={calc.addDefaultPackagingItem}
-            removeDefaultPackagingItem={calc.removeDefaultPackagingItem}
             addSKU={calc.addSKU}
             removeSKU={calc.removeSKU}
             updateSKU={calc.updateSKU}

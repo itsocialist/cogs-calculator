@@ -11,6 +11,7 @@ export function useAiAssistant() {
         setIsGenerating(true);
         const activesList = activeIngredients.map(a => a.name).join(", ");
         const prompt = `Write a premium, medical-grade product description for a cannabis salve named "${batchConfig.productName}". 
+    Key features: ${batchConfig.targetPotencyMg}mg target potency. 
     Active Ingredients: ${activesList}. 
     Tone: Sophisticated, healing, trustworthy.`;
 
