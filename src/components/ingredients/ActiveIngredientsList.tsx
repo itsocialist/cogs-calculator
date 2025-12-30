@@ -113,8 +113,7 @@ export const ActiveIngredientsList = ({ ingredients, onAdd, onRemove, onUpdate }
                     <div className="col-span-1">Type</div>
                     <div className="col-span-2">$/Kg</div>
                     <div className="col-span-4">Amount</div>
-                    <div className="col-span-1">Purity</div>
-                    <div className="col-span-2">= Grams</div>
+                    <div className="col-span-3">Purity → Active</div>
                 </div>
 
                 {/* Ingredient Rows */}
@@ -161,11 +160,19 @@ export const ActiveIngredientsList = ({ ingredients, onAdd, onRemove, onUpdate }
                                 ))}
                             </select>
                         </div>
-                        <div className="col-span-1">
-                            <NumberInput value={item.purityPercent} onChange={(v) => updateItem(item.id, { purityPercent: v })} suffix="%" />
-                        </div>
-                        <div className="col-span-2 flex items-center gap-1">
-                            <span className="text-xs text-neutral-400 font-mono">{item.gramsInBatch.toFixed(1)}g</span>
+                        <div className="col-span-3 flex items-center gap-2">
+                            <div className="flex items-center gap-1">
+                                <input
+                                    type="number"
+                                    value={item.purityPercent}
+                                    onChange={(e) => updateItem(item.id, { purityPercent: parseFloat(e.target.value) || 0 })}
+                                    className="w-12 bg-neutral-50 border border-neutral-300 rounded px-1 py-1 text-xs text-right"
+                                    step={0.5}
+                                />
+                                <span className="text-xs text-neutral-400">%</span>
+                            </div>
+                            <span className="text-xs text-neutral-400">=</span>
+                            <span className="text-xs font-mono text-green-600 font-bold">{(item.gramsInBatch * item.purityPercent / 100).toFixed(1)}g</span>
                             <button onClick={() => onRemove(item.id)} className="text-neutral-300 hover:text-red-500 print:hidden ml-auto">
                                 <Trash2 size={14} />
                             </button>
@@ -218,12 +225,20 @@ export const ActiveIngredientsList = ({ ingredients, onAdd, onRemove, onUpdate }
                                 ))}
                             </select>
                         </div>
-                        <div className="col-span-1">
-                            <NumberInput value={newItem.purityPercent} onChange={(v) => setNewItem({ ...newItem, purityPercent: v })} suffix="%" />
-                        </div>
-                        <div className="col-span-2 flex items-center gap-1">
-                            <span className="text-xs text-neutral-400 font-mono">
-                                {convertToGrams(newItem.amountInUnit, newItem.unit, newItem.densityGPerMl).toFixed(1)}g
+                        <div className="col-span-3 flex items-center gap-2">
+                            <div className="flex items-center gap-1">
+                                <input
+                                    type="number"
+                                    value={newItem.purityPercent}
+                                    onChange={(e) => setNewItem({ ...newItem, purityPercent: parseFloat(e.target.value) || 0 })}
+                                    className="w-12 bg-white border border-neutral-300 rounded px-1 py-1 text-xs text-right"
+                                    step={0.5}
+                                />
+                                <span className="text-xs text-neutral-400">%</span>
+                            </div>
+                            <span className="text-xs text-neutral-400">=</span>
+                            <span className="text-xs font-mono text-green-600 font-bold">
+                                {(convertToGrams(newItem.amountInUnit, newItem.unit, newItem.densityGPerMl) * newItem.purityPercent / 100).toFixed(1)}g
                             </span>
                             <button onClick={handleAdd} className="text-xs bg-black text-white px-2 py-1 rounded ml-auto">Save</button>
                         </div>
