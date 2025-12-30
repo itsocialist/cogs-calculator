@@ -143,7 +143,7 @@ export const ActiveIngredientsList = ({ ingredients, onAdd, onRemove, onUpdate }
                         <div className="col-span-2">
                             <NumberInput value={item.costPerKg} onChange={(v) => updateItem(item.id, { costPerKg: v })} prefix="$" />
                         </div>
-                        <div className="col-span-4 flex gap-1">
+                        <div className="col-span-3 flex gap-1">
                             <div className="flex-1">
                                 <NumberInput
                                     value={item.amountInUnit}
@@ -161,7 +161,7 @@ export const ActiveIngredientsList = ({ ingredients, onAdd, onRemove, onUpdate }
                                 ))}
                             </select>
                         </div>
-                        <div className="col-span-3 flex items-center gap-2">
+                        <div className="col-span-4 flex items-center gap-2">
                             <div className="flex items-center gap-1">
                                 <input
                                     type="number"
