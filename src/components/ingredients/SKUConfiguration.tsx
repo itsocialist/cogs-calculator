@@ -163,10 +163,33 @@ export const SKUConfiguration = ({
 
                                 {/* Quick Stats */}
                                 {calc && (
-                                    <div className="mt-2 flex gap-4 text-xs text-neutral-500">
-                                        <span>Potency: <span className={calc.isPotencySafe ? 'text-green-600' : 'text-red-500'}>{calc.potencyMg.toFixed(0)}mg</span></span>
-                                        <span>WS Margin: <span className={calc.wholesaleMargin >= 0 ? 'text-green-600' : 'text-red-500'}>${calc.wholesaleMargin.toFixed(2)}</span></span>
-                                        <span>Retail Margin: ${calc.retailMargin.toFixed(2)}</span>
+                                    <div className="mt-2 grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-2 text-xs">
+                                        <div className="bg-neutral-50 rounded px-2 py-1">
+                                            <div className="text-neutral-400">Potency</div>
+                                            <div className={calc.isPotencySafe ? 'font-bold text-green-600' : 'font-bold text-red-500'}>{calc.potencyMg.toFixed(0)}mg</div>
+                                        </div>
+                                        <div className="bg-neutral-50 rounded px-2 py-1">
+                                            <div className="text-neutral-400">Formula</div>
+                                            <div className="font-mono">${calc.formulaCostPerUnit.toFixed(2)}</div>
+                                        </div>
+                                        <div className="bg-neutral-50 rounded px-2 py-1">
+                                            <div className="text-neutral-400">Packaging</div>
+                                            <div className="font-mono">${calc.packagingCostPerUnit.toFixed(2)}</div>
+                                        </div>
+                                        <div className="bg-neutral-50 rounded px-2 py-1">
+                                            <div className="text-neutral-400">Labor+Fill</div>
+                                            <div className="font-mono">${(calc.laborCostPerUnit + calc.fulfillmentCostPerUnit).toFixed(2)}</div>
+                                        </div>
+                                        <div className="bg-neutral-50 rounded px-2 py-1">
+                                            <div className="text-neutral-400">COGS</div>
+                                            <div className="font-mono font-bold">${calc.fullyLoadedCost.toFixed(2)}</div>
+                                        </div>
+                                        <div className={`rounded px-2 py-1 ${calc.wholesaleMargin >= 0 ? 'bg-green-50' : 'bg-red-50'}`}>
+                                            <div className="text-neutral-400">Margin</div>
+                                            <div className={`font-mono font-bold ${calc.wholesaleMargin >= 0 ? 'text-green-600' : 'text-red-500'}`}>
+                                                ${calc.wholesaleMargin.toFixed(2)} ({calc.wholesaleMarginPercent.toFixed(0)}%)
+                                            </div>
+                                        </div>
                                     </div>
                                 )}
                             </div>

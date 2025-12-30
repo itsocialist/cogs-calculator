@@ -45,80 +45,66 @@ export const ManufacturingView = ({
 
     return (
         <div className="space-y-6 animate-in fade-in">
-            {/* ROW 1: Active & Inactive Ingredients - 50/50 */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <ActiveIngredientsList
-                    ingredients={activeIngredients}
-                    onAdd={addActive}
-                    onRemove={removeActive}
-                    onUpdate={setActiveIngredients}
-                />
-                <InactiveIngredientsList
-                    ingredients={inactiveIngredients}
-                    onAdd={addInactive}
-                    onRemove={removeInactive}
-                    onUpdate={setInactiveIngredients}
-                />
-            </div>
+            {/* SECTION 1: Active Ingredients - FULL WIDTH */}
+            <ActiveIngredientsList
+                ingredients={activeIngredients}
+                onAdd={addActive}
+                onRemove={removeActive}
+                onUpdate={setActiveIngredients}
+            />
 
-            {/* ROW 2: Batch Config & SKU Config - 30/70 */}
-            <div className="grid grid-cols-1 lg:grid-cols-10 gap-6">
-                {/* Batch Configuration - 30% (3/10) */}
-                <div className="lg:col-span-3">
-                    <Card title="Batch Configuration" icon={Settings}>
-                        <div className="space-y-4">
-                            <div className="border-b border-neutral-100 pb-4 mb-4">
-                                <label className="text-xs font-bold text-neutral-400 uppercase">Product Name</label>
-                                <input
-                                    type="text"
-                                    value={batchConfig.productName}
-                                    onChange={(e) => setBatchConfig({ ...batchConfig, productName: e.target.value })}
-                                    className="w-full bg-neutral-50 border border-neutral-300 rounded px-2 py-1 text-sm font-bold mt-1"
-                                />
-                            </div>
+            {/* SECTION 2: Base & Inactive Ingredients - FULL WIDTH */}
+            <InactiveIngredientsList
+                ingredients={inactiveIngredients}
+                onAdd={addInactive}
+                onRemove={removeInactive}
+                onUpdate={setInactiveIngredients}
+            />
 
-                            <div className="grid grid-cols-2 gap-3">
-                                <NumberInput label="Batch Size (kg)" value={batchConfig.batchSizeKg} onChange={(v) => updateBatch('batchSizeKg', v)} suffix="kg" />
-                                <NumberInput label="Target Potency" value={batchConfig.targetPotencyMg} onChange={(v) => updateBatch('targetPotencyMg', v)} suffix="mg" />
-                                <NumberInput label="Labor Rate" value={batchConfig.laborRate} onChange={(v) => updateBatch('laborRate', v)} prefix="$" />
-                                <NumberInput label="Labor Hours" value={batchConfig.laborHours} onChange={(v) => updateBatch('laborHours', v)} suffix="hrs" />
-                            </div>
-
-                            <NumberInput label="3PL Fulfillment / Unit" value={batchConfig.fulfillmentCost} onChange={(v) => updateBatch('fulfillmentCost', v)} prefix="$" />
-
-                            <div className="pt-4 border-t border-neutral-100">
-                                <div className="flex justify-between items-center text-sm">
-                                    <span className="text-neutral-500">Formula Weight</span>
-                                    <span className={`font-mono font-bold ${totalBatchWeightGrams > (batchConfig.batchSizeKg * 1000) ? 'text-red-500' : 'text-green-600'}`}>
-                                        {totalBatchWeightGrams.toLocaleString()}g / {(batchConfig.batchSizeKg * 1000).toLocaleString()}g
-                                    </span>
-                                </div>
-                                {totalBatchWeightGrams > (batchConfig.batchSizeKg * 1000) && (
-                                    <p className="text-xs text-red-500 mt-1">Warning: Formula exceeds batch size!</p>
-                                )}
-                            </div>
-                        </div>
-                    </Card>
+            {/* SECTION 3: Batch Configuration - FULL WIDTH (compact horizontal) */}
+            <Card title="Batch Configuration" icon={Settings}>
+                <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4 items-end">
+                    <div className="lg:col-span-2">
+                        <label className="text-xs font-bold text-neutral-400 uppercase">Product Name</label>
+                        <input
+                            type="text"
+                            value={batchConfig.productName}
+                            onChange={(e) => setBatchConfig({ ...batchConfig, productName: e.target.value })}
+                            className="w-full bg-neutral-50 border border-neutral-300 rounded px-2 py-1.5 text-sm font-bold mt-1"
+                        />
+                    </div>
+                    <NumberInput label="Batch Size" value={batchConfig.batchSizeKg} onChange={(v) => updateBatch('batchSizeKg', v)} suffix="kg" />
+                    <NumberInput label="Target Potency" value={batchConfig.targetPotencyMg} onChange={(v) => updateBatch('targetPotencyMg', v)} suffix="mg" />
+                    <NumberInput label="Labor Rate" value={batchConfig.laborRate} onChange={(v) => updateBatch('laborRate', v)} prefix="$" />
+                    <NumberInput label="Labor Hours" value={batchConfig.laborHours} onChange={(v) => updateBatch('laborHours', v)} suffix="hrs" />
+                    <NumberInput label="Fulfillment" value={batchConfig.fulfillmentCost} onChange={(v) => updateBatch('fulfillmentCost', v)} prefix="$" />
                 </div>
-
-                {/* SKU Configuration - 70% (7/10) */}
-                <div className="lg:col-span-7">
-                    <SKUConfiguration
-                        skus={skus}
-                        skuCalculations={skuCalculations}
-                        totalBatchWeightGrams={totalBatchWeightGrams}
-                        totalWeightAllocated={totalWeightAllocated}
-                        isOverAllocated={isOverAllocated}
-                        defaultPackaging={defaultPackaging}
-                        onAdd={addSKU}
-                        onRemove={removeSKU}
-                        onUpdate={updateSKU}
-                        onUpdatePackaging={updateSKUPackaging}
-                        onAddPackagingItem={addSKUPackagingItem}
-                        onRemovePackagingItem={removeSKUPackagingItem}
-                    />
+                <div className="mt-4 pt-4 border-t border-neutral-100 flex items-center justify-between">
+                    <span className="text-sm text-neutral-500">Formula Weight</span>
+                    <span className={`font-mono font-bold ${totalBatchWeightGrams > (batchConfig.batchSizeKg * 1000) ? 'text-red-500' : 'text-green-600'}`}>
+                        {totalBatchWeightGrams.toLocaleString()}g / {(batchConfig.batchSizeKg * 1000).toLocaleString()}g
+                        {totalBatchWeightGrams > (batchConfig.batchSizeKg * 1000) && (
+                            <span className="text-xs ml-2">⚠️ Exceeds batch</span>
+                        )}
+                    </span>
                 </div>
-            </div>
+            </Card>
+
+            {/* SECTION 4: SKU Configuration - FULL WIDTH */}
+            <SKUConfiguration
+                skus={skus}
+                skuCalculations={skuCalculations}
+                totalBatchWeightGrams={totalBatchWeightGrams}
+                totalWeightAllocated={totalWeightAllocated}
+                isOverAllocated={isOverAllocated}
+                defaultPackaging={defaultPackaging}
+                onAdd={addSKU}
+                onRemove={removeSKU}
+                onUpdate={updateSKU}
+                onUpdatePackaging={updateSKUPackaging}
+                onAddPackagingItem={addSKUPackagingItem}
+                onRemovePackagingItem={removeSKUPackagingItem}
+            />
         </div>
     );
 };
