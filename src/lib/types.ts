@@ -25,17 +25,19 @@ export interface SKU {
     name: string;
     unitSizeGrams: number;
     quantity: number;
+    targetPotencyMg: number;
     packaging: PackagingItem[];
 }
+
 
 export interface BatchConfig {
     productName: string;
     batchSizeKg: number;
-    targetPotencyMg: number;
     laborRate: number;
     laborHours: number;
     fulfillmentCost: number;
 }
+
 
 
 export interface LogisticsConfig {

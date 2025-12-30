@@ -23,7 +23,7 @@ export const SnapshotsView = ({ snapshots, onLoad, onDelete }: Props) => {
                             <div key={snap.id} className="flex items-center justify-between p-4 bg-neutral-50 rounded-lg border border-neutral-200">
                                 <div>
                                     <div className="font-bold text-neutral-800">{snap.name}</div>
-                                    <div className="text-xs text-neutral-500">Cost: ${snap.cost.toFixed(2)} | Target: {snap.config.batchConfig.targetPotencyMg}mg</div>
+                                    <div className="text-xs text-neutral-500">Cost: ${snap.cost.toFixed(2)} | SKUs: {snap.config.skus.length}</div>
                                 </div>
                                 <div className="flex gap-2">
                                     <button onClick={() => onLoad(snap)} className="text-xs bg-white border border-neutral-300 px-3 py-1.5 rounded hover:bg-neutral-100 font-medium">Load</button>
