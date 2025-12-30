@@ -113,8 +113,8 @@ export const ActiveIngredientsList = ({ ingredients, onAdd, onRemove, onUpdate }
                     <div className="col-span-2">Name</div>
                     <div className="col-span-1">Type</div>
                     <div className="col-span-2">$/Kg</div>
-                    <div className="col-span-4">Amount</div>
-                    <div className="col-span-3">Purity → Active</div>
+                    <div className="col-span-3">Amount</div>
+                    <div className="col-span-4">Purity → Active</div>
                 </div>
 
                 {/* Ingredient Rows */}
