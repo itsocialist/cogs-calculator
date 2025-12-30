@@ -180,7 +180,7 @@ function App() {
       </div>
 
       {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 md:px-8 py-6 space-y-6">
+      <div className="max-w-7xl mx-auto px-4 md:px-8 py-6 pb-24 space-y-6">
         {activeTab === 'manufacturing' && (
           <ManufacturingView
             batchConfig={calc.batchConfig}
