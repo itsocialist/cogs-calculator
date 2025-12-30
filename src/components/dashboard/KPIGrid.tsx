@@ -26,7 +26,7 @@ export const KPIGrid = ({
     msrp
 }: KPIGridProps) => {
     return (
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 print:grid-cols-4 print:gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-6 print:grid-cols-4 print:gap-4">
             <div className="bg-white p-5 rounded-xl shadow-sm border border-neutral-200 print:shadow-none print:border print:border-neutral-300">
                 <div className="text-xs font-bold text-neutral-400 uppercase mb-2 print:text-black">Target vs Actual</div>
                 <div className={`text-2xl font-bold flex items-center gap-2 ${isPotencySafe ? 'text-green-600 print:text-black' : 'text-red-500'}`}>

@@ -41,7 +41,8 @@ export const SKUConfiguration = ({
         unitSizeValue: 60,
         unitSizeUnit: 'ml' as 'g' | 'ml' | 'floz',
         quantity: 100,
-        wholesalePrice: 24.99
+        wholesalePrice: 24.99,
+        msrp: 49.99
     });
 
     const handleAdd = () => {
@@ -52,9 +53,10 @@ export const SKUConfiguration = ({
             unitSizeUnit: newSku.unitSizeUnit,
             quantity: newSku.quantity,
             wholesalePrice: newSku.wholesalePrice,
+            msrp: newSku.msrp,
             packaging: defaultPackaging.map(p => ({ ...p, id: Date.now() + Math.random() }))
         });
-        setNewSku({ name: "", unitSizeValue: 60, unitSizeUnit: 'ml', quantity: 100, wholesalePrice: 24.99 });
+        setNewSku({ name: "", unitSizeValue: 60, unitSizeUnit: 'ml', quantity: 100, wholesalePrice: 24.99, msrp: 49.99 });
         setIsAdding(false);
     };
 
@@ -110,7 +112,7 @@ export const SKUConfiguration = ({
                                         {isExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
                                     </button>
 
-                                    <div className="flex-1 grid grid-cols-1 md:grid-cols-5 gap-3">
+                                    <div className="flex-1 grid grid-cols-2 md:grid-cols-6 gap-3">
                                         <input
                                             type="text"
                                             value={sku.name}
@@ -145,10 +147,16 @@ export const SKUConfiguration = ({
                                             onChange={(v) => onUpdate(sku.id, { wholesalePrice: v })}
                                             prefix="$"
                                         />
+                                        <NumberInput
+                                            label="MSRP"
+                                            value={sku.msrp}
+                                            onChange={(v) => onUpdate(sku.id, { msrp: v })}
+                                            prefix="$"
+                                        />
                                         <div className="text-right">
-                                            <div className="text-xs text-neutral-400">Margin</div>
-                                            <div className={`font-mono font-bold ${calc && calc.wholesaleMargin < 0 ? 'text-red-500' : 'text-green-600'}`}>
-                                                ${calc?.wholesaleMargin.toFixed(2) ?? '—'} <span className="text-xs text-neutral-400">({calc?.wholesaleMarginPercent.toFixed(0) ?? 0}%)</span>
+                                            <div className="text-xs text-neutral-400">WS Margin</div>
+                                            <div className={`font-mono font-bold text-sm ${calc && calc.wholesaleMargin < 0 ? 'text-red-500' : 'text-green-600'}`}>
+                                                ${calc?.wholesaleMargin.toFixed(2) ?? '—'} ({calc?.wholesaleMarginPercent.toFixed(0) ?? 0}%)
                                             </div>
                                         </div>
                                     </div>
@@ -252,7 +260,7 @@ export const SKUConfiguration = ({
                 {/* Add New SKU Form */}
                 {isAdding && (
                     <div className="border border-yellow-300 bg-yellow-50/50 rounded-lg p-3 animate-in fade-in">
-                        <div className="grid grid-cols-1 md:grid-cols-5 gap-3">
+                        <div className="grid grid-cols-2 md:grid-cols-6 gap-3">
                             <input
                                 autoFocus
                                 placeholder="SKU Name (e.g., 2oz Tin)"
@@ -285,6 +293,12 @@ export const SKUConfiguration = ({
                                 label="Wholesale"
                                 value={newSku.wholesalePrice}
                                 onChange={(v) => setNewSku({ ...newSku, wholesalePrice: v })}
+                                prefix="$"
+                            />
+                            <NumberInput
+                                label="MSRP"
+                                value={newSku.msrp}
+                                onChange={(v) => setNewSku({ ...newSku, msrp: v })}
                                 prefix="$"
                             />
                             <button

@@ -76,6 +76,7 @@ export interface SKU {
     quantity: number;
     packaging: PackagingItem[];
     wholesalePrice: number;
+    msrp: number;
 }
 
 export interface BatchConfig {

@@ -108,74 +108,79 @@ function App() {
   }
 
   return (
-    <div className="min-h-screen bg-neutral-100 p-4 md:p-8 font-sans print:bg-white print:p-0">
-      <div className="max-w-7xl mx-auto space-y-6">
-
-        {/* Header */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 print:hidden">
-          <div>
-            <h1 className="text-3xl font-black tracking-tight text-neutral-900">ROLOS KITCHEN</h1>
-            <p className="text-neutral-500 font-medium">COGS & Potency Calculator</p>
-          </div>
-
-          <div className="flex gap-2 relative">
-            <div className="flex bg-neutral-900 rounded-xl p-1 shadow-lg overflow-x-auto max-w-[calc(100vw-2rem)] md:max-w-none no-scrollbar">
-              <TabButton active={activeTab === 'manufacturing'} onClick={() => setActiveTab('manufacturing')} icon={FlaskConical} label="Manufacturing" />
-              <TabButton active={activeTab === 'logistics'} onClick={() => setActiveTab('logistics')} icon={Truck} label="Logistics" />
-              <TabButton active={activeTab === 'ai'} onClick={() => setActiveTab('ai')} icon={Sparkles} label="AI Assistant" highlight />
-              <TabButton active={activeTab === 'snapshots'} onClick={() => setActiveTab('snapshots')} icon={History} label="Snapshots" />
+    <div className="min-h-screen bg-neutral-100 font-sans print:bg-white print:p-0">
+      {/* Sticky Header */}
+      <div className="sticky top-0 z-40 bg-neutral-100/95 backdrop-blur-sm border-b border-neutral-200/50 print:static print:border-none">
+        <div className="max-w-7xl mx-auto px-4 md:px-8 py-4">
+          {/* Header */}
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 print:hidden">
+            <div>
+              <h1 className="text-3xl font-black tracking-tight text-neutral-900">ROLOS KITCHEN</h1>
+              <p className="text-neutral-500 font-medium">COGS & Potency Calculator</p>
             </div>
 
-            <div className="relative">
-              <button
-                onClick={() => setShowActions(!showActions)}
-                className="bg-white border border-neutral-200 text-neutral-600 rounded-xl px-4 py-3 font-medium hover:bg-neutral-50 transition-colors shadow-sm h-full flex items-center gap-2"
-              >
-                Actions
-              </button>
+            <div className="flex gap-2 relative">
+              <div className="flex bg-neutral-900 rounded-xl p-1 shadow-lg overflow-x-auto max-w-[calc(100vw-2rem)] md:max-w-none no-scrollbar">
+                <TabButton active={activeTab === 'manufacturing'} onClick={() => setActiveTab('manufacturing')} icon={FlaskConical} label="Manufacturing" />
+                <TabButton active={activeTab === 'logistics'} onClick={() => setActiveTab('logistics')} icon={Truck} label="Logistics" />
+                <TabButton active={activeTab === 'ai'} onClick={() => setActiveTab('ai')} icon={Sparkles} label="AI Assistant" highlight />
+                <TabButton active={activeTab === 'snapshots'} onClick={() => setActiveTab('snapshots')} icon={History} label="Snapshots" />
+              </div>
 
-              {showActions && (
-                <div className="absolute right-0 top-full mt-2 w-48 bg-white rounded-xl shadow-xl border border-neutral-200 overflow-hidden z-50 animate-in fade-in slide-in-from-top-2">
-                  <button onClick={() => window.print()} className="w-full text-left px-4 py-3 hover:bg-neutral-50 text-sm flex items-center gap-2">
-                    <Printer size={16} /> Print Report
-                  </button>
-                  <button onClick={handleExportCSV} className="w-full text-left px-4 py-3 hover:bg-neutral-50 text-sm flex items-center gap-2">
-                    <Download size={16} /> Export CSV
-                  </button>
-                  <button onClick={handleSaveSnapshot} className="w-full text-left px-4 py-3 hover:bg-neutral-50 text-sm flex items-center gap-2 text-blue-600">
-                    <Save size={16} /> Save Snapshot
-                  </button>
-                  <button onClick={handleSaveToDrive} className="w-full text-left px-4 py-3 hover:bg-neutral-50 text-sm flex items-center gap-2 text-green-600">
-                    <FileJson size={16} /> Save Config (JSON)
-                  </button>
-                  <button onClick={() => { setShowHelp(true); setShowActions(false); }} className="w-full text-left px-4 py-3 hover:bg-neutral-50 text-sm flex items-center gap-2 border-t border-neutral-100">
-                    <HelpCircle size={16} /> Help & Guide
-                  </button>
-                </div>
-              )}
+              <div className="relative">
+                <button
+                  onClick={() => setShowActions(!showActions)}
+                  className="bg-white border border-neutral-200 text-neutral-600 rounded-xl px-4 py-3 font-medium hover:bg-neutral-50 transition-colors shadow-sm h-full flex items-center gap-2"
+                >
+                  Actions
+                </button>
+
+                {showActions && (
+                  <div className="absolute right-0 top-full mt-2 w-48 bg-white rounded-xl shadow-xl border border-neutral-200 overflow-hidden z-50 animate-in fade-in slide-in-from-top-2">
+                    <button onClick={() => window.print()} className="w-full text-left px-4 py-3 hover:bg-neutral-50 text-sm flex items-center gap-2">
+                      <Printer size={16} /> Print Report
+                    </button>
+                    <button onClick={handleExportCSV} className="w-full text-left px-4 py-3 hover:bg-neutral-50 text-sm flex items-center gap-2">
+                      <Download size={16} /> Export CSV
+                    </button>
+                    <button onClick={handleSaveSnapshot} className="w-full text-left px-4 py-3 hover:bg-neutral-50 text-sm flex items-center gap-2 text-blue-600">
+                      <Save size={16} /> Save Snapshot
+                    </button>
+                    <button onClick={handleSaveToDrive} className="w-full text-left px-4 py-3 hover:bg-neutral-50 text-sm flex items-center gap-2 text-green-600">
+                      <FileJson size={16} /> Save Config (JSON)
+                    </button>
+                    <button onClick={() => { setShowHelp(true); setShowActions(false); }} className="w-full text-left px-4 py-3 hover:bg-neutral-50 text-sm flex items-center gap-2 border-t border-neutral-100">
+                      <HelpCircle size={16} /> Help & Guide
+                    </button>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
+
+          {/* Print Header */}
+          <div className="hidden print:block mb-8">
+            <h1 className="text-2xl font-bold">Product Costing Report</h1>
+            <p className="text-sm text-neutral-500">Generated: {new Date().toLocaleDateString()}</p>
+          </div>
+
+          <KPIGrid
+            actualPotencyMg={calc.actualPotencyMg}
+            targetPotencyMg={calc.batchConfig.targetPotencyMg}
+            isPotencySafe={calc.isPotencySafe}
+            fullyLoadedCost={calc.fullyLoadedCost}
+            manufCostPerUnit={calc.manufCostPerUnit}
+            totalLogisticsPerUnit={calc.totalLogisticsPerUnit}
+            wholesaleMargin={calc.wholesaleMargin}
+            retailMargin={calc.retailMargin}
+            wholesalePrice={calc.pricing.wholesale}
+            msrp={calc.pricing.msrp}
+          />
         </div>
+      </div>
 
-        {/* Print Header */}
-        <div className="hidden print:block mb-8">
-          <h1 className="text-2xl font-bold">Product Costing Report</h1>
-          <p className="text-sm text-neutral-500">Generated: {new Date().toLocaleDateString()}</p>
-        </div>
-
-        <KPIGrid
-          actualPotencyMg={calc.actualPotencyMg}
-          targetPotencyMg={calc.batchConfig.targetPotencyMg}
-          isPotencySafe={calc.isPotencySafe}
-          fullyLoadedCost={calc.fullyLoadedCost}
-          manufCostPerUnit={calc.manufCostPerUnit}
-          totalLogisticsPerUnit={calc.totalLogisticsPerUnit}
-          wholesaleMargin={calc.wholesaleMargin}
-          retailMargin={calc.retailMargin}
-          wholesalePrice={calc.pricing.wholesale}
-          msrp={calc.pricing.msrp}
-        />
-
+      {/* Main Content */}
+      <div className="max-w-7xl mx-auto px-4 md:px-8 py-6 space-y-6">
         {activeTab === 'manufacturing' && (
           <ManufacturingView
             batchConfig={calc.batchConfig}
@@ -257,9 +262,10 @@ function App() {
                   <li><strong>Set Batch Config</strong> — Enter product name, batch size (kg), and target potency</li>
                   <li><strong>Add Active Ingredients</strong> — Enter cannabinoids (CBD, THC, etc.) with cost, amount, and purity</li>
                   <li><strong>Add Base Ingredients</strong> — Add carriers, bases, and terpenes in cups/tsp/grams</li>
-                  <li><strong>Configure SKUs</strong> — Set unit sizes, quantities, and customize packaging per SKU</li>
-                  <li><strong>Review Logistics</strong> — Set lab testing, shipping, and distribution fees</li>
-                  <li><strong>Check KPIs</strong> — Review COGS/unit, landed cost, and margins at the top</li>
+                  <li><strong>Configure SKUs</strong> — Set unit sizes (g/ml/oz), quantities, Wholesale & MSRP prices per SKU</li>
+                  <li><strong>Customize Packaging</strong> — Expand each SKU to set per-unit packaging costs</li>
+                  <li><strong>Review Logistics</strong> — Set lab testing, shipping, and distribution fee %</li>
+                  <li><strong>Check KPIs</strong> — Review COGS, margins, and potency at the top</li>
                 </ol>
               </section>
 

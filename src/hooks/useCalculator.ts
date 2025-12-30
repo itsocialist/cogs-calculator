@@ -67,7 +67,8 @@ const DEFAULT_SKUS: SKU[] = [
         unitSizeUnit: 'ml',
         quantity: 200,
         packaging: [...DEFAULT_PACKAGING],
-        wholesalePrice: 24.99
+        wholesalePrice: 24.99,
+        msrp: 49.99
     }
 ];
 
@@ -101,7 +102,9 @@ export interface SKUCalculation {
     wholesalePrice: number;
     wholesaleMargin: number;
     wholesaleMarginPercent: number;
+    msrp: number;
     retailMargin: number;
+    retailMarginPercent: number;
 }
 
 export function useCalculator() {
@@ -176,7 +179,8 @@ export function useCalculator() {
             const fullyLoadedCost = manufCostPerUnit + logisticsCostPerUnit;
             const wholesaleMargin = sku.wholesalePrice - fullyLoadedCost;
             const wholesaleMarginPercent = sku.wholesalePrice > 0 ? (wholesaleMargin / sku.wholesalePrice) * 100 : 0;
-            const retailMargin = pricing.msrp - fullyLoadedCost;
+            const retailMargin = sku.msrp - fullyLoadedCost;
+            const retailMarginPercent = sku.msrp > 0 ? (retailMargin / sku.msrp) * 100 : 0;
 
             return {
                 skuId: sku.id,
@@ -197,7 +201,9 @@ export function useCalculator() {
                 wholesalePrice: sku.wholesalePrice,
                 wholesaleMargin,
                 wholesaleMarginPercent,
-                retailMargin
+                msrp: sku.msrp,
+                retailMargin,
+                retailMarginPercent
             };
         });
 

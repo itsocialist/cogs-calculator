@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Truck, DollarSign, Plus, Trash2 } from 'lucide-react';
+import { Truck, Plus, Trash2 } from 'lucide-react';
 import { Card } from '../ui/Card';
 import { NumberInput } from '../ui/NumberInput';
 import type { LogisticsConfig, PricingConfig, DistroFee } from '../../lib/types';
@@ -21,7 +21,6 @@ interface Props {
 
 export const LogisticsView = ({
     logistics, setLogistics,
-    pricing, setPricing,
     fullyLoadedCost, manufCostPerUnit, totalDistroFeesPerUnit, labTestPerUnit, shippingPerUnit,
     addDistroFee, removeDistroFee, updateDistroFee
 }: Props) => {
@@ -30,9 +29,6 @@ export const LogisticsView = ({
 
     const updateLogistics = (field: 'labTestingFee' | 'shippingToDistro', value: number) => {
         setLogistics({ ...logistics, [field]: value });
-    };
-    const updatePricing = (field: keyof PricingConfig, value: number) => {
-        setPricing({ ...pricing, [field]: value });
     };
 
     const handleAddFee = () => {
@@ -118,13 +114,6 @@ export const LogisticsView = ({
                                 Total: {logistics.distroFees.reduce((sum, f) => sum + f.percent, 0).toFixed(1)}% of wholesale
                             </div>
                         </div>
-                    </div>
-                </Card>
-
-                <Card title="Pricing Strategy" icon={DollarSign}>
-                    <div className="grid grid-cols-2 gap-4">
-                        <NumberInput label="Wholesale Price" value={pricing.wholesale} onChange={(v) => updatePricing('wholesale', v)} prefix="$" />
-                        <NumberInput label="MSRP" value={pricing.msrp} onChange={(v) => updatePricing('msrp', v)} prefix="$" />
                     </div>
                 </Card>
             </div>
