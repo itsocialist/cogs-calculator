@@ -37,6 +37,9 @@ export const DEFAULT_UNITS: Record<string, VolumeUnit> = {
 };
 
 // Base ingredient interface
+// Cannabinoid types for active ingredients
+export type CannabinoidType = 'CBD' | 'THC' | 'CBG' | 'CBN' | 'other';
+
 export interface Ingredient {
     id: number;
     name: string;
@@ -52,6 +55,7 @@ export interface Ingredient {
 export interface ActiveIngredient extends Ingredient {
     purityPercent: number;
     type: 'active';
+    cannabinoid: CannabinoidType;
 }
 
 export interface InactiveIngredient extends Ingredient {

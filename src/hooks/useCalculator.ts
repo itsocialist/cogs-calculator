@@ -30,8 +30,8 @@ const DEFAULT_BATCH_CONFIG: BatchConfig = {
 };
 
 const DEFAULT_ACTIVES: ActiveIngredient[] = [
-    { id: 1, name: "CBD Isolate", costPerKg: 550, unit: 'g', amountInUnit: 100, densityGPerMl: 1.0, gramsInBatch: 100, purityPercent: 99.5, type: 'active' },
-    { id: 2, name: "CBG Distillate", costPerKg: 1200, unit: 'g', amountInUnit: 10, densityGPerMl: 1.0, gramsInBatch: 10, purityPercent: 85, type: 'active' },
+    { id: 1, name: "CBD Isolate", costPerKg: 550, unit: 'g', amountInUnit: 100, densityGPerMl: 1.0, gramsInBatch: 100, purityPercent: 99.5, type: 'active', cannabinoid: 'CBD' },
+    { id: 2, name: "CBG Distillate", costPerKg: 1200, unit: 'g', amountInUnit: 10, densityGPerMl: 1.0, gramsInBatch: 10, purityPercent: 85, type: 'active', cannabinoid: 'CBG' },
 ];
 
 const DEFAULT_INACTIVES: InactiveIngredient[] = [

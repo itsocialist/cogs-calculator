@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { FlaskConical, Truck, Sparkles, History, Printer, Save, Download, FileJson } from 'lucide-react';
+import { FlaskConical, Truck, Sparkles, History, Printer, Save, Download, FileJson, HelpCircle, X } from 'lucide-react';
 import { TabButton } from './components/ui/TabButton';
 import { KPIGrid } from './components/dashboard/KPIGrid';
 import { ManufacturingView } from './components/views/ManufacturingView';
@@ -11,6 +11,7 @@ import { useCalculator } from './hooks/useCalculator';
 function App() {
   const [activeTab, setActiveTab] = useState<'manufacturing' | 'logistics' | 'ai' | 'snapshots'>('manufacturing');
   const [showActions, setShowActions] = useState(false);
+  const [showHelp, setShowHelp] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [password, setPassword] = useState('');
 
@@ -147,6 +148,9 @@ function App() {
                   <button onClick={handleSaveToDrive} className="w-full text-left px-4 py-3 hover:bg-neutral-50 text-sm flex items-center gap-2 text-green-600">
                     <FileJson size={16} /> Save Config (JSON)
                   </button>
+                  <button onClick={() => { setShowHelp(true); setShowActions(false); }} className="w-full text-left px-4 py-3 hover:bg-neutral-50 text-sm flex items-center gap-2 border-t border-neutral-100">
+                    <HelpCircle size={16} /> Help & Guide
+                  </button>
                 </div>
               )}
             </div>
@@ -235,6 +239,56 @@ function App() {
           />
         )}
       </div>
+
+      {/* Help Modal */}
+      {showHelp && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50 animate-in fade-in">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[80vh] overflow-y-auto">
+            <div className="sticky top-0 bg-white border-b border-neutral-100 p-4 flex justify-between items-center">
+              <h2 className="text-xl font-bold">Help & Guide</h2>
+              <button onClick={() => setShowHelp(false)} className="text-neutral-400 hover:text-neutral-600">
+                <X size={24} />
+              </button>
+            </div>
+            <div className="p-6 space-y-6 text-sm">
+              <section>
+                <h3 className="font-bold text-neutral-900 mb-2">📊 Key Calculations</h3>
+                <ul className="space-y-2 text-neutral-600">
+                  <li><strong>COGS/Unit</strong> = (Ingredient Costs + Labor + Packaging) ÷ Units Produced</li>
+                  <li><strong>Landed Cost</strong> = COGS + Lab Testing + Shipping + Distribution Fees</li>
+                  <li><strong>Wholesale Margin</strong> = Wholesale Price − Landed Cost</li>
+                  <li><strong>Potency (mg)</strong> = Active Grams × Purity% × 1000 ÷ Units</li>
+                </ul>
+              </section>
+
+              <section>
+                <h3 className="font-bold text-neutral-900 mb-2">🧪 Volume Units</h3>
+                <p className="text-neutral-600 mb-2">Enter ingredients in your preferred units. We auto-convert to grams for costing:</p>
+                <ul className="space-y-1 text-neutral-600 text-xs">
+                  <li>• 1 cup = 236.6 ml × density (g/ml)</li>
+                  <li>• 1 tbsp = 14.8 ml × density</li>
+                  <li>• 1 tsp = 4.9 ml × density</li>
+                </ul>
+              </section>
+
+              <section>
+                <h3 className="font-bold text-neutral-900 mb-2">🌿 Cannabinoids</h3>
+                <p className="text-neutral-600">Active ingredients are tagged as CBD, THC, CBG, CBN, or Other. The summary shows total mg of each cannabinoid in your batch.</p>
+              </section>
+
+              <section>
+                <h3 className="font-bold text-neutral-900 mb-2">💡 Tips</h3>
+                <ul className="space-y-1 text-neutral-600">
+                  <li>• <strong>Smart defaults</strong>: Ingredient names auto-detect density & cannabinoid type</li>
+                  <li>• <strong>SKU packaging</strong>: Expand each SKU to customize its packaging</li>
+                  <li>• <strong>Snapshots</strong>: Save different formulations to compare costs</li>
+                  <li>• <strong>AI Assistant</strong>: Ask questions about your formulation</li>
+                </ul>
+              </section>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
