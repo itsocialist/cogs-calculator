@@ -10,6 +10,23 @@ import type {
     SKU
 } from '../lib/types';
 
+// Convert SKU size to grams (for ml/floz based on assumed salve density ~0.95 g/ml)
+const SALVE_DENSITY = 0.95; // g/ml - typical for balms/salves
+const FLOZ_TO_ML = 29.574;
+
+function skuSizeToGrams(sku: SKU): number {
+    switch (sku.unitSizeUnit) {
+        case 'g':
+            return sku.unitSizeValue;
+        case 'ml':
+            return sku.unitSizeValue * SALVE_DENSITY;
+        case 'floz':
+            return sku.unitSizeValue * FLOZ_TO_ML * SALVE_DENSITY;
+        default:
+            return sku.unitSizeValue;
+    }
+}
+
 // Default Packaging (used as template for new SKUs)
 const DEFAULT_PACKAGING: PackagingItem[] = [
     { id: 1, name: "Amber Glass Jar (2oz)", costPerUnit: 1.15 },
@@ -45,10 +62,12 @@ const DEFAULT_INACTIVES: InactiveIngredient[] = [
 const DEFAULT_SKUS: SKU[] = [
     {
         id: 1,
-        name: "Recovery Salve 50g",
-        unitSizeGrams: 50,
+        name: "Recovery Salve 2oz",
+        unitSizeValue: 60,
+        unitSizeUnit: 'ml',
         quantity: 200,
-        packaging: [...DEFAULT_PACKAGING]
+        packaging: [...DEFAULT_PACKAGING],
+        wholesalePrice: 24.99
     }
 ];
 
@@ -67,6 +86,8 @@ export interface SKUCalculation {
     skuId: number;
     name: string;
     unitSizeGrams: number;
+    unitSizeValue: number;
+    unitSizeUnit: 'g' | 'ml' | 'floz';
     quantity: number;
     potencyMg: number;
     isPotencySafe: boolean;
@@ -77,7 +98,9 @@ export interface SKUCalculation {
     manufCostPerUnit: number;
     logisticsCostPerUnit: number;
     fullyLoadedCost: number;
+    wholesalePrice: number;
     wholesaleMargin: number;
+    wholesaleMarginPercent: number;
     retailMargin: number;
 }
 
@@ -115,13 +138,14 @@ export function useCalculator() {
 
         // SKU-level calculations
         const totalUnitsAcrossSkus = skus.reduce((sum, sku) => sum + sku.quantity, 0);
-        const totalWeightAllocated = skus.reduce((sum, sku) => sum + (sku.unitSizeGrams * sku.quantity), 0);
+        const totalWeightAllocated = skus.reduce((sum, sku) => sum + (skuSizeToGrams(sku) * sku.quantity), 0);
         const weightUtilization = totalBatchWeightGrams > 0 ? totalWeightAllocated / totalBatchWeightGrams : 0;
         const isOverAllocated = totalWeightAllocated > totalBatchWeightGrams;
 
         // Per-SKU calculations
         const skuCalculations: SKUCalculation[] = skus.map(sku => {
-            const skuWeightGrams = sku.unitSizeGrams * sku.quantity;
+            const unitSizeGrams = skuSizeToGrams(sku);
+            const skuWeightGrams = unitSizeGrams * sku.quantity;
             const weightRatio = totalBatchWeightGrams > 0 ? skuWeightGrams / totalBatchWeightGrams : 0;
             const unitRatio = totalUnitsAcrossSkus > 0 ? sku.quantity / totalUnitsAcrossSkus : 0;
 
@@ -146,17 +170,20 @@ export function useCalculator() {
             // Logistics allocated by unit count
             const labTestPerUnit = sku.quantity > 0 ? (logistics.labTestingFee * unitRatio) / sku.quantity : 0;
             const shippingPerUnit = sku.quantity > 0 ? (logistics.shippingToDistro * unitRatio) / sku.quantity : 0;
-            const totalDistroFeesPerUnit = logistics.distroFees.reduce((sum, fee) => sum + (fee.percent / 100) * pricing.wholesale, 0);
+            const totalDistroFeesPerUnit = logistics.distroFees.reduce((sum, fee) => sum + (fee.percent / 100) * sku.wholesalePrice, 0);
             const logisticsCostPerUnit = labTestPerUnit + shippingPerUnit + totalDistroFeesPerUnit;
 
             const fullyLoadedCost = manufCostPerUnit + logisticsCostPerUnit;
-            const wholesaleMargin = pricing.wholesale - fullyLoadedCost;
+            const wholesaleMargin = sku.wholesalePrice - fullyLoadedCost;
+            const wholesaleMarginPercent = sku.wholesalePrice > 0 ? (wholesaleMargin / sku.wholesalePrice) * 100 : 0;
             const retailMargin = pricing.msrp - fullyLoadedCost;
 
             return {
                 skuId: sku.id,
                 name: sku.name,
-                unitSizeGrams: sku.unitSizeGrams,
+                unitSizeGrams,
+                unitSizeValue: sku.unitSizeValue,
+                unitSizeUnit: sku.unitSizeUnit,
                 quantity: sku.quantity,
                 potencyMg,
                 isPotencySafe,
@@ -167,7 +194,9 @@ export function useCalculator() {
                 manufCostPerUnit,
                 logisticsCostPerUnit,
                 fullyLoadedCost,
+                wholesalePrice: sku.wholesalePrice,
                 wholesaleMargin,
+                wholesaleMarginPercent,
                 retailMargin
             };
         });

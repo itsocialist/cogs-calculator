@@ -71,9 +71,11 @@ export interface PackagingItem {
 export interface SKU {
     id: number;
     name: string;
-    unitSizeGrams: number;
+    unitSizeValue: number;
+    unitSizeUnit: 'g' | 'ml' | 'floz';
     quantity: number;
     packaging: PackagingItem[];
+    wholesalePrice: number;
 }
 
 export interface BatchConfig {

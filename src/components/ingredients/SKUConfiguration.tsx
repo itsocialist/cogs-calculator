@@ -36,17 +36,25 @@ export const SKUConfiguration = ({
 }: Props) => {
     const [expandedSku, setExpandedSku] = useState<number | null>(null);
     const [isAdding, setIsAdding] = useState(false);
-    const [newSku, setNewSku] = useState({ name: "", unitSizeGrams: 30, quantity: 100 });
+    const [newSku, setNewSku] = useState({
+        name: "",
+        unitSizeValue: 60,
+        unitSizeUnit: 'ml' as 'g' | 'ml' | 'floz',
+        quantity: 100,
+        wholesalePrice: 24.99
+    });
 
     const handleAdd = () => {
         if (!newSku.name) return;
         onAdd({
             name: newSku.name,
-            unitSizeGrams: newSku.unitSizeGrams,
+            unitSizeValue: newSku.unitSizeValue,
+            unitSizeUnit: newSku.unitSizeUnit,
             quantity: newSku.quantity,
+            wholesalePrice: newSku.wholesalePrice,
             packaging: defaultPackaging.map(p => ({ ...p, id: Date.now() + Math.random() }))
         });
-        setNewSku({ name: "", unitSizeGrams: 30, quantity: 100 });
+        setNewSku({ name: "", unitSizeValue: 60, unitSizeUnit: 'ml', quantity: 100, wholesalePrice: 24.99 });
         setIsAdding(false);
     };
 
@@ -102,7 +110,7 @@ export const SKUConfiguration = ({
                                         {isExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
                                     </button>
 
-                                    <div className="flex-1 grid grid-cols-1 md:grid-cols-4 gap-3">
+                                    <div className="flex-1 grid grid-cols-1 md:grid-cols-5 gap-3">
                                         <input
                                             type="text"
                                             value={sku.name}
@@ -110,21 +118,37 @@ export const SKUConfiguration = ({
                                             className="bg-transparent font-medium text-neutral-900 focus:outline-none focus:border-b focus:border-yellow-500"
                                             placeholder="SKU Name"
                                         />
-                                        <NumberInput
-                                            label="Size"
-                                            value={sku.unitSizeGrams}
-                                            onChange={(v) => onUpdate(sku.id, { unitSizeGrams: v })}
-                                            suffix="g"
-                                        />
+                                        <div className="flex gap-1 items-end">
+                                            <NumberInput
+                                                label="Size"
+                                                value={sku.unitSizeValue}
+                                                onChange={(v) => onUpdate(sku.id, { unitSizeValue: v })}
+                                            />
+                                            <select
+                                                value={sku.unitSizeUnit}
+                                                onChange={(e) => onUpdate(sku.id, { unitSizeUnit: e.target.value as 'g' | 'ml' | 'floz' })}
+                                                className="bg-neutral-50 border border-neutral-300 rounded px-1 py-1.5 text-xs font-bold"
+                                            >
+                                                <option value="g">g</option>
+                                                <option value="ml">ml</option>
+                                                <option value="floz">fl oz</option>
+                                            </select>
+                                        </div>
                                         <NumberInput
                                             label="Qty"
                                             value={sku.quantity}
                                             onChange={(v) => onUpdate(sku.id, { quantity: v })}
                                         />
+                                        <NumberInput
+                                            label="Wholesale"
+                                            value={sku.wholesalePrice}
+                                            onChange={(v) => onUpdate(sku.id, { wholesalePrice: v })}
+                                            prefix="$"
+                                        />
                                         <div className="text-right">
-                                            <div className="text-xs text-neutral-400">COGS/Unit</div>
+                                            <div className="text-xs text-neutral-400">Margin</div>
                                             <div className={`font-mono font-bold ${calc && calc.wholesaleMargin < 0 ? 'text-red-500' : 'text-green-600'}`}>
-                                                ${calc?.fullyLoadedCost.toFixed(2) ?? '—'}
+                                                ${calc?.wholesaleMargin.toFixed(2) ?? '—'} <span className="text-xs text-neutral-400">({calc?.wholesaleMarginPercent.toFixed(0) ?? 0}%)</span>
                                             </div>
                                         </div>
                                     </div>
@@ -205,24 +229,40 @@ export const SKUConfiguration = ({
                 {/* Add New SKU Form */}
                 {isAdding && (
                     <div className="border border-yellow-300 bg-yellow-50/50 rounded-lg p-3 animate-in fade-in">
-                        <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
+                        <div className="grid grid-cols-1 md:grid-cols-5 gap-3">
                             <input
                                 autoFocus
-                                placeholder="SKU Name (e.g., 15ml Travel Size)"
+                                placeholder="SKU Name (e.g., 2oz Tin)"
                                 className="bg-white border border-neutral-300 rounded px-2 py-1 text-sm"
                                 value={newSku.name}
                                 onChange={(e) => setNewSku({ ...newSku, name: e.target.value })}
                             />
-                            <NumberInput
-                                label="Size"
-                                value={newSku.unitSizeGrams}
-                                onChange={(v) => setNewSku({ ...newSku, unitSizeGrams: v })}
-                                suffix="g"
-                            />
+                            <div className="flex gap-1 items-end">
+                                <NumberInput
+                                    label="Size"
+                                    value={newSku.unitSizeValue}
+                                    onChange={(v) => setNewSku({ ...newSku, unitSizeValue: v })}
+                                />
+                                <select
+                                    value={newSku.unitSizeUnit}
+                                    onChange={(e) => setNewSku({ ...newSku, unitSizeUnit: e.target.value as 'g' | 'ml' | 'floz' })}
+                                    className="bg-neutral-50 border border-neutral-300 rounded px-1 py-1.5 text-xs font-bold"
+                                >
+                                    <option value="g">g</option>
+                                    <option value="ml">ml</option>
+                                    <option value="floz">fl oz</option>
+                                </select>
+                            </div>
                             <NumberInput
                                 label="Qty"
                                 value={newSku.quantity}
                                 onChange={(v) => setNewSku({ ...newSku, quantity: v })}
+                            />
+                            <NumberInput
+                                label="Wholesale"
+                                value={newSku.wholesalePrice}
+                                onChange={(v) => setNewSku({ ...newSku, wholesalePrice: v })}
+                                prefix="$"
                             />
                             <button
                                 onClick={handleAdd}
