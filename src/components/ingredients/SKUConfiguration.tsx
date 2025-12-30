@@ -66,6 +66,7 @@ export const SKUConfiguration = ({
         <Card
             title="SKU Configuration"
             icon={Package}
+            collapsible
             action={
                 <button
                     onClick={() => setIsAdding(!isAdding)}
@@ -80,7 +81,7 @@ export const SKUConfiguration = ({
                 <div className="flex justify-between text-xs text-neutral-500 mb-1">
                     <span>Batch Allocation</span>
                     <span className={isOverAllocated ? 'text-red-500 font-bold' : ''}>
-                        {totalWeightAllocated.toLocaleString()}g / {totalBatchWeightGrams.toLocaleString()}g
+                        {totalWeightAllocated.toLocaleString()}g ({Math.round(totalWeightAllocated / 0.95).toLocaleString()}ml) / {totalBatchWeightGrams.toLocaleString()}g
                     </span>
                 </div>
                 <div className="h-2 bg-neutral-200 rounded-full overflow-hidden">
@@ -90,7 +91,7 @@ export const SKUConfiguration = ({
                     />
                 </div>
                 {isOverAllocated && (
-                    <p className="text-xs text-red-500 mt-1">⚠️ Over-allocated by {(totalWeightAllocated - totalBatchWeightGrams).toLocaleString()}g</p>
+                    <p className="text-xs text-red-500 mt-1">⚠️ Over-allocated by {(totalWeightAllocated - totalBatchWeightGrams).toLocaleString()}g ({Math.round((totalWeightAllocated - totalBatchWeightGrams) / 0.95).toLocaleString()}ml)</p>
                 )}
             </div>
 

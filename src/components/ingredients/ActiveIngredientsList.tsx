@@ -88,6 +88,7 @@ export const ActiveIngredientsList = ({ ingredients, onAdd, onRemove, onUpdate }
         <Card
             title="Active Ingredients"
             icon={Beaker}
+            collapsible
             action={
                 <button onClick={() => setIsAdding(!isAdding)} className="text-xs bg-black text-white px-3 py-1.5 rounded hover:bg-neutral-800 transition-colors flex items-center gap-1">
                     <Plus size={14} /> Add Active

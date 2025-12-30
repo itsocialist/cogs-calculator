@@ -62,7 +62,7 @@ export const ManufacturingView = ({
             />
 
             {/* SECTION 3: Batch Configuration - FULL WIDTH (compact horizontal) */}
-            <Card title="Batch Configuration" icon={Settings}>
+            <Card title="Batch Configuration" icon={Settings} collapsible>
                 <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4 items-end">
                     <div className="lg:col-span-2">
                         <label className="text-xs font-bold text-neutral-400 uppercase">Product Name</label>
@@ -82,7 +82,7 @@ export const ManufacturingView = ({
                 <div className="mt-4 pt-4 border-t border-neutral-100 flex items-center justify-between">
                     <span className="text-sm text-neutral-500">Formula Weight</span>
                     <span className={`font-mono font-bold ${totalBatchWeightGrams > (batchConfig.batchSizeKg * 1000) ? 'text-red-500' : 'text-green-600'}`}>
-                        {totalBatchWeightGrams.toLocaleString()}g / {(batchConfig.batchSizeKg * 1000).toLocaleString()}g
+                        {totalBatchWeightGrams.toLocaleString()}g ({Math.round(totalBatchWeightGrams / 0.95).toLocaleString()}ml) / {(batchConfig.batchSizeKg * 1000).toLocaleString()}g
                         {totalBatchWeightGrams > (batchConfig.batchSizeKg * 1000) && (
                             <span className="text-xs ml-2">⚠️ Exceeds batch</span>
                         )}
