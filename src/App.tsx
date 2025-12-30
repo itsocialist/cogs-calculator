@@ -252,6 +252,18 @@ function App() {
             </div>
             <div className="p-6 space-y-6 text-sm">
               <section>
+                <h3 className="font-bold text-neutral-900 mb-2">🚀 Quick Start</h3>
+                <ol className="space-y-2 text-neutral-600 list-decimal list-inside">
+                  <li><strong>Set Batch Config</strong> — Enter product name, batch size (kg), and target potency</li>
+                  <li><strong>Add Active Ingredients</strong> — Enter cannabinoids (CBD, THC, etc.) with cost, amount, and purity</li>
+                  <li><strong>Add Base Ingredients</strong> — Add carriers, bases, and terpenes in cups/tsp/grams</li>
+                  <li><strong>Configure SKUs</strong> — Set unit sizes, quantities, and customize packaging per SKU</li>
+                  <li><strong>Review Logistics</strong> — Set lab testing, shipping, and distribution fees</li>
+                  <li><strong>Check KPIs</strong> — Review COGS/unit, landed cost, and margins at the top</li>
+                </ol>
+              </section>
+
+              <section>
                 <h3 className="font-bold text-neutral-900 mb-2">📊 Key Calculations</h3>
                 <ul className="space-y-2 text-neutral-600">
                   <li><strong>COGS/Unit</strong> = (Ingredient Costs + Labor + Packaging) ÷ Units Produced</li>
