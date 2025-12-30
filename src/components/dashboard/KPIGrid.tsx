@@ -48,7 +48,7 @@ export const KPIGrid = ({
                 <div className={`p-5 rounded-xl shadow-md border-2 text-center ${fullyLoadedCost > 12 ? 'bg-red-50 border-red-300' : 'bg-green-50 border-green-300'} print:bg-white print:border-neutral-300`}>
                     <div className="text-xs font-bold text-neutral-500 uppercase mb-1 print:text-black">Unit Cost</div>
                     <div className="text-3xl font-black text-neutral-900 print:text-black">${fullyLoadedCost.toFixed(2)}</div>
-                    <div className="text-sm text-neutral-600 mt-1 print:text-black">
+                    <div className="text-base text-neutral-600 mt-1 print:text-black">
                         Mfg ${manufCostPerUnit.toFixed(2)} + Dist ${totalLogisticsPerUnit.toFixed(2)}
                     </div>
                 </div>
@@ -61,7 +61,7 @@ export const KPIGrid = ({
                     <div className={`text-3xl font-black ${batchProfit >= 0 ? 'text-emerald-600' : 'text-red-600'} print:text-black`}>
                         ${batchProfit.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
                     </div>
-                    <div className="text-sm text-neutral-600 mt-1 print:text-black">
+                    <div className="text-base text-neutral-600 mt-1 print:text-black">
                         {totalUnits.toLocaleString()} units @ ${wholesalePrice.toFixed(2)}
                     </div>
                 </div>
@@ -74,7 +74,7 @@ export const KPIGrid = ({
                     <div className={`text-3xl font-black ${grossMarginPercent >= 30 ? 'text-blue-600' : 'text-orange-600'} print:text-black`}>
                         {grossMarginPercent.toFixed(0)}%
                     </div>
-                    <div className="text-sm text-neutral-600 mt-1 print:text-black">
+                    <div className="text-base text-neutral-600 mt-1 print:text-black">
                         ${batchProfit.toLocaleString(undefined, { maximumFractionDigits: 0 })} on ${totalRevenue.toLocaleString(undefined, { maximumFractionDigits: 0 })} rev
                     </div>
                 </div>
@@ -84,10 +84,10 @@ export const KPIGrid = ({
             <div className="grid grid-cols-3 gap-2">
                 {/* Potency - with enhanced warning */}
                 <div className={`p-3 rounded-lg shadow-sm border text-center transition-all ${isPotencyCritical
-                        ? 'bg-red-100 border-red-400 animate-pulse'
-                        : isPotencySafe
-                            ? 'bg-white border-neutral-200'
-                            : 'bg-yellow-50 border-yellow-300'
+                    ? 'bg-red-100 border-red-400 animate-pulse'
+                    : isPotencySafe
+                        ? 'bg-white border-neutral-200'
+                        : 'bg-yellow-50 border-yellow-300'
                     } print:bg-white print:border-neutral-300`}>
                     <div className="text-xs font-bold text-neutral-400 uppercase mb-0.5 print:text-black">Potency</div>
                     <div className={`text-lg font-bold flex items-center justify-center gap-1 ${isPotencyCritical ? 'text-red-600' : isPotencySafe ? 'text-green-600' : 'text-yellow-600'
@@ -96,7 +96,7 @@ export const KPIGrid = ({
                         {isPotencyCritical ? <AlertTriangle size={14} className="animate-bounce" /> :
                             isPotencySafe ? <CheckCircle2 size={14} /> : <AlertTriangle size={14} />}
                     </div>
-                    <div className={`text-xs mt-0.5 ${isPotencyCritical ? 'text-red-600 font-bold' : 'text-neutral-500'} print:text-black`}>
+                    <div className={`text-sm mt-0.5 ${isPotencyCritical ? 'text-red-600 font-bold' : 'text-neutral-500'} print:text-black`}>
                         {isPotencyCritical ? `${potencyRatio.toFixed(1)}x target!` : `Target: ${targetPotencyMg}mg`}
                     </div>
                 </div>
@@ -105,7 +105,7 @@ export const KPIGrid = ({
                 <div className="bg-neutral-800 p-3 rounded-lg shadow-sm border border-neutral-700 text-white text-center print:bg-white print:text-black print:border-neutral-300">
                     <div className="text-xs font-bold text-neutral-400 uppercase mb-0.5 print:text-black">Wholesale</div>
                     <div className="text-lg font-bold text-yellow-500 print:text-black">{Math.round(wsMarginPercent)}%</div>
-                    <div className="text-xs text-neutral-400 mt-0.5 print:text-black">
+                    <div className="text-sm text-neutral-400 mt-0.5 print:text-black">
                         ${wholesalePrice.toFixed(0)} → ${wholesaleMargin.toFixed(2)}
                     </div>
                 </div>
@@ -114,7 +114,7 @@ export const KPIGrid = ({
                 <div className="bg-neutral-900 p-3 rounded-lg shadow-sm border border-neutral-800 text-white text-center print:bg-white print:text-black print:border-neutral-300">
                     <div className="text-xs font-bold text-neutral-400 uppercase mb-0.5 print:text-black">Retail</div>
                     <div className="text-lg font-bold text-green-400 print:text-black">{Math.round(retailMarginPercent)}%</div>
-                    <div className="text-xs text-neutral-400 mt-0.5 print:text-black">
+                    <div className="text-sm text-neutral-400 mt-0.5 print:text-black">
                         ${msrp.toFixed(0)} → ${retailMargin.toFixed(2)}
                     </div>
                 </div>
