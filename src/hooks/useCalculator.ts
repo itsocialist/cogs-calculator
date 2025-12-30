@@ -134,6 +134,11 @@ export function useCalculator() {
     const removeActive = (id: number) => setActiveIngredients(activeIngredients.filter(i => i.id !== id));
     const removeInactive = (id: number) => setInactiveIngredients(inactiveIngredients.filter(i => i.id !== id));
 
+    const addPackaging = (item: Omit<PackagingItem, 'id'>) => {
+        setPackaging([...packaging, { ...item, id: Date.now() }]);
+    };
+    const removePackaging = (id: number) => setPackaging(packaging.filter(i => i.id !== id));
+
     const saveSnapshot = () => {
         const snap: Snapshot = {
             id: Date.now(),
@@ -167,11 +172,12 @@ export function useCalculator() {
         // Derived
         ...calculations,
 
-        // Actions
         addActive,
         addInactive,
         removeActive,
         removeInactive,
+        addPackaging,
+        removePackaging,
         saveSnapshot,
         loadSnapshot
     };

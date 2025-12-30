@@ -18,6 +18,8 @@ interface Props {
     removeInactive: (id: number) => void;
     setInactiveIngredients: (items: InactiveIngredient[]) => void;
     packaging: PackagingItem[];
+    addPackaging: (item: Omit<PackagingItem, 'id'>) => void;
+    removePackaging: (id: number) => void;
     setPackaging: (items: PackagingItem[]) => void;
     totalBatchWeightGrams: number;
 }
@@ -26,7 +28,7 @@ export const ManufacturingView = ({
     batchConfig, setBatchConfig,
     activeIngredients, addActive, removeActive, setActiveIngredients,
     inactiveIngredients, addInactive, removeInactive, setInactiveIngredients,
-    packaging, setPackaging,
+    packaging, addPackaging, removePackaging, setPackaging,
     totalBatchWeightGrams
 }: Props) => {
     const updateBatch = (field: keyof BatchConfig, value: number) => {
@@ -72,7 +74,7 @@ export const ManufacturingView = ({
                     </div>
                 </Card>
 
-                <PackagingList items={packaging} onUpdate={setPackaging} />
+                <PackagingList items={packaging} onAdd={addPackaging} onRemove={removePackaging} onUpdate={setPackaging} />
             </div>
 
             {/* Right Column: Ingredients */}

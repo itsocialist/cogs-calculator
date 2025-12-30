@@ -146,6 +146,8 @@ function App() {
             removeInactive={calc.removeInactive}
             setInactiveIngredients={calc.setInactiveIngredients}
             packaging={calc.packaging}
+            addPackaging={calc.addPackaging}
+            removePackaging={calc.removePackaging}
             setPackaging={calc.setPackaging}
             totalBatchWeightGrams={calc.totalBatchWeightGrams}
           />
