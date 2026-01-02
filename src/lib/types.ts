@@ -79,10 +79,28 @@ export interface SKU {
     msrp: number;
 }
 
+// NEW: Recipe configuration for base unit
+export interface RecipeConfig {
+    baseUnitSize: number;           // Size in grams (e.g., 28.35 for 1 oz)
+    baseUnitLabel: string;          // Human-readable (e.g., "1 oz jar")
+    targetPotencyMg: number;        // Target potency per base unit
+    density: number;                // g/ml for volume calculations (default 0.95)
+}
+
+// UPDATED: Batch configuration with volume-based scaling
 export interface BatchConfig {
     productName: string;
+
+    // Volume-based input
+    targetVolumeMl: number;         // Target batch volume in ml
+
+    // Legacy field (will be auto-calculated)
     batchSizeKg: number;
-    targetPotencyMg: number;
+
+    // Moved from BatchConfig to RecipeConfig
+    // targetPotencyMg: number;     // DEPRECATED - now in RecipeConfig
+
+    // Labor costs
     laborRate: number;
     laborHours: number;
     fulfillmentCost: number;
@@ -110,6 +128,7 @@ export interface Snapshot {
     id: number;
     name: string;
     config: {
+        recipeConfig: RecipeConfig;
         batchConfig: BatchConfig;
         activeIngredients: ActiveIngredient[];
         inactiveIngredients: InactiveIngredient[];

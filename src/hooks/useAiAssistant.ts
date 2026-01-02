@@ -1,17 +1,18 @@
 import { useState } from 'react';
 import { callGemini } from '../lib/gemini';
-import type { BatchConfig, ActiveIngredient } from '../lib/types';
+import type { BatchConfig, ActiveIngredient, RecipeConfig } from '../lib/types';
 
 export function useAiAssistant() {
     const [isGenerating, setIsGenerating] = useState(false);
     const [aiMarketingCopy, setAiMarketingCopy] = useState("");
     const [aiCostAnalysis, setAiCostAnalysis] = useState("");
 
-    const generateMarketingCopy = async (batchConfig: BatchConfig, activeIngredients: ActiveIngredient[]) => {
+    const generateMarketingCopy = async (batchConfig: BatchConfig, activeIngredients: ActiveIngredient[], recipeConfig?: RecipeConfig) => {
         setIsGenerating(true);
         const activesList = activeIngredients.map(a => a.name).join(", ");
+        const targetPotency = recipeConfig?.targetPotencyMg || 500;
         const prompt = `Write a premium, medical-grade product description for a cannabis salve named "${batchConfig.productName}". 
-    Key features: ${batchConfig.targetPotencyMg}mg target potency. 
+    Key features: ${targetPotency}mg target potency. 
     Active Ingredients: ${activesList}. 
     Tone: Sophisticated, healing, trustworthy.`;
 

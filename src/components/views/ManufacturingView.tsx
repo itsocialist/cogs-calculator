@@ -4,10 +4,12 @@ import { NumberInput } from '../ui/NumberInput';
 import { ActiveIngredientsList } from '../ingredients/ActiveIngredientsList';
 import { InactiveIngredientsList } from '../ingredients/InactiveIngredientsList';
 import { SKUConfiguration } from '../ingredients/SKUConfiguration';
-import type { BatchConfig, ActiveIngredient, InactiveIngredient, SKU, PackagingItem } from '../../lib/types';
+import type { BatchConfig, ActiveIngredient, InactiveIngredient, SKU, PackagingItem, RecipeConfig } from '../../lib/types';
 import type { SKUCalculation } from '../../hooks/useCalculator';
 
 interface Props {
+    recipeConfig: RecipeConfig;
+    setRecipeConfig: (config: RecipeConfig) => void;
     batchConfig: BatchConfig;
     setBatchConfig: (config: BatchConfig) => void;
     activeIngredients: ActiveIngredient[];
@@ -33,6 +35,7 @@ interface Props {
 }
 
 export const ManufacturingView = ({
+    recipeConfig, setRecipeConfig,
     batchConfig, setBatchConfig,
     activeIngredients, addActive, removeActive, setActiveIngredients,
     inactiveIngredients, addInactive, removeInactive, setInactiveIngredients,
@@ -74,7 +77,7 @@ export const ManufacturingView = ({
                         />
                     </div>
                     <NumberInput label="Batch Size" value={batchConfig.batchSizeKg} onChange={(v) => updateBatch('batchSizeKg', v)} suffix="kg" />
-                    <NumberInput label="Target Potency" value={batchConfig.targetPotencyMg} onChange={(v) => updateBatch('targetPotencyMg', v)} suffix="mg" />
+                    <NumberInput label="Target Potency" value={recipeConfig.targetPotencyMg} onChange={(v) => setRecipeConfig({ ...recipeConfig, targetPotencyMg: v })} suffix="mg" />
                     <NumberInput label="Labor Rate" value={batchConfig.laborRate} onChange={(v) => updateBatch('laborRate', v)} prefix="$" />
                     <NumberInput label="Labor Hours" value={batchConfig.laborHours} onChange={(v) => updateBatch('laborHours', v)} suffix="hrs" />
                     <NumberInput label="Fulfillment" value={batchConfig.fulfillmentCost} onChange={(v) => updateBatch('fulfillmentCost', v)} prefix="$" />

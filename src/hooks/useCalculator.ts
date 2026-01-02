@@ -7,12 +7,14 @@ import type {
     PackagingItem,
     LogisticsConfig,
     Snapshot,
-    SKU
+    SKU,
+    RecipeConfig
 } from '../lib/types';
 
 // Convert SKU size to grams (for ml/floz based on assumed salve density ~0.95 g/ml)
 const SALVE_DENSITY = 0.95; // g/ml - typical for balms/salves
 const FLOZ_TO_ML = 29.574;
+const OZ_TO_GRAMS = 28.35;
 
 function skuSizeToGrams(sku: SKU): number {
     switch (sku.unitSizeUnit) {
@@ -36,11 +38,19 @@ const DEFAULT_PACKAGING: PackagingItem[] = [
     { id: 5, name: "Tamper Seal", costPerUnit: 0.05 },
 ];
 
+// NEW: Default Recipe Configuration
+const DEFAULT_RECIPE_CONFIG: RecipeConfig = {
+    baseUnitSize: OZ_TO_GRAMS,      // 1 oz = 28.35g
+    baseUnitLabel: "1 oz jar",
+    targetPotencyMg: 500,           // 500mg CBD per 1 oz jar
+    density: SALVE_DENSITY          // 0.95 g/ml
+};
+
 // Defaults
 const DEFAULT_BATCH_CONFIG: BatchConfig = {
     productName: "Recovery Salve",
-    batchSizeKg: 10,
-    targetPotencyMg: 500,
+    targetVolumeMl: 10000,          // 10 liters in ml
+    batchSizeKg: 10,                // Legacy: auto-calculated from volume × density
     laborRate: 25,
     laborHours: 6,
     fulfillmentCost: 2.50
@@ -109,6 +119,7 @@ export interface SKUCalculation {
 
 export function useCalculator() {
     // State
+    const [recipeConfig, setRecipeConfig] = useState<RecipeConfig>(DEFAULT_RECIPE_CONFIG);
     const [batchConfig, setBatchConfig] = useState<BatchConfig>(DEFAULT_BATCH_CONFIG);
     const [activeIngredients, setActiveIngredients] = useState<ActiveIngredient[]>(DEFAULT_ACTIVES);
     const [inactiveIngredients, setInactiveIngredients] = useState<InactiveIngredient[]>(DEFAULT_INACTIVES);
@@ -162,7 +173,7 @@ export function useCalculator() {
 
             // Potency per unit for this SKU
             const potencyMg = sku.quantity > 0 ? (totalActiveMg * weightRatio) / sku.quantity : 0;
-            const isPotencySafe = Math.abs(potencyMg - batchConfig.targetPotencyMg) < (batchConfig.targetPotencyMg * 0.1);
+            const isPotencySafe = Math.abs(potencyMg - recipeConfig.targetPotencyMg) < (recipeConfig.targetPotencyMg * 0.1);
 
             // Formula cost allocated by weight
             const formulaCostPerUnit = sku.quantity > 0 ? (totalFormulaCost * weightRatio) / sku.quantity : 0;
@@ -263,9 +274,9 @@ export function useCalculator() {
             labTestPerUnit: totalUnitsAcrossSkus > 0 ? logistics.labTestingFee / totalUnitsAcrossSkus : 0,
             shippingPerUnit: totalUnitsAcrossSkus > 0 ? logistics.shippingToDistro / totalUnitsAcrossSkus : 0,
             totalDistroFeesPerUnit: logistics.distroFees.reduce((sum, fee) => sum + (fee.percent / 100) * pricing.wholesale, 0),
-            potencyDiff: actualPotencyMg - batchConfig.targetPotencyMg
+            potencyDiff: actualPotencyMg - recipeConfig.targetPotencyMg
         };
-    }, [batchConfig, activeIngredients, inactiveIngredients, skus, logistics, pricing]);
+    }, [recipeConfig, batchConfig, activeIngredients, inactiveIngredients, skus, logistics, pricing]);
 
     // Actions - Ingredients
     const addActive = (item: Omit<ActiveIngredient, 'id' | 'type'>) => {
@@ -335,7 +346,7 @@ export function useCalculator() {
         const snap: Snapshot = {
             id: Date.now(),
             name: `${batchConfig.productName} (${new Date().toLocaleTimeString()})`,
-            config: { batchConfig, activeIngredients, inactiveIngredients, skus, logistics, pricing },
+            config: { recipeConfig, batchConfig, activeIngredients, inactiveIngredients, skus, logistics, pricing },
             cost: calculations.fullyLoadedCost
         };
         setSnapshots([snap, ...snapshots]);
@@ -343,6 +354,9 @@ export function useCalculator() {
     };
 
     const loadSnapshot = (snap: Snapshot) => {
+        if (snap.config.recipeConfig) {
+            setRecipeConfig(snap.config.recipeConfig);
+        }
         setBatchConfig(snap.config.batchConfig);
         setActiveIngredients(snap.config.activeIngredients);
         setInactiveIngredients(snap.config.inactiveIngredients);
@@ -353,6 +367,7 @@ export function useCalculator() {
 
     return {
         // State
+        recipeConfig, setRecipeConfig,
         batchConfig, setBatchConfig,
         activeIngredients, setActiveIngredients,
         inactiveIngredients, setInactiveIngredients,

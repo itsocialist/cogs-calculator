@@ -166,7 +166,7 @@ function App() {
 
           <KPIGrid
             actualPotencyMg={calc.actualPotencyMg}
-            targetPotencyMg={calc.batchConfig.targetPotencyMg}
+            targetPotencyMg={calc.recipeConfig.targetPotencyMg}
             isPotencySafe={calc.isPotencySafe}
             fullyLoadedCost={calc.fullyLoadedCost}
             manufCostPerUnit={calc.manufCostPerUnit}
@@ -187,6 +187,8 @@ function App() {
       <div className="max-w-7xl mx-auto px-4 md:px-8 pt-6 pb-24 space-y-6">
         {activeTab === 'manufacturing' && (
           <ManufacturingView
+            recipeConfig={calc.recipeConfig}
+            setRecipeConfig={calc.setRecipeConfig}
             batchConfig={calc.batchConfig}
             setBatchConfig={calc.setBatchConfig}
             activeIngredients={calc.activeIngredients}
