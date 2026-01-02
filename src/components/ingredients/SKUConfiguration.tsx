@@ -69,8 +69,13 @@ export const SKUConfiguration = ({
             collapsible
             action={
                 <button
-                    onClick={() => setIsAdding(!isAdding)}
-                    className="text-xs bg-black text-white px-3 py-1.5 rounded hover:bg-neutral-800 transition-colors flex items-center gap-1"
+                    onClick={() => !isOverAllocated && setIsAdding(!isAdding)}
+                    disabled={isOverAllocated}
+                    title={isOverAllocated ? "Cannot add SKU: Batch is over-allocated" : "Add new SKU"}
+                    className={`text-xs px-3 py-1.5 rounded transition-colors flex items-center gap-1 ${isOverAllocated
+                            ? 'bg-neutral-100 text-neutral-400 cursor-not-allowed border border-neutral-200'
+                            : 'bg-black text-white hover:bg-neutral-800'
+                        }`}
                 >
                     <Plus size={14} /> Add SKU
                 </button>
