@@ -131,6 +131,14 @@ export function useCalculator() {
             return sum + pureMg;
         }, 0);
 
+        // Cannabinoid totals by type (CBD, THC, CBG, etc.)
+        const cannabinoidTotals = activeIngredients.reduce((acc, item) => {
+            const pureMg = item.gramsInBatch * 1000 * (item.purityPercent / 100);
+            const type = item.cannabinoid || 'Other';
+            acc[type] = (acc[type] || 0) + pureMg;
+            return acc;
+        }, {} as Record<string, number>);
+
         // Formula costs
         const activeCost = activeIngredients.reduce((sum, i) => sum + ((i.gramsInBatch / 1000) * i.costPerKg), 0);
         const inactiveCost = inactiveIngredients.reduce((sum, i) => sum + ((i.gramsInBatch / 1000) * i.costPerKg), 0);
@@ -223,6 +231,7 @@ export function useCalculator() {
             inactiveWeight,
             totalBatchWeightGrams,
             totalActiveMg,
+            cannabinoidTotals,
             activeCost,
             inactiveCost,
             totalFormulaCost,

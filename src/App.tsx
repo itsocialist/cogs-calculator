@@ -178,6 +178,7 @@ function App() {
             totalUnits={calc.skuCalculations.reduce((sum, s) => sum + s.quantity, 0)}
             totalRevenue={calc.skuCalculations.reduce((sum, s) => sum + (s.wholesalePrice * s.quantity), 0)}
             totalCOGS={calc.skuCalculations.reduce((sum, s) => sum + (s.fullyLoadedCost * s.quantity), 0)}
+            cannabinoidTotals={calc.cannabinoidTotals}
           />
         </div>
       </div>
