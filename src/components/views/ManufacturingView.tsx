@@ -1,8 +1,7 @@
 import { Settings } from 'lucide-react';
 import { Card } from '../ui/Card';
 import { NumberInput } from '../ui/NumberInput';
-import { ActiveIngredientsList } from '../ingredients/ActiveIngredientsList';
-import { InactiveIngredientsList } from '../ingredients/InactiveIngredientsList';
+import { RecipeSection } from '../recipe/RecipeSection';
 import { SKUConfiguration } from '../ingredients/SKUConfiguration';
 import type { BatchConfig, ActiveIngredient, InactiveIngredient, SKU, PackagingItem, RecipeConfig } from '../../lib/types';
 import type { SKUCalculation } from '../../hooks/useCalculator';
@@ -46,27 +45,31 @@ export const ManufacturingView = ({
         setBatchConfig({ ...batchConfig, [field]: value });
     };
 
+    // Calculate units from batch
+    const batchWeightGrams = batchConfig.batchSizeKg * 1000;
+    const calculatedUnits = recipeConfig.baseUnitSize > 0
+        ? Math.floor(batchWeightGrams / recipeConfig.baseUnitSize)
+        : 0;
+
     return (
         <div className="space-y-6 animate-in fade-in">
-            {/* SECTION 1: Active Ingredients - FULL WIDTH */}
-            <ActiveIngredientsList
-                ingredients={activeIngredients}
-                onAdd={addActive}
-                onRemove={removeActive}
-                onUpdate={setActiveIngredients}
+            {/* SECTION 1: Recipe Configuration - Contains ingredients */}
+            <RecipeSection
+                recipeConfig={recipeConfig}
+                setRecipeConfig={setRecipeConfig}
+                activeIngredients={activeIngredients}
+                addActive={addActive}
+                removeActive={removeActive}
+                setActiveIngredients={setActiveIngredients}
+                inactiveIngredients={inactiveIngredients}
+                addInactive={addInactive}
+                removeInactive={removeInactive}
+                setInactiveIngredients={setInactiveIngredients}
             />
 
-            {/* SECTION 2: Base & Inactive Ingredients - FULL WIDTH */}
-            <InactiveIngredientsList
-                ingredients={inactiveIngredients}
-                onAdd={addInactive}
-                onRemove={removeInactive}
-                onUpdate={setInactiveIngredients}
-            />
-
-            {/* SECTION 3: Batch Configuration - FULL WIDTH (compact horizontal) */}
-            <Card title="Batch Configuration" icon={Settings} collapsible>
-                <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4 items-end">
+            {/* SECTION 2: Batch Scaling - Volume/weight based */}
+            <Card title="Batch Scaling" icon={Settings} collapsible>
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 items-end">
                     <div className="lg:col-span-2">
                         <label className="text-xs font-bold text-neutral-400 uppercase">Product Name</label>
                         <input
@@ -77,23 +80,39 @@ export const ManufacturingView = ({
                         />
                     </div>
                     <NumberInput label="Batch Size" value={batchConfig.batchSizeKg} onChange={(v) => updateBatch('batchSizeKg', v)} suffix="kg" />
-                    <NumberInput label="Target Potency" value={recipeConfig.targetPotencyMg} onChange={(v) => setRecipeConfig({ ...recipeConfig, targetPotencyMg: v })} suffix="mg" />
                     <NumberInput label="Labor Rate" value={batchConfig.laborRate} onChange={(v) => updateBatch('laborRate', v)} prefix="$" />
                     <NumberInput label="Labor Hours" value={batchConfig.laborHours} onChange={(v) => updateBatch('laborHours', v)} suffix="hrs" />
                     <NumberInput label="Fulfillment" value={batchConfig.fulfillmentCost} onChange={(v) => updateBatch('fulfillmentCost', v)} prefix="$" />
                 </div>
-                <div className="mt-4 pt-4 border-t border-neutral-100 flex items-center justify-between">
-                    <span className="text-sm text-neutral-500">Formula Weight</span>
-                    <span className={`font-mono font-bold ${totalBatchWeightGrams > (batchConfig.batchSizeKg * 1000) ? 'text-red-500' : 'text-green-600'}`}>
-                        {totalBatchWeightGrams.toLocaleString()}g ({Math.round(totalBatchWeightGrams / 0.95).toLocaleString()}ml) / {(batchConfig.batchSizeKg * 1000).toLocaleString()}g
-                        {totalBatchWeightGrams > (batchConfig.batchSizeKg * 1000) && (
-                            <span className="text-xs ml-2">⚠️ Exceeds batch</span>
-                        )}
-                    </span>
+
+                {/* Batch Summary */}
+                <div className="mt-4 pt-4 border-t border-neutral-100 grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                    <div>
+                        <span className="text-neutral-500">Total Weight: </span>
+                        <span className="font-bold text-neutral-800">{batchWeightGrams.toLocaleString()}g</span>
+                    </div>
+                    <div>
+                        <span className="text-neutral-500">Est. Volume: </span>
+                        <span className="font-bold text-neutral-800">{Math.round(batchWeightGrams / recipeConfig.density).toLocaleString()}ml</span>
+                    </div>
+                    <div>
+                        <span className="text-neutral-500">Base Units: </span>
+                        <span className="font-bold text-neutral-800">{calculatedUnits.toLocaleString()}</span>
+                        <span className="text-neutral-400 text-xs ml-1">({recipeConfig.baseUnitLabel})</span>
+                    </div>
+                    <div>
+                        <span className="text-neutral-500">Formula: </span>
+                        <span className={`font-mono font-bold ${totalBatchWeightGrams > batchWeightGrams ? 'text-red-500' : 'text-green-600'}`}>
+                            {totalBatchWeightGrams.toLocaleString()}g
+                            {totalBatchWeightGrams > batchWeightGrams && (
+                                <span className="text-xs ml-1">⚠️ Over</span>
+                            )}
+                        </span>
+                    </div>
                 </div>
             </Card>
 
-            {/* SECTION 4: SKU Configuration - FULL WIDTH */}
+            {/* SECTION 3: SKU Configuration */}
             <SKUConfiguration
                 skus={skus}
                 skuCalculations={skuCalculations}

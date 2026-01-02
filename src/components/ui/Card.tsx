@@ -5,6 +5,7 @@ import { ChevronDown, ChevronUp } from 'lucide-react';
 interface CardProps {
     children: React.ReactNode;
     title: string;
+    subtitle?: string;
     icon?: LucideIcon;
     className?: string;
     action?: React.ReactNode;
@@ -15,6 +16,7 @@ interface CardProps {
 export const Card = ({
     children,
     title,
+    subtitle,
     icon: Icon,
     className = "",
     action,
@@ -32,6 +34,7 @@ export const Card = ({
                 <div className="flex items-center gap-2">
                     {Icon && <Icon size={18} className="text-yellow-600 print:text-black" />}
                     <h3 className="font-bold text-neutral-800 text-sm uppercase tracking-wide print:text-black">{title}</h3>
+                    {subtitle && <span className="text-xs text-neutral-500 font-normal normal-case ml-2">— {subtitle}</span>}
                     {collapsible && (
                         <span className="text-neutral-400 ml-1 print:hidden">
                             {isCollapsed ? <ChevronDown size={16} /> : <ChevronUp size={16} />}
