@@ -2,6 +2,7 @@ import { Settings } from 'lucide-react';
 import { Card } from '../ui/Card';
 import { NumberInput } from '../ui/NumberInput';
 import { RecipeSection } from '../recipe/RecipeSection';
+import { IngredientsManifest } from '../manifest/IngredientsManifest';
 import { SKUConfiguration } from '../ingredients/SKUConfiguration';
 import type { BatchConfig, ActiveIngredient, InactiveIngredient, SKU, PackagingItem, RecipeConfig } from '../../lib/types';
 import type { SKUCalculation } from '../../hooks/useCalculator';
@@ -112,7 +113,16 @@ export const ManufacturingView = ({
                 </div>
             </Card>
 
-            {/* SECTION 3: SKU Configuration */}
+            {/* SECTION 3: Ingredients Manifest (Shopping List) */}
+            <IngredientsManifest
+                recipeConfig={recipeConfig}
+                activeIngredients={activeIngredients}
+                inactiveIngredients={inactiveIngredients}
+                batchSizeKg={batchConfig.batchSizeKg}
+                onScaleChange={(newSize) => setBatchConfig({ ...batchConfig, batchSizeKg: newSize })}
+            />
+
+            {/* SECTION 4: SKU Configuration */}
             <SKUConfiguration
                 skus={skus}
                 skuCalculations={skuCalculations}
