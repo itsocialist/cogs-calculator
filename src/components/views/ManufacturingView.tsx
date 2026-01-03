@@ -111,16 +111,15 @@ export const ManufacturingView = ({
                 title="Batch Scaling"
                 icon={Settings}
                 collapsible
-                headerClassName="bg-blue-50 border-b border-blue-100"
             >
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 items-end">
                     <div className="lg:col-span-2">
-                        <label className="text-xs font-bold text-neutral-400 uppercase">Product Name</label>
+                        <label className="text-[10px] font-bold text-white/50 uppercase">Product Name</label>
                         <input
                             type="text"
                             value={batchConfig.productName}
                             onChange={(e) => setBatchConfig({ ...batchConfig, productName: e.target.value })}
-                            className="w-full bg-neutral-50 border border-neutral-300 rounded px-2 py-1.5 text-sm font-bold mt-1"
+                            className="w-full bg-white/15 backdrop-blur-sm border-0 rounded-lg px-2 py-1.5 text-sm font-bold text-white/90 mt-1 focus:outline-none focus:ring-1 focus:ring-white/30"
                         />
                     </div>
                     <NumberInput
@@ -135,26 +134,26 @@ export const ManufacturingView = ({
                 </div>
 
                 {/* Batch Summary */}
-                <div className="mt-4 pt-4 border-t border-neutral-100 grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                <div className="mt-4 pt-4 border-t border-white/10 grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
                     <div>
-                        <span className="text-neutral-500">Weight: </span>
-                        <span className="font-bold text-neutral-800">
+                        <span className="text-white/50">Weight: </span>
+                        <span className="font-bold text-white/90">
                             {convertFromGrams(batchWeightGrams, config.manifest.weightScale).toLocaleString()}{config.manifest.weightScale}
                         </span>
                     </div>
                     <div>
-                        <span className="text-neutral-500">Volume: </span>
-                        <span className="font-bold text-neutral-800">
+                        <span className="text-white/50">Volume: </span>
+                        <span className="font-bold text-white/90">
                             {convertFromMl(batchVolumeMl, config.manifest.volumeScale).toLocaleString()}{config.manifest.volumeScale === 'floz' ? ' fl oz' : config.manifest.volumeScale}
                         </span>
                     </div>
                     <div>
-                        <span className="text-neutral-500">Base Units: </span>
-                        <span className="font-bold text-neutral-800">{calculatedUnits.toLocaleString()}</span>
-                        <span className="text-neutral-400 text-xs ml-1">({recipeConfig.baseUnitLabel})</span>
+                        <span className="text-white/50">Base Units: </span>
+                        <span className="font-bold text-white/90">{calculatedUnits.toLocaleString()}</span>
+                        <span className="text-white/40 text-xs ml-1">({recipeConfig.baseUnitLabel})</span>
                     </div>
                     <div>
-                        <span className="text-neutral-500">Formula: </span>
+                        <span className="text-white/50">Formula: </span>
                         <span className={`font-mono font-bold ${totalBatchWeightGrams > batchWeightGrams ? 'text-red-500' : 'text-green-600'}`}>
                             {totalBatchWeightGrams.toLocaleString()}g
                             {totalBatchWeightGrams > batchWeightGrams && (

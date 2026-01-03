@@ -41,21 +41,20 @@ export const RecipeSection = ({
             icon={Beaker}
             collapsible
             defaultCollapsed={true}
-            headerClassName="bg-blue-100 border-b border-blue-200"
             subtitle={`${recipeConfig.baseUnitLabel} = ${totalRecipeGrams.toFixed(1)}g (${totalRecipeMl.toFixed(1)}ml)`}
         >
             <div className="space-y-6">
                 {/* Base Unit Configuration */}
-                <div className="bg-gradient-to-r from-blue-50 to-indigo-50 p-4 rounded-lg border border-blue-100">
-                    <div className="text-xs font-bold text-blue-700 uppercase mb-3">Base Unit Definition</div>
+                <div className="bg-white/10 backdrop-blur-sm p-4 rounded-lg border border-white/15">
+                    <div className="text-xs font-bold text-amber-300/80 uppercase mb-3">Base Unit Definition</div>
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                         <div>
-                            <label className="text-xs font-bold text-neutral-500 uppercase">Unit Label</label>
+                            <label className="text-[10px] font-bold text-white/50 uppercase">Unit Label</label>
                             <input
                                 type="text"
                                 value={recipeConfig.baseUnitLabel}
                                 onChange={(e) => setRecipeConfig({ ...recipeConfig, baseUnitLabel: e.target.value })}
-                                className="w-full bg-white border border-neutral-300 rounded px-2 py-1.5 text-sm font-bold mt-1"
+                                className="w-full bg-white/15 backdrop-blur-sm border-0 rounded-lg px-2 py-1.5 text-sm font-bold text-white/90 mt-1 focus:outline-none focus:ring-1 focus:ring-white/30"
                                 placeholder="e.g., 1 oz jar"
                             />
                         </div>
@@ -80,18 +79,18 @@ export const RecipeSection = ({
                     </div>
 
                     {/* Recipe Summary */}
-                    <div className="mt-4 pt-3 border-t border-blue-200 flex flex-wrap gap-6 text-sm">
+                    <div className="mt-4 pt-3 border-t border-white/15 flex flex-wrap gap-6 text-sm">
                         <div>
-                            <span className="text-neutral-500">Formula Weight: </span>
-                            <span className="font-bold text-neutral-800">{totalRecipeGrams.toFixed(1)}g</span>
-                            <span className="text-neutral-400"> ({totalRecipeMl.toFixed(1)}ml)</span>
+                            <span className="text-white/50">Formula Weight: </span>
+                            <span className="font-bold text-white/90">{totalRecipeGrams.toFixed(1)}g</span>
+                            <span className="text-white/40"> ({totalRecipeMl.toFixed(1)}ml)</span>
                         </div>
                         <div>
-                            <span className="text-neutral-500">Actual Potency: </span>
-                            <span className={`font-bold ${Math.abs(totalActiveMg - recipeConfig.targetPotencyMg) < recipeConfig.targetPotencyMg * 0.1 ? 'text-green-600' : 'text-orange-500'}`}>
+                            <span className="text-white/50">Actual Potency: </span>
+                            <span className={`font-bold ${Math.abs(totalActiveMg - recipeConfig.targetPotencyMg) < recipeConfig.targetPotencyMg * 0.1 ? 'text-green-400' : 'text-orange-400'}`}>
                                 {totalActiveMg.toFixed(0)}mg
                             </span>
-                            <span className="text-neutral-400"> (target: {recipeConfig.targetPotencyMg}mg)</span>
+                            <span className="text-white/40"> (target: {recipeConfig.targetPotencyMg}mg)</span>
                         </div>
                     </div>
                 </div>

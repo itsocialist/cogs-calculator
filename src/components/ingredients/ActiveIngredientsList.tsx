@@ -145,7 +145,7 @@ export const ActiveIngredientsList = ({ ingredients, onAdd, onRemove, onUpdate }
                                     type="number"
                                     value={item.purityPercent}
                                     onChange={(e) => updateItem(item.id, { purityPercent: parseFloat(e.target.value) || 0 })}
-                                    className="w-12 bg-neutral-50 border border-neutral-300 rounded px-1 py-1 text-xs text-right"
+                                    className="w-12 bg-white/15 backdrop-blur-sm border-0 rounded px-1 py-1 text-xs text-right text-white/90 focus:outline-none focus:ring-1 focus:ring-white/30"
                                     step={0.5}
                                 />
                                 <span className="text-xs text-neutral-400">%</span>
