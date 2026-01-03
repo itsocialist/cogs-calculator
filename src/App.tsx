@@ -197,19 +197,29 @@ function App() {
 
   return (
     <ConfigProvider>
-      <div className="min-h-screen bg-neutral-100 font-sans print:bg-white print:p-0">
-        {/* Sticky Header */}
-        <div className="sticky top-0 z-40 bg-neutral-100/95 backdrop-blur-sm border-b-2 border-neutral-300 shadow-sm print:static print:border-none">
+      {/* Ethereal dimmed sepia background */}
+      <div
+        className="min-h-screen font-sans print:bg-white print:p-0 relative"
+        style={{
+          background: 'linear-gradient(135deg, #1a1612 0%, #2d2520 50%, #1f1a16 100%)',
+        }}
+      >
+        {/* Subtle ambient glow */}
+        <div className="fixed top-0 left-1/4 w-96 h-96 bg-amber-500/5 rounded-full blur-3xl pointer-events-none" />
+        <div className="fixed bottom-0 right-1/4 w-80 h-80 bg-emerald-500/5 rounded-full blur-3xl pointer-events-none" />
+
+        {/* Sticky Header - Ethereal Glass */}
+        <div className="sticky top-0 z-40 backdrop-blur-xl bg-stone-900/80 border-b border-amber-900/30 shadow-lg shadow-black/20 print:static print:border-none">
           <div className="max-w-7xl mx-auto px-4 md:px-8 py-4">
             {/* Header */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 print:hidden">
               <div>
-                <h1 className="text-3xl font-black tracking-tight text-neutral-900">ROLOS KITCHEN</h1>
-                <p className="text-neutral-500 font-medium">COGS & Potency Calculator</p>
+                <h1 className="text-3xl font-light tracking-[0.15em] text-amber-100/90">ROLOS KITCHEN</h1>
+                <p className="text-amber-200/40 text-sm tracking-widest italic">by Dawson Bros</p>
               </div>
 
               <div className="flex gap-2 relative">
-                <div className="flex bg-neutral-900 rounded-xl p-1 shadow-lg overflow-x-auto max-w-[calc(100vw-2rem)] md:max-w-none no-scrollbar">
+                <div className="flex bg-stone-800/80 border border-amber-900/30 rounded-xl p-1 shadow-lg overflow-x-auto max-w-[calc(100vw-2rem)] md:max-w-none no-scrollbar">
                   <TabButton active={activeTab === 'manufacturing'} onClick={() => setActiveTab('manufacturing')} icon={FlaskConical} label="Manufacturing" />
                   <TabButton active={activeTab === 'logistics'} onClick={() => setActiveTab('logistics')} icon={Truck} label="Logistics" />
                   <TabButton active={activeTab === 'snapshots'} onClick={() => setActiveTab('snapshots')} icon={History} label="Snapshots" />
