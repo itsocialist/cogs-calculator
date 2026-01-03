@@ -197,35 +197,35 @@ function App() {
 
   return (
     <ConfigProvider>
-      {/* Ethereal dimmed sepia background */}
+      {/* Warm ethereal background - lighter tan/yellow/green hues */}
       <div
         className="min-h-screen font-sans print:bg-white print:p-0 relative"
         style={{
-          background: 'linear-gradient(135deg, #1a1612 0%, #2d2520 50%, #1f1a16 100%)',
+          background: 'linear-gradient(135deg, #f5f0e8 0%, #e8e0d4 30%, #dde6dc 70%, #f0ebe2 100%)',
         }}
       >
-        {/* Floating particles - biology & chemistry connections (reduced opacity for main app) */}
-        <div className="fixed inset-0 opacity-30 pointer-events-none print:hidden">
-          <ParticleField particleCount={35} connectionDistance={80} />
+        {/* Floating particles - biology & chemistry connections (subtle) */}
+        <div className="fixed inset-0 opacity-20 pointer-events-none print:hidden">
+          <ParticleField particleCount={30} connectionDistance={70} />
         </div>
 
-        {/* Subtle ambient glow orbs */}
-        <div className="fixed top-0 left-1/4 w-96 h-96 bg-amber-500/8 rounded-full blur-3xl pointer-events-none animate-pulse" />
-        <div className="fixed bottom-0 right-1/4 w-80 h-80 bg-emerald-500/6 rounded-full blur-3xl pointer-events-none animate-pulse" style={{ animationDelay: '2s' }} />
-        <div className="fixed top-1/2 right-0 w-64 h-64 bg-amber-600/4 rounded-full blur-3xl pointer-events-none animate-pulse" style={{ animationDelay: '4s' }} />
+        {/* Warm ambient glow orbs */}
+        <div className="fixed top-0 left-1/4 w-96 h-96 bg-amber-300/15 rounded-full blur-3xl pointer-events-none animate-pulse" />
+        <div className="fixed bottom-0 right-1/4 w-80 h-80 bg-emerald-300/10 rounded-full blur-3xl pointer-events-none animate-pulse" style={{ animationDelay: '2s' }} />
+        <div className="fixed top-1/2 right-0 w-64 h-64 bg-amber-200/10 rounded-full blur-3xl pointer-events-none animate-pulse" style={{ animationDelay: '4s' }} />
 
-        {/* Sticky Header - Ethereal Glass */}
-        <div className="sticky top-0 z-40 backdrop-blur-xl bg-stone-900/80 border-b border-amber-900/30 shadow-lg shadow-black/20 print:static print:border-none">
+        {/* Sticky Header - Thicker translucent glass */}
+        <div className="sticky top-0 z-40 backdrop-blur-xl bg-white/70 border-b border-amber-200/50 shadow-md shadow-amber-900/5 print:static print:border-none">
           <div className="max-w-7xl mx-auto px-4 md:px-8 py-4">
             {/* Header */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 print:hidden">
               <div>
-                <h1 className="text-3xl font-light tracking-[0.15em] text-amber-100/90">ROLOS KITCHEN</h1>
-                <p className="text-amber-200/40 text-sm tracking-widest italic">by Dawson Bros</p>
+                <h1 className="text-3xl font-light tracking-[0.15em] text-stone-700">ROLOS KITCHEN</h1>
+                <p className="text-amber-700/50 text-sm tracking-widest italic">by Dawson Bros</p>
               </div>
 
               <div className="flex gap-2 relative">
-                <div className="flex bg-stone-800/80 border border-amber-900/30 rounded-xl p-1 shadow-lg overflow-x-auto max-w-[calc(100vw-2rem)] md:max-w-none no-scrollbar">
+                <div className="flex bg-stone-800/90 border border-stone-700 rounded-xl p-1 shadow-lg overflow-x-auto max-w-[calc(100vw-2rem)] md:max-w-none no-scrollbar">
                   <TabButton active={activeTab === 'manufacturing'} onClick={() => setActiveTab('manufacturing')} icon={FlaskConical} label="Manufacturing" />
                   <TabButton active={activeTab === 'logistics'} onClick={() => setActiveTab('logistics')} icon={Truck} label="Logistics" />
                   <TabButton active={activeTab === 'snapshots'} onClick={() => setActiveTab('snapshots')} icon={History} label="Snapshots" />
