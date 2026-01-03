@@ -77,7 +77,7 @@ export const InactiveIngredientsList = ({ ingredients, onAdd, onRemove, onUpdate
         >
             <div className="space-y-3">
                 {/* Header Row */}
-                <div className="grid grid-cols-12 gap-2 text-xs font-bold text-neutral-400 uppercase border-b border-neutral-100 pb-2">
+                <div className="grid grid-cols-12 gap-2 text-xs font-bold text-white/50 uppercase border-b border-white/10 pb-2">
                     <div className="col-span-3">Ingredient</div>
                     <div className="col-span-2">Type</div>
                     <div className="col-span-2">$/Kg</div>
@@ -100,7 +100,7 @@ export const InactiveIngredientsList = ({ ingredients, onAdd, onRemove, onUpdate
                             <select
                                 value={item.type}
                                 onChange={(e) => updateItem(item.id, { type: e.target.value as any })}
-                                className="w-full bg-neutral-50 border border-neutral-300 rounded-lg py-1.5 text-xs uppercase font-bold text-neutral-600 focus:outline-none"
+                                className="w-full bg-white/15 backdrop-blur-sm border-0 rounded-lg py-1.5 text-xs uppercase font-bold text-white/80 focus:outline-none focus:ring-1 focus:ring-white/30"
                             >
                                 <option value="base">Base</option>
                                 <option value="carrier">Carrier</option>
@@ -121,7 +121,7 @@ export const InactiveIngredientsList = ({ ingredients, onAdd, onRemove, onUpdate
                             <select
                                 value={item.unit}
                                 onChange={(e) => updateItem(item.id, { unit: e.target.value as VolumeUnit })}
-                                className="bg-neutral-50 border border-neutral-300 rounded-lg px-1 py-1 text-xs font-bold text-neutral-600"
+                                className="bg-white/15 backdrop-blur-sm border-0 rounded-lg px-1 py-1 text-xs font-bold text-white/80 focus:outline-none focus:ring-1 focus:ring-white/30"
                             >
                                 {UNIT_OPTIONS.map(opt => (
                                     <option key={opt.value} value={opt.value}>{opt.label}</option>

@@ -149,7 +149,7 @@ export const SKUConfiguration = ({
                                             <select
                                                 value={sku.unitSizeUnit}
                                                 onChange={(e) => onUpdate(sku.id, { unitSizeUnit: e.target.value as 'g' | 'ml' | 'oz' })}
-                                                className="bg-neutral-50 border border-neutral-300 rounded px-1 py-1.5 text-xs font-bold"
+                                                className="bg-white/15 backdrop-blur-sm border-0 rounded px-1 py-1.5 text-xs font-bold text-white/80 focus:outline-none focus:ring-1 focus:ring-white/30"
                                             >
                                                 <option value="g">g</option>
                                                 <option value="ml">ml</option>
