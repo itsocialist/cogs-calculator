@@ -25,14 +25,14 @@ export const Card = ({
     action,
     collapsible = false,
     defaultCollapsed = false,
-    headerClassName = "backdrop-blur-md bg-white/60 border-b border-amber-200/30",
+    headerClassName = "backdrop-blur-md bg-stone-50/70 border-b border-stone-200/50",
     titleClassName = "text-stone-700",
-    iconClassName = "text-amber-600/70"
+    iconClassName = "text-stone-500"
 }: CardProps) => {
     const [isCollapsed, setIsCollapsed] = useState(defaultCollapsed);
 
     return (
-        <div className={`bg-white/80 backdrop-blur-sm rounded-xl border border-stone-200/60 shadow-sm shadow-amber-900/5 overflow-hidden print:shadow-none print:border-slate-300 ${className}`}>
+        <div className={`bg-white/65 backdrop-blur-sm rounded-xl border border-stone-200/50 shadow-sm shadow-stone-400/10 overflow-hidden print:shadow-none print:border-slate-300 ${className}`}>
             <div
                 className={`px-6 py-4 flex items-center justify-between print:bg-white print:border-b-2 print:border-black shadow-sm relative z-10 ${headerClassName} ${collapsible ? 'cursor-pointer hover:bg-white/80 transition-all' : ''}`}
                 onClick={collapsible ? () => setIsCollapsed(!isCollapsed) : undefined}

@@ -13,8 +13,8 @@ export const TabButton = ({ active, onClick, icon: Icon, label }: TabButtonProps
     <button
         onClick={onClick}
         className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${active
-            ? 'bg-gradient-to-r from-amber-500/20 to-emerald-500/20 text-amber-100 border border-amber-500/30 shadow-lg shadow-amber-900/20'
-            : 'text-stone-400 hover:text-amber-200 hover:bg-stone-700/50'
+            ? 'bg-white/85 text-stone-800 shadow-md'
+            : 'text-stone-300 hover:text-white hover:bg-stone-600/50'
             }`}
     >
         <Icon size={16} />

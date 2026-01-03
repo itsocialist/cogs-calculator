@@ -214,8 +214,8 @@ function App() {
         <div className="fixed bottom-0 right-1/4 w-80 h-80 bg-emerald-300/10 rounded-full blur-3xl pointer-events-none animate-pulse" style={{ animationDelay: '2s' }} />
         <div className="fixed top-1/2 right-0 w-64 h-64 bg-amber-200/10 rounded-full blur-3xl pointer-events-none animate-pulse" style={{ animationDelay: '4s' }} />
 
-        {/* Sticky Header - Thicker translucent glass */}
-        <div className="sticky top-0 z-40 backdrop-blur-xl bg-white/70 border-b border-amber-200/50 shadow-md shadow-amber-900/5 print:static print:border-none">
+        {/* Sticky Header - Cohesive translucent glass */}
+        <div className="sticky top-0 z-40 backdrop-blur-xl bg-stone-100/55 border-b border-stone-300/40 shadow-md shadow-stone-900/10 print:static print:border-none">
           <div className="max-w-7xl mx-auto px-4 md:px-8 py-4">
             {/* Header */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 print:hidden">
@@ -225,7 +225,7 @@ function App() {
               </div>
 
               <div className="flex gap-2 relative">
-                <div className="flex bg-stone-800/90 border border-stone-700 rounded-xl p-1 shadow-lg overflow-x-auto max-w-[calc(100vw-2rem)] md:max-w-none no-scrollbar">
+                <div className="flex bg-stone-700/75 backdrop-blur-sm border border-stone-500/40 rounded-xl p-1 shadow-lg overflow-x-auto max-w-[calc(100vw-2rem)] md:max-w-none no-scrollbar">
                   <TabButton active={activeTab === 'manufacturing'} onClick={() => setActiveTab('manufacturing')} icon={FlaskConical} label="Manufacturing" />
                   <TabButton active={activeTab === 'logistics'} onClick={() => setActiveTab('logistics')} icon={Truck} label="Logistics" />
                   <TabButton active={activeTab === 'snapshots'} onClick={() => setActiveTab('snapshots')} icon={History} label="Snapshots" />
