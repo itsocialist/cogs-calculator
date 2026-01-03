@@ -204,9 +204,15 @@ function App() {
           background: 'linear-gradient(135deg, #1a1612 0%, #2d2520 50%, #1f1a16 100%)',
         }}
       >
-        {/* Subtle ambient glow */}
-        <div className="fixed top-0 left-1/4 w-96 h-96 bg-amber-500/5 rounded-full blur-3xl pointer-events-none" />
-        <div className="fixed bottom-0 right-1/4 w-80 h-80 bg-emerald-500/5 rounded-full blur-3xl pointer-events-none" />
+        {/* Floating particles - biology & chemistry connections (reduced opacity for main app) */}
+        <div className="fixed inset-0 opacity-30 pointer-events-none print:hidden">
+          <ParticleField particleCount={35} connectionDistance={80} />
+        </div>
+
+        {/* Subtle ambient glow orbs */}
+        <div className="fixed top-0 left-1/4 w-96 h-96 bg-amber-500/8 rounded-full blur-3xl pointer-events-none animate-pulse" />
+        <div className="fixed bottom-0 right-1/4 w-80 h-80 bg-emerald-500/6 rounded-full blur-3xl pointer-events-none animate-pulse" style={{ animationDelay: '2s' }} />
+        <div className="fixed top-1/2 right-0 w-64 h-64 bg-amber-600/4 rounded-full blur-3xl pointer-events-none animate-pulse" style={{ animationDelay: '4s' }} />
 
         {/* Sticky Header - Ethereal Glass */}
         <div className="sticky top-0 z-40 backdrop-blur-xl bg-stone-900/80 border-b border-amber-900/30 shadow-lg shadow-black/20 print:static print:border-none">
