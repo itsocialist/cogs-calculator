@@ -102,9 +102,11 @@ export function HelpModal({ isOpen, onClose, calculatorData }: HelpModalProps) {
                             <li><strong>Set Batch Volume</strong> — Enter how much you're making (in L, ml, or fl oz)</li>
                             <li><strong>Configure SKUs</strong> — Define product sizes, quantities, and pricing</li>
                             <li><strong>Review KPIs</strong> — Check COGS, margins, and potency at the top</li>
+                            <li><strong>Use Math Panel</strong> — Click "Math" to see detailed calculation breakdown</li>
+                            <li><strong>Take Notes</strong> — Click "Notes" to save notes and sticky notes</li>
                         </ol>
                         <div className="mt-3 p-2 bg-yellow-50 rounded text-xs">
-                            💡 <strong>Tip:</strong> Use the Config tab (⚙️) to change measurement units per section.
+                            💡 <strong>Tip:</strong> Use sticky notes for quick reminders, or the notepad for detailed notes. Toggle the "Aa" button to switch between handwritten and typed fonts.
                         </div>
                     </HelpSection>
 
