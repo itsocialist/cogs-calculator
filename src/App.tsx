@@ -1,23 +1,27 @@
 import { useState } from 'react';
-import { FlaskConical, Truck, History, Printer, Save, Download, FileJson, HelpCircle, Settings2 } from 'lucide-react';
+import { FlaskConical, Truck, History, BookOpen, Cookie, Printer, Save, Download, FileJson, HelpCircle, Settings2 } from 'lucide-react';
 import { TabButton } from './components/ui/TabButton';
 import { KPIGrid } from './components/dashboard/KPIGrid';
 import { ManufacturingView } from './components/views/ManufacturingView';
 import { LogisticsView } from './components/views/LogisticsView';
 import { SnapshotsView } from './components/views/SnapshotsView';
+import { RecipesView } from './components/views/RecipesView';
+import { EdiblesCalculator } from './components/views/EdiblesCalculator';
 import { useCalculator } from './hooks/useCalculator';
+import { useRecipeLibrary } from './hooks/useRecipeLibrary';
 import { ConfigView } from './components/views/ConfigView';
 import { ConfigProvider } from './context/configContext';
 import { HelpModal } from './components/ui/HelpModal';
 
 function App() {
-  const [activeTab, setActiveTab] = useState<'manufacturing' | 'logistics' | 'snapshots' | 'config'>('manufacturing');
+  const [activeTab, setActiveTab] = useState<'manufacturing' | 'logistics' | 'snapshots' | 'recipes' | 'edibles' | 'config'>('manufacturing');
   const [showActions, setShowActions] = useState(false);
   const [showHelp, setShowHelp] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [password, setPassword] = useState('');
 
   const calc = useCalculator();
+  const recipeLib = useRecipeLibrary();
 
   const handleExportCSV = () => {
     const headers = ["Category", "Item", "Value", "Unit", "Total Cost", "Cost Per Unit"];
@@ -121,6 +125,8 @@ function App() {
                   <TabButton active={activeTab === 'manufacturing'} onClick={() => setActiveTab('manufacturing')} icon={FlaskConical} label="Manufacturing" />
                   <TabButton active={activeTab === 'logistics'} onClick={() => setActiveTab('logistics')} icon={Truck} label="Logistics" />
                   <TabButton active={activeTab === 'snapshots'} onClick={() => setActiveTab('snapshots')} icon={History} label="Snapshots" />
+                  <TabButton active={activeTab === 'recipes'} onClick={() => setActiveTab('recipes')} icon={BookOpen} label="Recipes" />
+                  <TabButton active={activeTab === 'edibles'} onClick={() => setActiveTab('edibles')} icon={Cookie} label="Edibles" />
                   <TabButton active={activeTab === 'config'} onClick={() => setActiveTab('config')} icon={Settings2} label="Config" />
                 </div>
 
@@ -237,6 +243,67 @@ function App() {
                 setActiveTab('manufacturing');
               }}
               onDelete={(id) => calc.setSnapshots(calc.snapshots.filter(s => s.id !== id))}
+            />
+          )}
+
+          {activeTab === 'recipes' && (
+            <RecipesView
+              recipes={recipeLib.recipes}
+              recipeConfig={calc.recipeConfig}
+              activeIngredients={calc.activeIngredients}
+              inactiveIngredients={calc.inactiveIngredients}
+              onSaveRecipe={recipeLib.saveRecipe}
+              onLoadRecipe={(recipe) => {
+                calc.setRecipeConfig(recipe.recipeConfig);
+                calc.setActiveIngredients(recipe.activeIngredients.map((ing, idx) => ({
+                  ...ing,
+                  id: idx + 1,
+                  type: 'active' as const,
+                  unit: 'g' as const,
+                  densityGPerMl: 1.0,
+                  gramsPerRecipeUnit: ing.amount,
+                  gramsInBatch: 0,
+                })));
+                calc.setInactiveIngredients(recipe.inactiveIngredients.map((ing, idx) => ({
+                  ...ing,
+                  id: 100 + idx + 1,
+                  unit: 'g' as const,
+                  densityGPerMl: 1.0,
+                  gramsPerRecipeUnit: ing.amount,
+                  gramsInBatch: 0,
+                })));
+                setActiveTab('manufacturing');
+              }}
+              onDeleteRecipe={recipeLib.deleteRecipe}
+              onDuplicateRecipe={recipeLib.duplicateRecipe}
+              onExportRecipe={recipeLib.exportRecipe}
+              onImportRecipe={recipeLib.importRecipe}
+            />
+          )}
+
+          {activeTab === 'edibles' && (
+            <EdiblesCalculator
+              onApplyToManufacturing={(data) => {
+                calc.setRecipeConfig(data.recipeConfig);
+                calc.setActiveIngredients(data.activeIngredients.map((ing, idx) => ({
+                  ...ing,
+                  id: idx + 1,
+                  type: 'active' as const,
+                  unit: 'g' as const,
+                  densityGPerMl: 1.0,
+                  gramsPerRecipeUnit: ing.amount,
+                  gramsInBatch: 0,
+                })));
+                calc.setInactiveIngredients(data.inactiveIngredients.map((ing, idx) => ({
+                  ...ing,
+                  id: 100 + idx + 1,
+                  unit: 'g' as const,
+                  densityGPerMl: 1.0,
+                  gramsPerRecipeUnit: ing.amount,
+                  gramsInBatch: 0,
+                })));
+                setActiveTab('manufacturing');
+              }}
             />
           )}
 
