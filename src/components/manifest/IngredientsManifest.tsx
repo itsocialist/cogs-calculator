@@ -333,12 +333,12 @@ export const IngredientsManifest = ({
         setShowExportMenu(false);
     };
 
-    // Type color mapping - monochrome with subtle accent
+    // Type color mapping - glass with subtle accent
     const typeColors: Record<string, string> = {
-        active: 'bg-slate-700 text-white',
-        base: 'bg-slate-500 text-white',
-        carrier: 'bg-slate-400 text-white',
-        terpene: 'bg-slate-600 text-white'
+        active: 'bg-blue-500/30 text-blue-200',
+        base: 'bg-amber-500/30 text-amber-200',
+        carrier: 'bg-emerald-500/30 text-emerald-200',
+        terpene: 'bg-purple-500/30 text-purple-200'
     };
 
     return (
@@ -353,7 +353,7 @@ export const IngredientsManifest = ({
                     <div className="relative" ref={exportMenuRef}>
                         <button
                             onClick={() => setShowExportMenu(!showExportMenu)}
-                            className="flex items-center gap-1 px-2 py-1.5 rounded bg-neutral-100 text-neutral-600 hover:bg-neutral-200 text-xs font-medium"
+                            className="flex items-center gap-1 px-2 py-1.5 rounded bg-white/15 backdrop-blur-sm text-white/80 hover:bg-white/25 text-xs font-medium transition-colors"
                             title="Export manifest"
                         >
                             <Download size={14} />
@@ -362,19 +362,19 @@ export const IngredientsManifest = ({
                         </button>
 
                         {showExportMenu && (
-                            <div className="absolute right-0 top-full mt-1 w-44 bg-white rounded-lg shadow-xl border border-neutral-200 overflow-hidden z-50 animate-in fade-in slide-in-from-top-2">
+                            <div className="absolute right-0 top-full mt-1 w-44 bg-white/20 backdrop-blur-xl rounded-lg shadow-xl border border-white/25 overflow-hidden z-50 animate-in fade-in slide-in-from-top-2">
                                 <button
                                     onClick={handleExportCSV}
-                                    className="w-full text-left px-3 py-2.5 hover:bg-neutral-50 text-sm flex items-center gap-2"
+                                    className="w-full text-left px-3 py-2.5 hover:bg-white/15 text-sm flex items-center gap-2 text-white/90"
                                 >
-                                    <FileSpreadsheet size={16} className="text-green-600" />
+                                    <FileSpreadsheet size={16} className="text-emerald-400" />
                                     <span>Download CSV</span>
                                 </button>
                                 <button
                                     onClick={handleExportPDF}
-                                    className="w-full text-left px-3 py-2.5 hover:bg-neutral-50 text-sm flex items-center gap-2 border-t border-neutral-100"
+                                    className="w-full text-left px-3 py-2.5 hover:bg-white/15 text-sm flex items-center gap-2 border-t border-white/15 text-white/90"
                                 >
-                                    <FileText size={16} className="text-red-600" />
+                                    <FileText size={16} className="text-rose-400" />
                                     <span>Export PDF (PO Style)</span>
                                 </button>
                             </div>
@@ -389,7 +389,7 @@ export const IngredientsManifest = ({
                 <div className="overflow-x-auto">
                     <table className="w-full text-sm">
                         <thead>
-                            <tr className="border-b border-neutral-200 text-neutral-500 text-xs uppercase">
+                            <tr className="border-b border-white/15 text-white/50 text-xs uppercase">
                                 <th className="text-left py-2 font-bold">Ingredient</th>
                                 <th className="text-left py-2 font-bold">Type</th>
                                 <th className="text-right py-2 font-bold">Per Unit</th>
@@ -400,69 +400,69 @@ export const IngredientsManifest = ({
                         </thead>
                         <tbody>
                             {manifestItems.map(item => (
-                                <tr key={item.id} className="border-b border-neutral-100 hover:bg-neutral-50">
-                                    <td className="py-2 font-medium text-neutral-800">{item.name}</td>
+                                <tr key={item.id} className="border-b border-white/10 hover:bg-white/10 transition-colors">
+                                    <td className="py-2 font-medium text-white/90">{item.name}</td>
                                     <td className="py-2">
-                                        <span className={`px-2 py-0.5 rounded text-xs font-bold uppercase ${typeColors[item.type] || 'bg-neutral-100 text-neutral-600'}`}>
+                                        <span className={`px-2 py-0.5 rounded text-xs font-bold uppercase ${typeColors[item.type] || 'bg-white/15 text-white/70'}`}>
                                             {item.type}
                                         </span>
                                     </td>
-                                    <td className="py-2 text-right font-mono text-neutral-600">
+                                    <td className="py-2 text-right font-mono text-white/60">
                                         {item.amountPerUnit.toFixed(2)}g
                                     </td>
-                                    <td className="py-2 text-right font-mono font-bold text-neutral-800">
+                                    <td className="py-2 text-right font-mono font-bold text-white/90">
                                         {convertFromGrams(item.scaledAmount, config.manifest.weightScale).toLocaleString()}
                                         {config.manifest.weightScale}
                                     </td>
-                                    <td className="py-2 text-right font-mono text-neutral-500">
+                                    <td className="py-2 text-right font-mono text-white/50">
                                         {convertFromMl(item.scaledAmount / recipeConfig.density, config.manifest.volumeScale).toLocaleString()}
                                         {config.manifest.volumeScale}
                                     </td>
-                                    <td className="py-2 text-right font-mono text-green-600">
+                                    <td className="py-2 text-right font-mono text-emerald-400">
                                         ${item.totalCost.toFixed(2)}
                                     </td>
                                 </tr>
                             ))}
                         </tbody>
                         <tfoot>
-                            <tr className="border-t-2 border-neutral-300 bg-neutral-50 font-bold">
-                                <td className="py-3 text-neutral-800">TOTAL</td>
+                            <tr className="border-t border-white/20 bg-white/10 font-bold">
+                                <td className="py-3 text-white/90">TOTAL</td>
                                 <td className="py-3"></td>
                                 <td className="py-3"></td>
-                                <td className="py-3 text-right font-mono text-neutral-800">
+                                <td className="py-3 text-right font-mono text-white/90">
                                     {convertFromGrams(totalWeight, config.manifest.weightScale).toLocaleString()}{config.manifest.weightScale}
                                 </td>
-                                <td className="py-3 text-right font-mono text-neutral-600">
+                                <td className="py-3 text-right font-mono text-white/60">
                                     {convertFromMl(totalVolumeMl, config.manifest.volumeScale).toLocaleString()}{config.manifest.volumeScale}
                                 </td>
-                                <td className="py-3 text-right font-mono text-green-700">${totalCost.toFixed(2)}</td>
+                                <td className="py-3 text-right font-mono text-emerald-400">${totalCost.toFixed(2)}</td>
                             </tr>
                         </tfoot>
                     </table>
                 </div>
 
-                {/* Summary Cards */}
+                {/* Summary Cards - Glass Style */}
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-3 pt-2">
-                    <div className="bg-slate-700 p-3 rounded-lg text-center">
-                        <div className="text-xs text-slate-300 font-bold uppercase">Base Units</div>
-                        <div className="text-xl font-black text-white">{baseUnits.toFixed(0)}</div>
+                    <div className="bg-white/10 backdrop-blur-sm p-3 rounded-lg text-center border border-white/15">
+                        <div className="text-xs text-white/50 font-bold uppercase">Base Units</div>
+                        <div className="text-xl font-black text-white/90">{baseUnits.toFixed(0)}</div>
                     </div>
-                    <div className="bg-slate-600 p-3 rounded-lg text-center shadow-lg">
-                        <div className="text-xs text-slate-300 font-bold uppercase">Total Weight</div>
-                        <div className="text-xl font-black text-white">
+                    <div className="bg-white/10 backdrop-blur-sm p-3 rounded-lg text-center border border-white/15">
+                        <div className="text-xs text-white/50 font-bold uppercase">Total Weight</div>
+                        <div className="text-xl font-black text-white/90">
                             {convertFromGrams(totalWeight, config.manifest.weightScale).toLocaleString()}
-                            <span className="text-sm ml-1 text-slate-400">{config.manifest.weightScale}</span>
+                            <span className="text-sm ml-1 text-white/40">{config.manifest.weightScale}</span>
                         </div>
                     </div>
-                    <div className="bg-slate-600 p-3 rounded-lg text-center shadow-lg">
-                        <div className="text-xs text-slate-300 font-bold uppercase">Total Volume</div>
-                        <div className="text-xl font-black text-white">
+                    <div className="bg-white/10 backdrop-blur-sm p-3 rounded-lg text-center border border-white/15">
+                        <div className="text-xs text-white/50 font-bold uppercase">Total Volume</div>
+                        <div className="text-xl font-black text-white/90">
                             {convertFromMl(totalVolumeMl, config.manifest.volumeScale).toLocaleString()}
-                            <span className="text-sm ml-1 text-slate-400">{config.manifest.volumeScale}</span>
+                            <span className="text-sm ml-1 text-white/40">{config.manifest.volumeScale}</span>
                         </div>
                     </div>
-                    <div className="bg-slate-800 p-3 rounded-lg text-center">
-                        <div className="text-xs text-emerald-400 font-bold uppercase">Materials Cost</div>
+                    <div className="bg-emerald-500/15 backdrop-blur-sm p-3 rounded-lg text-center border border-emerald-400/30">
+                        <div className="text-xs text-emerald-400/80 font-bold uppercase">Materials Cost</div>
                         <div className="text-xl font-black text-emerald-400">${totalCost.toFixed(2)}</div>
                     </div>
                 </div>
