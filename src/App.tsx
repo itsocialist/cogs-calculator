@@ -16,6 +16,7 @@ import { HelpModal } from './components/ui/HelpModal';
 import { DraggableMathPanel } from './components/ui/DraggableMathPanel';
 import { NotesPanel } from './components/ui/NotesPanel';
 import { StickyNote } from './components/ui/StickyNote';
+import { ParticleField } from './components/ui/ParticleField';
 
 function App() {
   const [activeTab, setActiveTab] = useState<'manufacturing' | 'logistics' | 'snapshots' | 'recipes' | 'edibles' | 'config'>('manufacturing');
@@ -108,17 +109,42 @@ function App() {
         <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-amber-400/20 rounded-full blur-3xl animate-pulse" />
         <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-emerald-400/15 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
 
-        {/* Glassmorphism login card */}
-        <div className="relative z-10 backdrop-blur-xl bg-white/10 border border-white/20 rounded-3xl p-10 w-full max-w-md shadow-2xl">
+        {/* Floating particles - biology & chemistry connections */}
+        <ParticleField particleCount={45} connectionDistance={100} />
+
+        {/* Glassmorphism login card with breathing animation */}
+        <div
+          className="relative z-10 backdrop-blur-xl bg-white/10 border border-white/20 rounded-3xl p-10 w-full max-w-md shadow-2xl"
+          style={{
+            animation: 'breathe 4s ease-in-out infinite',
+          }}
+        >
+          {/* Breathing animation keyframes */}
+          <style>{`
+            @keyframes breathe {
+              0%, 100% { 
+                transform: scale(1) translateY(0); 
+                box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 60px rgba(245, 158, 11, 0.1);
+              }
+              50% { 
+                transform: scale(1.01) translateY(-4px); 
+                box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.3), 0 0 80px rgba(16, 185, 129, 0.15);
+              }
+            }
+          `}</style>
+
           {/* Logo/Brand area */}
           <div className="text-center mb-8">
             <div className="inline-block mb-4">
-              <div className="w-16 h-16 mx-auto rounded-2xl bg-gradient-to-br from-amber-400 to-emerald-500 flex items-center justify-center shadow-lg shadow-amber-500/30">
+              <div
+                className="w-16 h-16 mx-auto rounded-2xl bg-gradient-to-br from-amber-400 to-emerald-500 flex items-center justify-center shadow-lg shadow-amber-500/30"
+                style={{ animation: 'breathe 3s ease-in-out infinite' }}
+              >
                 <span className="text-3xl">🌿</span>
               </div>
             </div>
-            <h1 className="text-3xl font-light tracking-[0.3em] text-white/90 mb-2">DAWSON BROS</h1>
-            <p className="text-white/50 text-sm tracking-widest uppercase">Handcrafted Wellness</p>
+            <h1 className="text-3xl font-light tracking-[0.25em] text-white/90 mb-1">ROLOS KITCHEN</h1>
+            <p className="text-white/40 text-xs tracking-widest italic">by Dawson Bros</p>
           </div>
 
           {/* Divider */}
