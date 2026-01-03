@@ -236,7 +236,7 @@ export const SKUConfiguration = ({
                                     </div>
                                     <div className="space-y-2">
                                         {sku.packaging.map((pkg) => (
-                                            <div key={pkg.id} className="flex items-center gap-2 bg-white p-2 rounded">
+                                            <div key={pkg.id} className="flex items-center gap-2 bg-white p-2 rounded border border-neutral-200">
                                                 <input
                                                     type="text"
                                                     value={pkg.name}
@@ -246,19 +246,22 @@ export const SKUConfiguration = ({
                                                         );
                                                         onUpdatePackaging(sku.id, newPkg);
                                                     }}
-                                                    className="flex-1 text-sm bg-transparent focus:outline-none"
+                                                    className="flex-1 text-sm px-2 py-1 border border-neutral-300 rounded focus:outline-none focus:border-blue-400"
+                                                    placeholder="Item name"
                                                 />
-                                                <NumberInput
-                                                    value={pkg.costPerUnit}
-                                                    onChange={(v) => {
-                                                        const newPkg = sku.packaging.map(p =>
-                                                            p.id === pkg.id ? { ...p, costPerUnit: v } : p
-                                                        );
-                                                        onUpdatePackaging(sku.id, newPkg);
-                                                    }}
-                                                    prefix="$"
-                                                    step={0.01}
-                                                />
+                                                <div className="w-24 shrink-0">
+                                                    <NumberInput
+                                                        value={pkg.costPerUnit}
+                                                        onChange={(v) => {
+                                                            const newPkg = sku.packaging.map(p =>
+                                                                p.id === pkg.id ? { ...p, costPerUnit: v } : p
+                                                            );
+                                                            onUpdatePackaging(sku.id, newPkg);
+                                                        }}
+                                                        prefix="$"
+                                                        step={0.01}
+                                                    />
+                                                </div>
                                                 <button
                                                     onClick={() => onRemovePackagingItem(sku.id, pkg.id)}
                                                     className="text-neutral-300 hover:text-red-500"
