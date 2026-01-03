@@ -23,7 +23,18 @@ function App() {
   const [showHelp, setShowHelp] = useState(false);
   const [showMath, setShowMath] = useState(false);
   const [showNotes, setShowNotes] = useState(false);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(() => {
+    // Check for existing session on mount
+    const session = localStorage.getItem('rolos-auth-session');
+    if (session) {
+      const { expiry } = JSON.parse(session);
+      if (Date.now() < expiry) {
+        return true;
+      }
+      localStorage.removeItem('rolos-auth-session');
+    }
+    return false;
+  });
   const [password, setPassword] = useState('');
 
   const calc = useCalculator();
@@ -89,6 +100,9 @@ function App() {
           <form onSubmit={(e) => {
             e.preventDefault();
             if (password === 'black50') {
+              // Save session with 4-hour expiry
+              const expiry = Date.now() + (4 * 60 * 60 * 1000); // 4 hours
+              localStorage.setItem('rolos-auth-session', JSON.stringify({ expiry }));
               setIsAuthenticated(true);
             } else {
               alert('Incorrect password');
