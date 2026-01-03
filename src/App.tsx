@@ -197,36 +197,42 @@ function App() {
 
   return (
     <ConfigProvider>
-      {/* Warm ethereal background - lighter tan/yellow/green hues */}
+      {/* Darker ethereal background with botanical image */}
       <div
         className="min-h-screen font-sans print:bg-white print:p-0 relative"
         style={{
-          background: 'linear-gradient(135deg, #f5f0e8 0%, #e8e0d4 30%, #dde6dc 70%, #f0ebe2 100%)',
+          backgroundImage: 'url(/cogs-calculator/login-bg.png)',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundAttachment: 'fixed',
         }}
       >
-        {/* Floating particles - biology & chemistry connections (subtle) */}
-        <div className="fixed inset-0 opacity-20 pointer-events-none print:hidden">
-          <ParticleField particleCount={30} connectionDistance={70} />
+        {/* Dark overlay to dim the background */}
+        <div className="fixed inset-0 bg-gradient-to-br from-stone-900/60 via-stone-800/50 to-stone-900/60 pointer-events-none" />
+
+        {/* Floating particles - biology & chemistry connections */}
+        <div className="fixed inset-0 opacity-25 pointer-events-none print:hidden">
+          <ParticleField particleCount={35} connectionDistance={80} />
         </div>
 
         {/* Warm ambient glow orbs */}
-        <div className="fixed top-0 left-1/4 w-96 h-96 bg-amber-300/15 rounded-full blur-3xl pointer-events-none animate-pulse" />
-        <div className="fixed bottom-0 right-1/4 w-80 h-80 bg-emerald-300/10 rounded-full blur-3xl pointer-events-none animate-pulse" style={{ animationDelay: '2s' }} />
-        <div className="fixed top-1/2 right-0 w-64 h-64 bg-amber-200/10 rounded-full blur-3xl pointer-events-none animate-pulse" style={{ animationDelay: '4s' }} />
+        <div className="fixed top-0 left-1/4 w-96 h-96 bg-amber-400/10 rounded-full blur-3xl pointer-events-none animate-pulse" />
+        <div className="fixed bottom-0 right-1/4 w-80 h-80 bg-emerald-400/8 rounded-full blur-3xl pointer-events-none animate-pulse" style={{ animationDelay: '2s' }} />
+        <div className="fixed top-1/2 right-0 w-64 h-64 bg-amber-300/8 rounded-full blur-3xl pointer-events-none animate-pulse" style={{ animationDelay: '4s' }} />
 
         {/* Sticky Header - Liquid Glass */}
         <div className="sticky top-0 z-40 print:static print:border-none">
           {/* Stacked glass layers */}
-          <div className="absolute inset-0 bg-white/30 backdrop-blur-2xl" />
-          <div className="absolute inset-0 bg-gradient-to-b from-white/40 to-white/20" />
-          <div className="absolute inset-x-0 bottom-0 h-px bg-white/50" />
-          <div className="absolute inset-0 shadow-lg shadow-stone-400/15" />
+          <div className="absolute inset-0 bg-white/20 backdrop-blur-2xl" />
+          <div className="absolute inset-0 bg-gradient-to-b from-white/30 to-white/10" />
+          <div className="absolute inset-x-0 bottom-0 h-px bg-white/30" />
+          <div className="absolute inset-0 shadow-lg shadow-black/20" />
           <div className="relative max-w-7xl mx-auto px-4 md:px-8 py-4">
             {/* Header */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 print:hidden">
               <div>
-                <h1 className="text-3xl font-light tracking-[0.15em] text-stone-700">ROLOS KITCHEN</h1>
-                <p className="text-amber-700/50 text-sm tracking-widest italic">by Dawson Bros</p>
+                <h1 className="text-3xl font-light tracking-[0.15em] text-white/90">ROLOS KITCHEN</h1>
+                <p className="text-amber-200/60 text-sm tracking-widest italic">by Dawson Bros</p>
               </div>
 
               <div className="flex gap-2 relative">
