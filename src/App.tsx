@@ -93,37 +93,78 @@ function App() {
   // Show password form if not authenticated
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen bg-neutral-900 flex items-center justify-center p-4">
-        <div className="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md">
-          <h1 className="text-2xl font-black text-neutral-900 mb-2">ROLOS KITCHEN</h1>
-          <p className="text-neutral-500 mb-6">COGS & Potency Calculator</p>
+      <div
+        className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden"
+        style={{
+          backgroundImage: 'url(/cogs-calculator/login-bg.png)',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+        }}
+      >
+        {/* Ethereal overlay gradient */}
+        <div className="absolute inset-0 bg-gradient-to-br from-amber-900/40 via-emerald-900/30 to-slate-900/60" />
+
+        {/* Animated glow orbs */}
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-amber-400/20 rounded-full blur-3xl animate-pulse" />
+        <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-emerald-400/15 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
+
+        {/* Glassmorphism login card */}
+        <div className="relative z-10 backdrop-blur-xl bg-white/10 border border-white/20 rounded-3xl p-10 w-full max-w-md shadow-2xl">
+          {/* Logo/Brand area */}
+          <div className="text-center mb-8">
+            <div className="inline-block mb-4">
+              <div className="w-16 h-16 mx-auto rounded-2xl bg-gradient-to-br from-amber-400 to-emerald-500 flex items-center justify-center shadow-lg shadow-amber-500/30">
+                <span className="text-3xl">🌿</span>
+              </div>
+            </div>
+            <h1 className="text-3xl font-light tracking-[0.3em] text-white/90 mb-2">DAWSON BROS</h1>
+            <p className="text-white/50 text-sm tracking-widest uppercase">Handcrafted Wellness</p>
+          </div>
+
+          {/* Divider */}
+          <div className="flex items-center gap-4 mb-8">
+            <div className="flex-1 h-px bg-gradient-to-r from-transparent via-white/30 to-transparent" />
+            <span className="text-white/40 text-xs tracking-widest">KITCHEN</span>
+            <div className="flex-1 h-px bg-gradient-to-r from-transparent via-white/30 to-transparent" />
+          </div>
+
           <form onSubmit={(e) => {
             e.preventDefault();
             if (password === 'black50') {
-              // Save session with 4-hour expiry
-              const expiry = Date.now() + (4 * 60 * 60 * 1000); // 4 hours
+              const expiry = Date.now() + (4 * 60 * 60 * 1000);
               localStorage.setItem('rolos-auth-session', JSON.stringify({ expiry }));
               setIsAuthenticated(true);
             } else {
               alert('Incorrect password');
             }
           }}>
-            <input
-              type="password"
-              placeholder="Enter password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full border border-neutral-300 rounded-lg px-4 py-3 mb-4 focus:outline-none focus:ring-2 focus:ring-yellow-500"
-              autoFocus
-            />
+            <div className="relative mb-6">
+              <input
+                type="password"
+                placeholder="Enter access code"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full bg-white/5 border border-white/20 rounded-xl px-5 py-4 text-white placeholder-white/40 focus:outline-none focus:border-amber-400/50 focus:bg-white/10 transition-all tracking-wider"
+                autoFocus
+              />
+              <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-amber-400/0 via-amber-400/5 to-emerald-400/0 pointer-events-none" />
+            </div>
             <button
               type="submit"
-              className="w-full bg-neutral-900 text-white rounded-lg px-4 py-3 font-bold hover:bg-neutral-800 transition-colors"
+              className="w-full bg-gradient-to-r from-amber-500 to-emerald-500 text-white rounded-xl px-6 py-4 font-medium tracking-widest uppercase text-sm hover:from-amber-400 hover:to-emerald-400 transition-all shadow-lg shadow-amber-500/20 hover:shadow-amber-500/40 hover:scale-[1.02] active:scale-[0.98]"
             >
-              Enter
+              Enter Kitchen
             </button>
           </form>
+
+          {/* Subtle footer */}
+          <p className="text-center text-white/30 text-xs mt-8 tracking-wider">
+            COGS & Potency Calculator
+          </p>
         </div>
+
+        {/* Bottom gradient fade */}
+        <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-black/40 to-transparent pointer-events-none" />
       </div>
     );
   }
