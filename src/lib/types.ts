@@ -44,12 +44,15 @@ export interface Ingredient {
     id: number;
     name: string;
     costPerKg: number;
-    // Volume support fields
+
+    // Recipe Definition (Per Base Unit)
     unit: VolumeUnit;
-    amountInUnit: number;
+    amount: number;           // Amount per base unit (replaces amountInUnit)
     densityGPerMl: number;
-    // Computed field (kept for backward compatibility)
-    gramsInBatch: number;
+
+    // Computed Fields
+    gramsPerRecipeUnit: number; // Derived from amount/unit/density
+    gramsInBatch: number;       // Derived from gramsPerRecipeUnit * totalBaseUnits
 }
 
 export interface ActiveIngredient extends Ingredient {
@@ -72,7 +75,7 @@ export interface SKU {
     id: number;
     name: string;
     unitSizeValue: number;
-    unitSizeUnit: 'g' | 'ml' | 'floz';
+    unitSizeUnit: 'g' | 'ml' | 'oz';
     quantity: number;
     packaging: PackagingItem[];
     wholesalePrice: number;
@@ -137,6 +140,47 @@ export interface Snapshot {
         pricing: PricingConfig;
     };
     cost: number;
+}
+
+// Recipe Library - Saved Recipes
+export type RecipeMode = 'topical' | 'edibles';
+export type EdibleProductType = 'gummy' | 'chocolate' | 'tincture' | 'custom';
+
+export interface SavedRecipe {
+    id: string;
+    name: string;
+    description?: string;
+    createdAt: string;  // ISO date string
+    updatedAt: string;  // ISO date string
+
+    // Mode
+    mode: RecipeMode;
+    productType?: EdibleProductType;
+
+    // Recipe Config
+    recipeConfig: RecipeConfig;
+
+    // Ingredients (formulation only, no computed fields)
+    activeIngredients: Array<{
+        name: string;
+        costPerKg: number;
+        unit: VolumeUnit;
+        amount: number;
+        densityGPerMl: number;
+        purityPercent: number;
+        cannabinoid: CannabinoidType;
+    }>;
+    inactiveIngredients: Array<{
+        name: string;
+        costPerKg: number;
+        unit: VolumeUnit;
+        amount: number;
+        densityGPerMl: number;
+        type: 'base' | 'carrier' | 'terpene';
+    }>;
+
+    // Tags for organization
+    tags?: string[];
 }
 
 // Helper function to convert amount to grams

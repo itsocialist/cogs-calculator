@@ -3,6 +3,8 @@
 @layer base {
   body {
     @apply antialiased;
+    background: linear-gradient(135deg, #1e293b 0%, #0f172a 50%, #1a2332 100%);
+    min-height: 100vh;
   }
 }
 

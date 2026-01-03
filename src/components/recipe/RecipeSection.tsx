@@ -24,14 +24,14 @@ export const RecipeSection = ({
     inactiveIngredients, addInactive, removeInactive, setInactiveIngredients
 }: Props) => {
     // Calculate total recipe weight per base unit
-    const totalActiveGrams = activeIngredients.reduce((sum, i) => sum + i.gramsInBatch, 0);
-    const totalInactiveGrams = inactiveIngredients.reduce((sum, i) => sum + i.gramsInBatch, 0);
+    const totalActiveGrams = activeIngredients.reduce((sum, i) => sum + i.gramsPerRecipeUnit, 0);
+    const totalInactiveGrams = inactiveIngredients.reduce((sum, i) => sum + i.gramsPerRecipeUnit, 0);
     const totalRecipeGrams = totalActiveGrams + totalInactiveGrams;
     const totalRecipeMl = totalRecipeGrams / recipeConfig.density;
 
     // Calculate actual potency per base unit
     const totalActiveMg = activeIngredients.reduce((sum, item) => {
-        const pureMg = item.gramsInBatch * 1000 * (item.purityPercent / 100);
+        const pureMg = item.gramsPerRecipeUnit * 1000 * (item.purityPercent / 100);
         return sum + pureMg;
     }, 0);
 

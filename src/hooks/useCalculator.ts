@@ -1,5 +1,5 @@
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import type {
     BatchConfig,
     ActiveIngredient,
@@ -10,20 +10,22 @@ import type {
     SKU,
     RecipeConfig
 } from '../lib/types';
+import { convertToGrams } from '../lib/types';
 
-// Convert SKU size to grams (for ml/floz based on assumed salve density ~0.95 g/ml)
+// Unit conversions
 const SALVE_DENSITY = 0.95; // g/ml - typical for balms/salves
 const FLOZ_TO_ML = 29.574;
 const OZ_TO_GRAMS = 28.35;
 
-function skuSizeToGrams(sku: SKU): number {
+// Convert SKU size to grams
+function skuSizeToGrams(sku: SKU, density: number = SALVE_DENSITY): number {
     switch (sku.unitSizeUnit) {
         case 'g':
             return sku.unitSizeValue;
         case 'ml':
-            return sku.unitSizeValue * SALVE_DENSITY;
-        case 'floz':
-            return sku.unitSizeValue * FLOZ_TO_ML * SALVE_DENSITY;
+            return sku.unitSizeValue * density;
+        case 'oz':
+            return sku.unitSizeValue * OZ_TO_GRAMS;
         default:
             return sku.unitSizeValue;
     }
@@ -38,11 +40,11 @@ const DEFAULT_PACKAGING: PackagingItem[] = [
     { id: 5, name: "Tamper Seal", costPerUnit: 0.05 },
 ];
 
-// NEW: Default Recipe Configuration
+// Default Recipe Configuration (1 fl oz base unit)
 const DEFAULT_RECIPE_CONFIG: RecipeConfig = {
-    baseUnitSize: OZ_TO_GRAMS,      // 1 oz = 28.35g
-    baseUnitLabel: "1 oz jar",
-    targetPotencyMg: 500,           // 500mg CBD per 1 oz jar
+    baseUnitSize: FLOZ_TO_ML * SALVE_DENSITY, // 1 fl oz ≈ 28.1g at 0.95 density
+    baseUnitLabel: "1 fl oz",
+    targetPotencyMg: 500,           // 500mg CBD per base unit
     density: SALVE_DENSITY          // 0.95 g/ml
 };
 
@@ -50,23 +52,30 @@ const DEFAULT_RECIPE_CONFIG: RecipeConfig = {
 const DEFAULT_BATCH_CONFIG: BatchConfig = {
     productName: "Recovery Salve",
     targetVolumeMl: 10000,          // 10 liters in ml
-    batchSizeKg: 10,                // Legacy: auto-calculated from volume × density
+    batchSizeKg: 9.5,               // Will be auto-calculated
     laborRate: 25,
     laborHours: 6,
     fulfillmentCost: 2.50
 };
 
+// Recipe Defaults (Per Base Unit) for a 1oz (28g) Salve
 const DEFAULT_ACTIVES: ActiveIngredient[] = [
-    { id: 1, name: "CBD Isolate", costPerKg: 550, unit: 'g', amountInUnit: 100, densityGPerMl: 1.0, gramsInBatch: 100, purityPercent: 99.5, type: 'active', cannabinoid: 'CBD' },
-    { id: 2, name: "CBG Distillate", costPerKg: 1200, unit: 'g', amountInUnit: 10, densityGPerMl: 1.0, gramsInBatch: 10, purityPercent: 85, type: 'active', cannabinoid: 'CBG' },
+    // 500mg CBD Isolate (~1.76% of 28.35g) = 0.5g
+    { id: 1, name: "CBD Isolate", costPerKg: 550, unit: 'g', amount: 0.5, densityGPerMl: 1.0, gramsPerRecipeUnit: 0.5, gramsInBatch: 0, purityPercent: 99.5, type: 'active', cannabinoid: 'CBD' },
+    // 25mg CBG Distillate = 0.025g
+    { id: 2, name: "CBG Distillate", costPerKg: 1200, unit: 'g', amount: 0.03, densityGPerMl: 1.0, gramsPerRecipeUnit: 0.03, gramsInBatch: 0, purityPercent: 85, type: 'active', cannabinoid: 'CBG' },
 ];
 
 const DEFAULT_INACTIVES: InactiveIngredient[] = [
-    { id: 101, name: "Organic Shea Butter", costPerKg: 18, unit: 'cup', amountInUnit: 2, densityGPerMl: 0.95, gramsInBatch: 449.5, type: 'base' },
-    { id: 102, name: "Beeswax Pellets", costPerKg: 22, unit: 'cup', amountInUnit: 1.5, densityGPerMl: 0.95, gramsInBatch: 337.1, type: 'base' },
-    { id: 103, name: "MCT Oil", costPerKg: 12, unit: 'cup', amountInUnit: 2, densityGPerMl: 0.92, gramsInBatch: 435.3, type: 'carrier' },
-    { id: 104, name: "Menthol Crystals", costPerKg: 45, unit: 'tsp', amountInUnit: 6, densityGPerMl: 1.0, gramsInBatch: 29.6, type: 'terpene' },
-    { id: 105, name: "Lavender Essential Oil", costPerKg: 120, unit: 'tsp', amountInUnit: 3, densityGPerMl: 0.9, gramsInBatch: 13.3, type: 'terpene' },
+    // Shea Butter ~ 12g
+    { id: 101, name: "Organic Shea Butter", costPerKg: 18, unit: 'g', amount: 12, densityGPerMl: 0.95, gramsPerRecipeUnit: 12, gramsInBatch: 0, type: 'base' },
+    // Beeswax ~ 8g
+    { id: 102, name: "Beeswax Pellets", costPerKg: 22, unit: 'g', amount: 8, densityGPerMl: 0.95, gramsPerRecipeUnit: 8, gramsInBatch: 0, type: 'base' },
+    // MCT ~ 6g
+    { id: 103, name: "MCT Oil", costPerKg: 12, unit: 'g', amount: 6, densityGPerMl: 0.92, gramsPerRecipeUnit: 6, gramsInBatch: 0, type: 'carrier' },
+    // Terpenes ~ 1.5g
+    { id: 104, name: "Menthol Crystals", costPerKg: 45, unit: 'g', amount: 1.5, densityGPerMl: 1.0, gramsPerRecipeUnit: 1.5, gramsInBatch: 0, type: 'terpene' },
+    { id: 105, name: "Lavender Essential Oil", costPerKg: 120, unit: 'ml', amount: 0.3, densityGPerMl: 0.9, gramsPerRecipeUnit: 0.27, gramsInBatch: 0, type: 'terpene' },
 ];
 
 const DEFAULT_SKUS: SKU[] = [
@@ -75,7 +84,7 @@ const DEFAULT_SKUS: SKU[] = [
         name: "Recovery Salve 2oz",
         unitSizeValue: 60,
         unitSizeUnit: 'ml',
-        quantity: 200,
+        quantity: 150,
         packaging: [...DEFAULT_PACKAGING],
         wholesalePrice: 24.99,
         msrp: 49.99
@@ -98,7 +107,7 @@ export interface SKUCalculation {
     name: string;
     unitSizeGrams: number;
     unitSizeValue: number;
-    unitSizeUnit: 'g' | 'ml' | 'floz';
+    unitSizeUnit: 'g' | 'ml' | 'oz';
     quantity: number;
     potencyMg: number;
     isPotencySafe: boolean;
@@ -128,22 +137,69 @@ export function useCalculator() {
     const [pricing, setPricing] = useState({ wholesale: 25, msrp: 55 });
     const [snapshots, setSnapshots] = useState<Snapshot[]>([]);
 
-    // Calculations
+    // -------------------------------------------------------------------------
+    // CORE CALCULATION LOOP
+    // -------------------------------------------------------------------------
+
+    // 1. Calculate Batch Scale (Volume -> Weight -> Units)
+    const batchScale = useMemo(() => {
+        // Start from Target Volume (ml)
+        // Weight = Volume * Density
+        const calculatedWeightG = batchConfig.targetVolumeMl * recipeConfig.density;
+
+        // Base Units = Weight / Base Unit Size
+        const calculatedBaseUnits = recipeConfig.baseUnitSize > 0
+            ? calculatedWeightG / recipeConfig.baseUnitSize
+            : 0;
+
+        return { calculatedWeightG, calculatedBaseUnits };
+    }, [batchConfig.targetVolumeMl, recipeConfig]);
+
+    // 2. Synch batchConfig.batchSizeKg with calculated weight (for display consistency)
+    // NOTE: In a real app, strict one-way flow might be better, but we keep batchSizeKg 
+    // in sync here for UI inputs that expect it.
+    useEffect(() => {
+        const kg = batchScale.calculatedWeightG / 1000;
+        if (Math.abs(kg - batchConfig.batchSizeKg) > 0.01) {
+            setBatchConfig(prev => ({ ...prev, batchSizeKg: kg }));
+        }
+    }, [batchScale.calculatedWeightG]);
+
+    // 3. Derive Ingredients with Values (Recipe -> Batch)
+    const derivedActiveIngredients = useMemo(() => activeIngredients.map(i => {
+        const gramsPerRecipeUnit = convertToGrams(i.amount, i.unit, i.densityGPerMl);
+        return {
+            ...i,
+            gramsPerRecipeUnit,
+            gramsInBatch: gramsPerRecipeUnit * batchScale.calculatedBaseUnits
+        };
+    }), [activeIngredients, batchScale.calculatedBaseUnits]);
+
+    const derivedInactiveIngredients = useMemo(() => inactiveIngredients.map(i => {
+        const gramsPerRecipeUnit = convertToGrams(i.amount, i.unit, i.densityGPerMl);
+        return {
+            ...i,
+            gramsPerRecipeUnit,
+            gramsInBatch: gramsPerRecipeUnit * batchScale.calculatedBaseUnits
+        };
+    }), [inactiveIngredients, batchScale.calculatedBaseUnits]);
+
+    // 4. Perform Financial & Physical Calculations
     const calculations = useMemo(() => {
-        // Formula weight
-        const activeWeight = activeIngredients.reduce((sum, i) => sum + i.gramsInBatch, 0);
-        const inactiveWeight = inactiveIngredients.reduce((sum, i) => sum + i.gramsInBatch, 0);
+        // Formula weight (should match batchScale.calculatedWeightG ideally)
+        const activeWeight = derivedActiveIngredients.reduce((sum, i) => sum + i.gramsInBatch, 0);
+        const inactiveWeight = derivedInactiveIngredients.reduce((sum, i) => sum + i.gramsInBatch, 0);
         const totalBatchWeightGrams = activeWeight + inactiveWeight;
 
         // Total active mg in batch
-        const totalActiveMg = activeIngredients.reduce((sum, item) => {
+        const totalActiveMg = derivedActiveIngredients.reduce((sum, item) => {
             const rawMg = item.gramsInBatch * 1000;
             const pureMg = rawMg * (item.purityPercent / 100);
             return sum + pureMg;
         }, 0);
 
-        // Cannabinoid totals by type (CBD, THC, CBG, etc.)
-        const cannabinoidTotals = activeIngredients.reduce((acc, item) => {
+        // Cannabinoid totals
+        const cannabinoidTotals = derivedActiveIngredients.reduce((acc, item) => {
             const pureMg = item.gramsInBatch * 1000 * (item.purityPercent / 100);
             const type = item.cannabinoid || 'Other';
             acc[type] = (acc[type] || 0) + pureMg;
@@ -151,11 +207,11 @@ export function useCalculator() {
         }, {} as Record<string, number>);
 
         // Formula costs
-        const activeCost = activeIngredients.reduce((sum, i) => sum + ((i.gramsInBatch / 1000) * i.costPerKg), 0);
-        const inactiveCost = inactiveIngredients.reduce((sum, i) => sum + ((i.gramsInBatch / 1000) * i.costPerKg), 0);
+        const activeCost = derivedActiveIngredients.reduce((sum, i) => sum + ((i.gramsInBatch / 1000) * i.costPerKg), 0);
+        const inactiveCost = derivedInactiveIngredients.reduce((sum, i) => sum + ((i.gramsInBatch / 1000) * i.costPerKg), 0);
         const totalFormulaCost = activeCost + inactiveCost;
 
-        // Total labor cost for batch
+        // Total labor cost
         const totalLaborCost = batchConfig.laborRate * batchConfig.laborHours;
 
         // SKU-level calculations
@@ -172,13 +228,26 @@ export function useCalculator() {
             const unitRatio = totalUnitsAcrossSkus > 0 ? sku.quantity / totalUnitsAcrossSkus : 0;
 
             // Potency per unit for this SKU
-            const potencyMg = sku.quantity > 0 ? (totalActiveMg * weightRatio) / sku.quantity : 0;
-            const isPotencySafe = Math.abs(potencyMg - recipeConfig.targetPotencyMg) < (recipeConfig.targetPotencyMg * 0.1);
+            // Simple formula-based: mg per gram of formula × SKU size in grams
+            const mgPerGramFormula = totalBatchWeightGrams > 0
+                ? totalActiveMg / totalBatchWeightGrams
+                : 0;
+            const potencyMg = mgPerGramFormula * unitSizeGrams;
+
+            // Check against recipe target potency (scaled to SKU size)
+            // If base unit is 1oz (28g) and target is 500mg, then a 2oz SKU should be 1000mg.
+            // Target Potency Density = targetPotencyMg / baseUnitSize
+            const targetPotencyPerGram = recipeConfig.baseUnitSize > 0
+                ? recipeConfig.targetPotencyMg / recipeConfig.baseUnitSize
+                : 0;
+            const targetSkuPotency = targetPotencyPerGram * unitSizeGrams;
+
+            const isPotencySafe = Math.abs(potencyMg - targetSkuPotency) < (targetSkuPotency * 0.1);
 
             // Formula cost allocated by weight
             const formulaCostPerUnit = sku.quantity > 0 ? (totalFormulaCost * weightRatio) / sku.quantity : 0;
 
-            // Packaging cost for this SKU
+            // Packaging cost
             const packagingCostPerUnit = sku.packaging.reduce((sum, p) => sum + p.costPerUnit, 0);
 
             // Labor allocated by unit count
@@ -226,14 +295,13 @@ export function useCalculator() {
             };
         });
 
-        // Aggregate metrics (weighted average by quantity)
+        // Aggregate metrics
         const avgFullyLoadedCost = totalUnitsAcrossSkus > 0
             ? skuCalculations.reduce((sum, s) => sum + (s.fullyLoadedCost * s.quantity), 0) / totalUnitsAcrossSkus
             : 0;
         const avgWholesaleMargin = pricing.wholesale - avgFullyLoadedCost;
         const avgRetailMargin = pricing.msrp - avgFullyLoadedCost;
 
-        // For backward compatibility, use first SKU's potency or average
         const actualPotencyMg = skuCalculations.length > 0 ? skuCalculations[0].potencyMg : 0;
         const isPotencySafe = skuCalculations.every(s => s.isPotencySafe);
 
@@ -247,17 +315,11 @@ export function useCalculator() {
             inactiveCost,
             totalFormulaCost,
             totalLaborCost,
-
-            // SKU aggregates
             totalUnitsAcrossSkus,
             totalWeightAllocated,
             weightUtilization,
             isOverAllocated,
-
-            // Per-SKU data
             skuCalculations,
-
-            // Backward-compatible aggregates
             unitsProduced: totalUnitsAcrossSkus,
             actualPotencyMg,
             isPotencySafe,
@@ -265,20 +327,20 @@ export function useCalculator() {
             wholesaleMargin: avgWholesaleMargin,
             retailMargin: avgRetailMargin,
 
-            // Legacy fields (using averages)
-            manufCostPerUnit: skuCalculations.length > 0 ? skuCalculations.reduce((s, c) => s + c.manufCostPerUnit * c.quantity, 0) / totalUnitsAcrossSkus : 0,
-            totalLogisticsPerUnit: skuCalculations.length > 0 ? skuCalculations.reduce((s, c) => s + c.logisticsCostPerUnit * c.quantity, 0) / totalUnitsAcrossSkus : 0,
+            // Legacy helpers
+            manufCostPerUnit: skuCalculations.length > 0 ? skuCalculations[0].manufCostPerUnit : 0,
             packagingCostPerUnit: skuCalculations.length > 0 ? skuCalculations[0].packagingCostPerUnit : 0,
             laborCostPerUnit: skuCalculations.length > 0 ? skuCalculations[0].laborCostPerUnit : 0,
             goopCostPerUnit: skuCalculations.length > 0 ? skuCalculations[0].formulaCostPerUnit : 0,
+            totalLogisticsPerUnit: skuCalculations.length > 0 ? skuCalculations.reduce((s, c) => s + c.logisticsCostPerUnit * c.quantity, 0) / totalUnitsAcrossSkus : 0,
             labTestPerUnit: totalUnitsAcrossSkus > 0 ? logistics.labTestingFee / totalUnitsAcrossSkus : 0,
             shippingPerUnit: totalUnitsAcrossSkus > 0 ? logistics.shippingToDistro / totalUnitsAcrossSkus : 0,
             totalDistroFeesPerUnit: logistics.distroFees.reduce((sum, fee) => sum + (fee.percent / 100) * pricing.wholesale, 0),
             potencyDiff: actualPotencyMg - recipeConfig.targetPotencyMg
         };
-    }, [recipeConfig, batchConfig, activeIngredients, inactiveIngredients, skus, logistics, pricing]);
+    }, [recipeConfig, batchConfig, derivedActiveIngredients, derivedInactiveIngredients, skus, logistics, pricing, batchScale]);
 
-    // Actions - Ingredients
+    // Actions
     const addActive = (item: Omit<ActiveIngredient, 'id' | 'type'>) => {
         setActiveIngredients([...activeIngredients, { ...item, id: Date.now(), type: 'active' }]);
     };
@@ -290,7 +352,6 @@ export function useCalculator() {
     const removeActive = (id: number) => setActiveIngredients(activeIngredients.filter(i => i.id !== id));
     const removeInactive = (id: number) => setInactiveIngredients(inactiveIngredients.filter(i => i.id !== id));
 
-    // Actions - SKUs
     const addSKU = (sku: Omit<SKU, 'id'>) => {
         setSkus([...skus, { ...sku, id: Date.now() }]);
     };
@@ -354,23 +415,47 @@ export function useCalculator() {
     };
 
     const loadSnapshot = (snap: Snapshot) => {
-        if (snap.config.recipeConfig) {
-            setRecipeConfig(snap.config.recipeConfig);
-        }
+        // Migration logic would go here if needed
+        if (snap.config.recipeConfig) setRecipeConfig(snap.config.recipeConfig);
         setBatchConfig(snap.config.batchConfig);
-        setActiveIngredients(snap.config.activeIngredients);
+        setActiveIngredients(snap.config.activeIngredients); // Ideally migrate old gramsInBatch to amount
         setInactiveIngredients(snap.config.inactiveIngredients);
         setSkus(snap.config.skus);
         setLogistics(snap.config.logistics);
         setPricing(snap.config.pricing);
     };
 
+    // Load recipe from Recipe Library (formulation only)
+    const loadRecipeFromLibrary = (recipe: import('../lib/types').SavedRecipe) => {
+        // Load recipe configuration
+        setRecipeConfig(recipe.recipeConfig);
+
+        // Convert saved ingredients back to full ingredient objects with IDs
+        const loadedActives: ActiveIngredient[] = recipe.activeIngredients.map((ing, idx) => ({
+            ...ing,
+            id: idx + 1,
+            type: 'active' as const,
+            gramsPerRecipeUnit: ing.amount, // Will be recalculated by derivation
+            gramsInBatch: 0, // Will be recalculated
+        }));
+
+        const loadedInactives: InactiveIngredient[] = recipe.inactiveIngredients.map((ing, idx) => ({
+            ...ing,
+            id: 100 + idx + 1,
+            gramsPerRecipeUnit: ing.amount, // Will be recalculated by derivation
+            gramsInBatch: 0, // Will be recalculated
+        }));
+
+        setActiveIngredients(loadedActives);
+        setInactiveIngredients(loadedInactives);
+    };
+
     return {
-        // State
+        // State (read: derived, write: state)
         recipeConfig, setRecipeConfig,
         batchConfig, setBatchConfig,
-        activeIngredients, setActiveIngredients,
-        inactiveIngredients, setInactiveIngredients,
+        activeIngredients: derivedActiveIngredients, setActiveIngredients,
+        inactiveIngredients: derivedInactiveIngredients, setInactiveIngredients,
         skus, setSkus,
         logistics, setLogistics,
         pricing, setPricing,
@@ -378,6 +463,7 @@ export function useCalculator() {
 
         // Derived
         ...calculations,
+        batchScale,
 
         // Actions
         addActive,
@@ -395,6 +481,7 @@ export function useCalculator() {
         updateDistroFee,
         saveSnapshot,
         loadSnapshot,
+        loadRecipeFromLibrary,
 
         // Template
         defaultPackaging: DEFAULT_PACKAGING

@@ -39,7 +39,7 @@ export const SKUConfiguration = ({
     const [newSku, setNewSku] = useState({
         name: "",
         unitSizeValue: 60,
-        unitSizeUnit: 'ml' as 'g' | 'ml' | 'floz',
+        unitSizeUnit: 'ml' as 'g' | 'ml' | 'oz',
         quantity: 100,
         wholesalePrice: 24.99,
         msrp: 49.99
@@ -73,8 +73,8 @@ export const SKUConfiguration = ({
                     disabled={isOverAllocated}
                     title={isOverAllocated ? "Cannot add SKU: Batch is over-allocated" : "Add new SKU"}
                     className={`text-xs px-3 py-1.5 rounded transition-colors flex items-center gap-1 ${isOverAllocated
-                            ? 'bg-neutral-100 text-neutral-400 cursor-not-allowed border border-neutral-200'
-                            : 'bg-black text-white hover:bg-neutral-800'
+                        ? 'bg-neutral-100 text-neutral-400 cursor-not-allowed border border-neutral-200'
+                        : 'bg-black text-white hover:bg-neutral-800'
                         }`}
                 >
                     <Plus size={14} /> Add SKU
@@ -134,12 +134,12 @@ export const SKUConfiguration = ({
                                             />
                                             <select
                                                 value={sku.unitSizeUnit}
-                                                onChange={(e) => onUpdate(sku.id, { unitSizeUnit: e.target.value as 'g' | 'ml' | 'floz' })}
+                                                onChange={(e) => onUpdate(sku.id, { unitSizeUnit: e.target.value as 'g' | 'ml' | 'oz' })}
                                                 className="bg-neutral-50 border border-neutral-300 rounded px-1 py-1.5 text-xs font-bold"
                                             >
                                                 <option value="g">g</option>
                                                 <option value="ml">ml</option>
-                                                <option value="floz">fl oz</option>
+                                                <option value="oz">oz</option>
                                             </select>
                                         </div>
                                         <NumberInput
@@ -282,12 +282,12 @@ export const SKUConfiguration = ({
                                 />
                                 <select
                                     value={newSku.unitSizeUnit}
-                                    onChange={(e) => setNewSku({ ...newSku, unitSizeUnit: e.target.value as 'g' | 'ml' | 'floz' })}
+                                    onChange={(e) => setNewSku({ ...newSku, unitSizeUnit: e.target.value as 'g' | 'ml' | 'oz' })}
                                     className="bg-neutral-50 border border-neutral-300 rounded px-1 py-1.5 text-xs font-bold"
                                 >
                                     <option value="g">g</option>
                                     <option value="ml">ml</option>
-                                    <option value="floz">fl oz</option>
+                                    <option value="oz">oz</option>
                                 </select>
                             </div>
                             <NumberInput

@@ -27,17 +27,18 @@ export const InactiveIngredientsList = ({ ingredients, onAdd, onRemove, onUpdate
         name: "",
         costPerKg: 0,
         unit: 'cup',
-        amountInUnit: 0,
+        amount: 0,
         densityGPerMl: 1.0,
+        gramsPerRecipeUnit: 0,
         gramsInBatch: 0,
         type: 'base'
     });
 
     const handleAdd = () => {
         if (!newItem.name) return;
-        const grams = convertToGrams(newItem.amountInUnit, newItem.unit, newItem.densityGPerMl);
-        onAdd({ ...newItem, gramsInBatch: grams });
-        setNewItem({ name: "", costPerKg: 0, unit: 'cup', amountInUnit: 0, densityGPerMl: 1.0, gramsInBatch: 0, type: 'base' });
+        // Calculation handled by derived state in useCalculator
+        onAdd(newItem);
+        setNewItem({ name: "", costPerKg: 0, unit: 'cup', amount: 0, densityGPerMl: 1.0, gramsPerRecipeUnit: 0, gramsInBatch: 0, type: 'base' });
         setIsAdding(false);
     };
 
@@ -45,10 +46,6 @@ export const InactiveIngredientsList = ({ ingredients, onAdd, onRemove, onUpdate
         onUpdate(ingredients.map(i => {
             if (i.id !== id) return i;
             const updated = { ...i, ...updates };
-            // Recalculate gramsInBatch when amount or unit changes
-            if ('amountInUnit' in updates || 'unit' in updates || 'densityGPerMl' in updates) {
-                updated.gramsInBatch = convertToGrams(updated.amountInUnit, updated.unit, updated.densityGPerMl);
-            }
             // Update default unit when type changes
             if ('type' in updates && updates.type) {
                 updated.unit = getDefaultUnit(updates.type);
@@ -84,7 +81,7 @@ export const InactiveIngredientsList = ({ ingredients, onAdd, onRemove, onUpdate
                     <div className="col-span-3">Ingredient</div>
                     <div className="col-span-2">Type</div>
                     <div className="col-span-2">$/Kg</div>
-                    <div className="col-span-3">Amount</div>
+                    <div className="col-span-3">Amount per Unit</div>
                     <div className="col-span-2">= Grams</div>
                 </div>
 
@@ -116,8 +113,8 @@ export const InactiveIngredientsList = ({ ingredients, onAdd, onRemove, onUpdate
                         <div className="col-span-3 flex gap-1">
                             <div className="flex-1">
                                 <NumberInput
-                                    value={item.amountInUnit}
-                                    onChange={(v) => updateItem(item.id, { amountInUnit: v })}
+                                    value={item.amount}
+                                    onChange={(v) => updateItem(item.id, { amount: v })}
                                     step={0.125}
                                 />
                             </div>
@@ -132,7 +129,9 @@ export const InactiveIngredientsList = ({ ingredients, onAdd, onRemove, onUpdate
                             </select>
                         </div>
                         <div className="col-span-2 flex items-center gap-1">
-                            <span className="text-xs text-neutral-400 font-mono">{item.gramsInBatch.toFixed(1)}g</span>
+                            <span className="text-xs text-neutral-400 font-mono">
+                                {item.gramsPerRecipeUnit ? item.gramsPerRecipeUnit.toFixed(1) : "0.0"}g
+                            </span>
                             <button onClick={() => onRemove(item.id)} className="text-neutral-300 hover:text-red-500 print:hidden ml-auto">
                                 <Trash2 size={14} />
                             </button>
@@ -172,7 +171,7 @@ export const InactiveIngredientsList = ({ ingredients, onAdd, onRemove, onUpdate
                         </div>
                         <div className="col-span-3 flex gap-1">
                             <div className="flex-1">
-                                <NumberInput value={newItem.amountInUnit} onChange={(v) => setNewItem({ ...newItem, amountInUnit: v })} step={0.125} />
+                                <NumberInput value={newItem.amount} onChange={(v) => setNewItem({ ...newItem, amount: v })} step={0.125} />
                             </div>
                             <select
                                 value={newItem.unit}
@@ -186,7 +185,7 @@ export const InactiveIngredientsList = ({ ingredients, onAdd, onRemove, onUpdate
                         </div>
                         <div className="col-span-2 flex items-center gap-1">
                             <span className="text-xs text-neutral-400 font-mono">
-                                {convertToGrams(newItem.amountInUnit, newItem.unit, newItem.densityGPerMl).toFixed(1)}g
+                                {(convertToGrams(newItem.amount, newItem.unit, newItem.densityGPerMl)).toFixed(1)}g
                             </span>
                             <button onClick={handleAdd} className="text-xs bg-black text-white px-2 py-1 rounded ml-auto">Save</button>
                         </div>

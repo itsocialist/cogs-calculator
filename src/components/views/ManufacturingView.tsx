@@ -46,8 +46,9 @@ export const ManufacturingView = ({
         setBatchConfig({ ...batchConfig, [field]: value });
     };
 
-    // Calculate units from batch
-    const batchWeightGrams = batchConfig.batchSizeKg * 1000;
+    // Calculate units from batch - use targetVolumeMl for volume-based products
+    const batchVolumeMl = batchConfig.targetVolumeMl;
+    const batchWeightGrams = batchVolumeMl * recipeConfig.density;
     const calculatedUnits = recipeConfig.baseUnitSize > 0
         ? Math.floor(batchWeightGrams / recipeConfig.baseUnitSize)
         : 0;
@@ -80,7 +81,7 @@ export const ManufacturingView = ({
                             className="w-full bg-neutral-50 border border-neutral-300 rounded px-2 py-1.5 text-sm font-bold mt-1"
                         />
                     </div>
-                    <NumberInput label="Batch Size" value={batchConfig.batchSizeKg} onChange={(v) => updateBatch('batchSizeKg', v)} suffix="kg" />
+                    <NumberInput label="Batch Volume" value={batchConfig.targetVolumeMl / 1000} onChange={(v) => setBatchConfig({ ...batchConfig, targetVolumeMl: v * 1000 })} suffix="L" />
                     <NumberInput label="Labor Rate" value={batchConfig.laborRate} onChange={(v) => updateBatch('laborRate', v)} prefix="$" />
                     <NumberInput label="Labor Hours" value={batchConfig.laborHours} onChange={(v) => updateBatch('laborHours', v)} suffix="hrs" />
                     <NumberInput label="Fulfillment" value={batchConfig.fulfillmentCost} onChange={(v) => updateBatch('fulfillmentCost', v)} prefix="$" />
@@ -119,7 +120,6 @@ export const ManufacturingView = ({
                 activeIngredients={activeIngredients}
                 inactiveIngredients={inactiveIngredients}
                 batchSizeKg={batchConfig.batchSizeKg}
-                onScaleChange={(newSize) => setBatchConfig({ ...batchConfig, batchSizeKg: newSize })}
             />
 
             {/* SECTION 4: SKU Configuration */}

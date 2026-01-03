@@ -3,7 +3,7 @@ import { Plus, Trash2, Beaker } from 'lucide-react';
 import { Card } from '../ui/Card';
 import { NumberInput } from '../ui/NumberInput';
 import type { ActiveIngredient, VolumeUnit, CannabinoidType } from '../../lib/types';
-import { convertToGrams, getDensityForIngredient } from '../../lib/types';
+import { getDensityForIngredient } from '../../lib/types';
 
 const UNIT_OPTIONS: { value: VolumeUnit; label: string }[] = [
     { value: 'g', label: 'g' },
@@ -45,29 +45,26 @@ export const ActiveIngredientsList = ({ ingredients, onAdd, onRemove, onUpdate }
         name: "",
         costPerKg: 0,
         unit: 'g' as VolumeUnit,
-        amountInUnit: 0,
+        amount: 0,
         densityGPerMl: 1.0,
-        gramsInBatch: 0,
+        gramsPerRecipeUnit: 0, // Placeholder
+        gramsInBatch: 0,       // Placeholder
         purityPercent: 90,
         cannabinoid: 'CBD' as CannabinoidType
     });
 
     const handleAdd = () => {
         if (!newItem.name) return;
-        const grams = convertToGrams(newItem.amountInUnit, newItem.unit, newItem.densityGPerMl);
-        onAdd({ ...newItem, gramsInBatch: grams });
-        setNewItem({ name: "", costPerKg: 0, unit: 'g', amountInUnit: 0, densityGPerMl: 1.0, gramsInBatch: 0, purityPercent: 90, cannabinoid: 'CBD' });
+        // relevant calculations are done in useCalculator derived state
+        onAdd(newItem);
+        setNewItem({ name: "", costPerKg: 0, unit: 'g', amount: 0, densityGPerMl: 1.0, gramsPerRecipeUnit: 0, gramsInBatch: 0, purityPercent: 90, cannabinoid: 'CBD' });
         setIsAdding(false);
     };
 
     const updateItem = (id: number, updates: Partial<ActiveIngredient>) => {
         onUpdate(ingredients.map(i => {
             if (i.id !== id) return i;
-            const updated = { ...i, ...updates };
-            if ('amountInUnit' in updates || 'unit' in updates || 'densityGPerMl' in updates) {
-                updated.gramsInBatch = convertToGrams(updated.amountInUnit, updated.unit, updated.densityGPerMl);
-            }
-            return updated;
+            return { ...i, ...updates };
         }));
     };
 
@@ -77,7 +74,10 @@ export const ActiveIngredientsList = ({ ingredients, onAdd, onRemove, onUpdate }
         updateItem(id, { name, densityGPerMl: density, cannabinoid });
     };
 
-    // Calculate total mg per cannabinoid
+    // Calculate total mg per cannabinoid (per base unit or batch? Let's show Batch Total for context)
+    // Actually, in the Recipe view, maybe we should show potency per base unit?
+    // The previous implementation showed total mg in batch.
+    // Let's stick to batch totals at the top since user might be thinking about batch output.
     const cannabinoidTotals = ingredients.reduce((acc, i) => {
         const mg = i.gramsInBatch * (i.purityPercent / 100) * 1000;
         acc[i.cannabinoid] = (acc[i.cannabinoid] || 0) + mg;
@@ -88,6 +88,7 @@ export const ActiveIngredientsList = ({ ingredients, onAdd, onRemove, onUpdate }
         <Card
             title="Active Ingredients"
             icon={Beaker}
+            subtitle={Object.entries(cannabinoidTotals).length > 0 ? "Totals for entire batch" : undefined}
             collapsible
             action={
                 <button onClick={() => setIsAdding(!isAdding)} className="text-xs bg-black text-white px-3 py-1.5 rounded hover:bg-neutral-800 transition-colors flex items-center gap-1">
@@ -113,7 +114,7 @@ export const ActiveIngredientsList = ({ ingredients, onAdd, onRemove, onUpdate }
                     <div className="col-span-2">Name</div>
                     <div className="col-span-1">Type</div>
                     <div className="col-span-2">$/Kg</div>
-                    <div className="col-span-3">Amount</div>
+                    <div className="col-span-3">Amount per Unit</div>
                     <div className="col-span-4">Purity → Active</div>
                 </div>
 
@@ -146,9 +147,9 @@ export const ActiveIngredientsList = ({ ingredients, onAdd, onRemove, onUpdate }
                         <div className="col-span-3 flex gap-1">
                             <div className="flex-1">
                                 <NumberInput
-                                    value={item.amountInUnit}
-                                    onChange={(v) => updateItem(item.id, { amountInUnit: v })}
-                                    step={0.25}
+                                    value={item.amount}
+                                    onChange={(v) => updateItem(item.id, { amount: v })}
+                                    step={0.01}
                                 />
                             </div>
                             <select
@@ -172,8 +173,12 @@ export const ActiveIngredientsList = ({ ingredients, onAdd, onRemove, onUpdate }
                                 />
                                 <span className="text-xs text-neutral-400">%</span>
                             </div>
-                            <span className="text-xs text-neutral-400">=</span>
-                            <span className="text-xs font-mono text-green-600 font-bold">{(item.gramsInBatch * item.purityPercent / 100).toFixed(1)}g</span>
+                            <span className="text-xs text-neutral-400 text-right w-12 truncate">
+                                ({item.gramsPerRecipeUnit.toFixed(2)}g)
+                            </span>
+                            <span className="text-xs font-mono text-green-600 font-bold ml-1">
+                                ~{(item.gramsPerRecipeUnit * item.purityPercent / 100 * 1000).toFixed(0)}mg
+                            </span>
                             <button onClick={() => onRemove(item.id)} className="text-neutral-300 hover:text-red-500 print:hidden ml-auto">
                                 <Trash2 size={14} />
                             </button>
@@ -214,7 +219,7 @@ export const ActiveIngredientsList = ({ ingredients, onAdd, onRemove, onUpdate }
                         </div>
                         <div className="col-span-4 flex gap-1">
                             <div className="flex-1">
-                                <NumberInput value={newItem.amountInUnit} onChange={(v) => setNewItem({ ...newItem, amountInUnit: v })} step={0.25} />
+                                <NumberInput value={newItem.amount} onChange={(v) => setNewItem({ ...newItem, amount: v })} step={0.01} />
                             </div>
                             <select
                                 value={newItem.unit}
@@ -226,22 +231,8 @@ export const ActiveIngredientsList = ({ ingredients, onAdd, onRemove, onUpdate }
                                 ))}
                             </select>
                         </div>
-                        <div className="col-span-3 flex items-center gap-2">
-                            <div className="flex items-center gap-1">
-                                <input
-                                    type="number"
-                                    value={newItem.purityPercent}
-                                    onChange={(e) => setNewItem({ ...newItem, purityPercent: parseFloat(e.target.value) || 0 })}
-                                    className="w-12 bg-white border border-neutral-300 rounded px-1 py-1 text-xs text-right"
-                                    step={0.5}
-                                />
-                                <span className="text-xs text-neutral-400">%</span>
-                            </div>
-                            <span className="text-xs text-neutral-400">=</span>
-                            <span className="text-xs font-mono text-green-600 font-bold">
-                                {(convertToGrams(newItem.amountInUnit, newItem.unit, newItem.densityGPerMl) * newItem.purityPercent / 100).toFixed(1)}g
-                            </span>
-                            <button onClick={handleAdd} className="text-xs bg-black text-white px-2 py-1 rounded ml-auto">Save</button>
+                        <div className="col-span-3 flex items-center justify-end gap-2">
+                            <button onClick={handleAdd} className="text-xs bg-black text-white px-2 py-1 rounded">Save</button>
                         </div>
                     </div>
                 )}
