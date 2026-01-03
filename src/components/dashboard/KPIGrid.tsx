@@ -1,4 +1,35 @@
+import { useState, useRef, useCallback } from 'react';
 import { CheckCircle2, AlertTriangle, TrendingUp, DollarSign, Scale } from 'lucide-react';
+
+// Wrapper for hover-expand effect after 2 seconds
+const HoverExpandCard = ({ children, className }: { children: React.ReactNode; className: string }) => {
+    const [isExpanded, setIsExpanded] = useState(false);
+    const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+    const handleMouseEnter = useCallback(() => {
+        timerRef.current = setTimeout(() => {
+            setIsExpanded(true);
+        }, 2000);
+    }, []);
+
+    const handleMouseLeave = useCallback(() => {
+        if (timerRef.current) {
+            clearTimeout(timerRef.current);
+            timerRef.current = null;
+        }
+        setIsExpanded(false);
+    }, []);
+
+    return (
+        <div
+            className={`${className} transition-transform duration-300 ${isExpanded ? 'scale-125 z-50 shadow-2xl' : ''}`}
+            onMouseEnter={handleMouseEnter}
+            onMouseLeave={handleMouseLeave}
+        >
+            {children}
+        </div>
+    );
+};
 
 interface KPIGridProps {
     actualPotencyMg: number;
@@ -79,16 +110,16 @@ export const KPIGrid = ({
             {/* PRIMARY ROW - Hero KPIs */}
             <div className="grid grid-cols-2 lg:grid-cols-3 gap-3">
                 {/* Unit Cost */}
-                <div className={`p-5 rounded-lg bg-white border text-center shadow-lg ${fullyLoadedCost > 12 ? 'border-red-300' : 'border-slate-200'} print:border-slate-300`}>
+                <HoverExpandCard className={`p-5 rounded-lg bg-gradient-to-b from-slate-50 to-white border-2 text-center shadow-inner ${fullyLoadedCost > 12 ? 'border-red-300' : 'border-slate-300'} print:border-slate-300`}>
                     <div className="text-sm font-bold text-slate-600 uppercase mb-1 print:text-black">Unit Cost</div>
                     <div className={`text-3xl font-black ${fullyLoadedCost > 12 ? 'text-red-600' : 'text-slate-900'} print:text-black`}>${fullyLoadedCost.toFixed(2)}</div>
                     <div className="text-sm text-slate-500 mt-1 print:text-black">
                         Mfg ${manufCostPerUnit.toFixed(2)} + Dist ${totalLogisticsPerUnit.toFixed(2)}
                     </div>
-                </div>
+                </HoverExpandCard>
 
                 {/* Batch Profit */}
-                <div className={`p-5 rounded-lg bg-white border text-center shadow-lg ${batchProfit >= 0 ? 'border-slate-200' : 'border-red-300'} print:border-slate-300`}>
+                <HoverExpandCard className={`p-5 rounded-lg bg-gradient-to-b from-slate-50 to-white border-2 text-center shadow-inner ${batchProfit >= 0 ? 'border-slate-300' : 'border-red-300'} print:border-slate-300`}>
                     <div className="text-sm font-bold text-slate-600 uppercase mb-1 flex items-center justify-center gap-1 print:text-black">
                         <DollarSign size={14} /> Batch Profit
                     </div>
@@ -98,10 +129,10 @@ export const KPIGrid = ({
                     <div className="text-sm text-slate-500 mt-1 print:text-black">
                         ${totalUnits > 0 ? (batchProfit / totalUnits).toFixed(2) : '0.00'}/unit · {totalUnits.toLocaleString()} units
                     </div>
-                </div>
+                </HoverExpandCard>
 
                 {/* Gross Margin */}
-                <div className={`p-5 rounded-lg bg-white border text-center col-span-2 lg:col-span-1 shadow-lg ${grossMarginPercent >= 30 ? 'border-slate-200' : 'border-amber-300'} print:border-slate-300`}>
+                <HoverExpandCard className={`p-5 rounded-lg bg-gradient-to-b from-slate-50 to-white border-2 text-center col-span-2 lg:col-span-1 shadow-inner ${grossMarginPercent >= 30 ? 'border-slate-300' : 'border-amber-300'} print:border-slate-300`}>
                     <div className="text-sm font-bold text-slate-600 uppercase mb-1 flex items-center justify-center gap-1 print:text-black">
                         <TrendingUp size={14} /> Gross Margin
                     </div>
@@ -111,7 +142,7 @@ export const KPIGrid = ({
                     <div className="text-sm text-slate-500 mt-1 print:text-black">
                         ${batchProfit.toLocaleString(undefined, { maximumFractionDigits: 0 })} on ${totalRevenue.toLocaleString(undefined, { maximumFractionDigits: 0 })} rev
                     </div>
-                </div>
+                </HoverExpandCard>
             </div>
 
             {/* SECONDARY ROW - Dynamic grid */}

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { FlaskConical, Truck, History, BookOpen, Cookie, Printer, Save, Download, FileJson, HelpCircle, Settings2, Calculator } from 'lucide-react';
+import { FlaskConical, Truck, History, BookOpen, Cookie, Printer, Save, Download, FileJson, HelpCircle, Settings2, Calculator, FileText } from 'lucide-react';
 import { TabButton } from './components/ui/TabButton';
 import { KPIGrid } from './components/dashboard/KPIGrid';
 import { ManufacturingView } from './components/views/ManufacturingView';
@@ -9,21 +9,26 @@ import { RecipesView } from './components/views/RecipesView';
 import { EdiblesCalculator } from './components/views/EdiblesCalculator';
 import { useCalculator } from './hooks/useCalculator';
 import { useRecipeLibrary } from './hooks/useRecipeLibrary';
+import { useNotes } from './hooks/useNotes';
 import { ConfigView } from './components/views/ConfigView';
 import { ConfigProvider } from './context/configContext';
 import { HelpModal } from './components/ui/HelpModal';
 import { DraggableMathPanel } from './components/ui/DraggableMathPanel';
+import { NotesPanel } from './components/ui/NotesPanel';
+import { StickyNote } from './components/ui/StickyNote';
 
 function App() {
   const [activeTab, setActiveTab] = useState<'manufacturing' | 'logistics' | 'snapshots' | 'recipes' | 'edibles' | 'config'>('manufacturing');
   const [showActions, setShowActions] = useState(false);
   const [showHelp, setShowHelp] = useState(false);
   const [showMath, setShowMath] = useState(false);
+  const [showNotes, setShowNotes] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [password, setPassword] = useState('');
 
   const calc = useCalculator();
   const recipeLib = useRecipeLibrary();
+  const notesData = useNotes();
 
   const handleExportCSV = () => {
     const headers = ["Category", "Item", "Value", "Unit", "Total Cost", "Cost Per Unit"];
@@ -113,7 +118,7 @@ function App() {
     <ConfigProvider>
       <div className="min-h-screen bg-neutral-100 font-sans print:bg-white print:p-0">
         {/* Sticky Header */}
-        <div className="sticky top-0 z-40 bg-neutral-100/95 backdrop-blur-sm border-b border-neutral-200/50 print:static print:border-none">
+        <div className="sticky top-0 z-40 bg-neutral-100/95 backdrop-blur-sm border-b-2 border-neutral-300 shadow-sm print:static print:border-none">
           <div className="max-w-7xl mx-auto px-4 md:px-8 py-4">
             {/* Header */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 print:hidden">
@@ -140,6 +145,15 @@ function App() {
                   >
                     <Calculator size={18} />
                     <span className="hidden md:inline">Math</span>
+                  </button>
+
+                  <button
+                    onClick={() => setShowNotes(!showNotes)}
+                    className={`border border-neutral-200 rounded-xl px-3 md:px-4 py-2 font-medium transition-colors shadow-sm flex items-center gap-2 ${showNotes ? 'bg-neutral-800 text-white border-neutral-800' : 'bg-white text-neutral-600 hover:bg-neutral-50'}`}
+                    title="Notes"
+                  >
+                    <FileText size={18} />
+                    <span className="hidden md:inline">Notes</span>
                   </button>
 
                   <div className="relative">
@@ -330,6 +344,27 @@ function App() {
 
         {/* Math Panel Overlay */}
         {showMath && <DraggableMathPanel data={calc} onClose={() => setShowMath(false)} />}
+
+        {/* Notes Panel Overlay */}
+        {showNotes && (
+          <NotesPanel
+            onClose={() => setShowNotes(false)}
+            onCreateSticky={notesData.createSticky}
+            notes={notesData.notes}
+            onSaveNote={notesData.saveNote}
+            onDeleteNote={notesData.deleteNote}
+          />
+        )}
+
+        {/* Sticky Notes */}
+        {notesData.stickies.map(sticky => (
+          <StickyNote
+            key={sticky.id}
+            note={sticky}
+            onUpdate={notesData.updateSticky}
+            onDelete={notesData.deleteSticky}
+          />
+        ))}
       </div>
     </ConfigProvider>
   );
