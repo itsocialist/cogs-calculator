@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { Package, Plus, Trash2, ChevronDown, ChevronUp } from 'lucide-react';
 import { Card } from '../ui/Card';
 import { NumberInput } from '../ui/NumberInput';
+import { useConfig } from '../../context/configContext';
+import type { SKUUnit } from '../../context/configContext';
 import type { SKU, PackagingItem } from '../../lib/types';
 import type { SKUCalculation } from '../../hooks/useCalculator';
 
@@ -34,12 +36,13 @@ export const SKUConfiguration = ({
     onAddPackagingItem,
     onRemovePackagingItem
 }: Props) => {
+    const { config, convertFromGrams, convertFromMl } = useConfig();
     const [expandedSku, setExpandedSku] = useState<number | null>(null);
     const [isAdding, setIsAdding] = useState(false);
     const [newSku, setNewSku] = useState({
         name: "",
         unitSizeValue: 60,
-        unitSizeUnit: 'ml' as 'g' | 'ml' | 'oz',
+        unitSizeUnit: (config.sku?.defaultUnit || 'ml') as SKUUnit,
         quantity: 100,
         wholesalePrice: 24.99,
         msrp: 49.99
@@ -56,7 +59,14 @@ export const SKUConfiguration = ({
             msrp: newSku.msrp,
             packaging: defaultPackaging.map(p => ({ ...p, id: Date.now() + Math.random() }))
         });
-        setNewSku({ name: "", unitSizeValue: 60, unitSizeUnit: 'ml', quantity: 100, wholesalePrice: 24.99, msrp: 49.99 });
+        setNewSku({
+            name: "",
+            unitSizeValue: 60,
+            unitSizeUnit: (config.sku?.defaultUnit || 'ml') as 'g' | 'ml' | 'oz',
+            quantity: 100,
+            wholesalePrice: 24.99,
+            msrp: 49.99
+        });
         setIsAdding(false);
     };
 
@@ -86,7 +96,8 @@ export const SKUConfiguration = ({
                 <div className="flex justify-between text-xs text-neutral-500 mb-1">
                     <span>Batch Allocation</span>
                     <span className={isOverAllocated ? 'text-red-500 font-bold' : ''}>
-                        {totalWeightAllocated.toLocaleString()}g ({Math.round(totalWeightAllocated / 0.95).toLocaleString()}ml) / {totalBatchWeightGrams.toLocaleString()}g
+                        {convertFromGrams(totalWeightAllocated, config.manifest.weightScale).toLocaleString()}{config.manifest.weightScale} /
+                        {convertFromGrams(totalBatchWeightGrams, config.manifest.weightScale).toLocaleString()}{config.manifest.weightScale}
                     </span>
                 </div>
                 <div className="h-2 bg-neutral-200 rounded-full overflow-hidden">
@@ -96,7 +107,10 @@ export const SKUConfiguration = ({
                     />
                 </div>
                 {isOverAllocated && (
-                    <p className="text-xs text-red-500 mt-1">⚠️ Over-allocated by {(totalWeightAllocated - totalBatchWeightGrams).toLocaleString()}g ({Math.round((totalWeightAllocated - totalBatchWeightGrams) / 0.95).toLocaleString()}ml)</p>
+                    <p className="text-xs text-red-500 mt-1">⚠️ Over-allocated by
+                        {convertFromGrams(totalWeightAllocated - totalBatchWeightGrams, config.manifest.weightScale).toLocaleString()}{config.manifest.weightScale}
+                        ({convertFromMl((totalWeightAllocated - totalBatchWeightGrams) / 0.95, config.manifest.volumeScale).toLocaleString()}{config.manifest.volumeScale})
+                    </p>
                 )}
             </div>
 

@@ -107,7 +107,12 @@ export const ManufacturingView = ({
             />
 
             {/* SECTION 2: Batch Scaling - Volume/weight based */}
-            <Card title="Batch Scaling" icon={Settings} collapsible>
+            <Card
+                title="Batch Scaling"
+                icon={Settings}
+                collapsible
+                headerClassName="bg-blue-50 border-b border-blue-100"
+            >
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 items-end">
                     <div className="lg:col-span-2">
                         <label className="text-xs font-bold text-neutral-400 uppercase">Product Name</label>

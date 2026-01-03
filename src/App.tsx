@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { FlaskConical, Truck, History, BookOpen, Cookie, Printer, Save, Download, FileJson, HelpCircle, Settings2 } from 'lucide-react';
+import { FlaskConical, Truck, History, BookOpen, Cookie, Printer, Save, Download, FileJson, HelpCircle, Settings2, Calculator } from 'lucide-react';
 import { TabButton } from './components/ui/TabButton';
 import { KPIGrid } from './components/dashboard/KPIGrid';
 import { ManufacturingView } from './components/views/ManufacturingView';
@@ -12,11 +12,13 @@ import { useRecipeLibrary } from './hooks/useRecipeLibrary';
 import { ConfigView } from './components/views/ConfigView';
 import { ConfigProvider } from './context/configContext';
 import { HelpModal } from './components/ui/HelpModal';
+import { DraggableMathPanel } from './components/ui/DraggableMathPanel';
 
 function App() {
   const [activeTab, setActiveTab] = useState<'manufacturing' | 'logistics' | 'snapshots' | 'recipes' | 'edibles' | 'config'>('manufacturing');
   const [showActions, setShowActions] = useState(false);
   const [showHelp, setShowHelp] = useState(false);
+  const [showMath, setShowMath] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [password, setPassword] = useState('');
 
@@ -130,33 +132,44 @@ function App() {
                   <TabButton active={activeTab === 'config'} onClick={() => setActiveTab('config')} icon={Settings2} label="Config" />
                 </div>
 
-                <div className="relative">
+                <div className="flex gap-2 h-full">
                   <button
-                    onClick={() => setShowActions(!showActions)}
-                    className="bg-white border border-neutral-200 text-neutral-600 rounded-xl px-4 py-3 font-medium hover:bg-neutral-50 transition-colors shadow-sm h-full flex items-center gap-2"
+                    onClick={() => setShowMath(!showMath)}
+                    className={`border border-neutral-200 rounded-xl px-3 md:px-4 py-2 font-medium transition-colors shadow-sm flex items-center gap-2 ${showMath ? 'bg-neutral-800 text-white border-neutral-800' : 'bg-white text-neutral-600 hover:bg-neutral-50'}`}
+                    title="See the Math"
                   >
-                    Actions
+                    <Calculator size={18} />
+                    <span className="hidden md:inline">Math</span>
                   </button>
 
-                  {showActions && (
-                    <div className="absolute right-0 top-full mt-2 w-48 bg-white rounded-xl shadow-xl border border-neutral-200 overflow-hidden z-50 animate-in fade-in slide-in-from-top-2">
-                      <button onClick={() => window.print()} className="w-full text-left px-4 py-3 hover:bg-neutral-50 text-sm flex items-center gap-2">
-                        <Printer size={16} /> Print Report
-                      </button>
-                      <button onClick={handleExportCSV} className="w-full text-left px-4 py-3 hover:bg-neutral-50 text-sm flex items-center gap-2">
-                        <Download size={16} /> Export CSV
-                      </button>
-                      <button onClick={handleSaveSnapshot} className="w-full text-left px-4 py-3 hover:bg-neutral-50 text-sm flex items-center gap-2 text-blue-600">
-                        <Save size={16} /> Save Snapshot
-                      </button>
-                      <button onClick={handleSaveToDrive} className="w-full text-left px-4 py-3 hover:bg-neutral-50 text-sm flex items-center gap-2 text-green-600">
-                        <FileJson size={16} /> Save Config (JSON)
-                      </button>
-                      <button onClick={() => { setShowHelp(true); setShowActions(false); }} className="w-full text-left px-4 py-3 hover:bg-neutral-50 text-sm flex items-center gap-2 border-t border-neutral-100">
-                        <HelpCircle size={16} /> Help & Guide
-                      </button>
-                    </div>
-                  )}
+                  <div className="relative">
+                    <button
+                      onClick={() => setShowActions(!showActions)}
+                      className="bg-white border border-neutral-200 text-neutral-600 rounded-xl px-4 py-3 font-medium hover:bg-neutral-50 transition-colors shadow-sm h-full flex items-center gap-2"
+                    >
+                      Actions
+                    </button>
+
+                    {showActions && (
+                      <div className="absolute right-0 top-full mt-2 w-48 bg-white rounded-xl shadow-xl border border-neutral-200 overflow-hidden z-50 animate-in fade-in slide-in-from-top-2">
+                        <button onClick={() => window.print()} className="w-full text-left px-4 py-3 hover:bg-neutral-50 text-sm flex items-center gap-2">
+                          <Printer size={16} /> Print Report
+                        </button>
+                        <button onClick={handleExportCSV} className="w-full text-left px-4 py-3 hover:bg-neutral-50 text-sm flex items-center gap-2">
+                          <Download size={16} /> Export CSV
+                        </button>
+                        <button onClick={handleSaveSnapshot} className="w-full text-left px-4 py-3 hover:bg-neutral-50 text-sm flex items-center gap-2 text-blue-600">
+                          <Save size={16} /> Save Snapshot
+                        </button>
+                        <button onClick={handleSaveToDrive} className="w-full text-left px-4 py-3 hover:bg-neutral-50 text-sm flex items-center gap-2 text-green-600">
+                          <FileJson size={16} /> Save Config (JSON)
+                        </button>
+                        <button onClick={() => { setShowHelp(true); setShowActions(false); }} className="w-full text-left px-4 py-3 hover:bg-neutral-50 text-sm flex items-center gap-2 border-t border-neutral-100">
+                          <HelpCircle size={16} /> Help & Guide
+                        </button>
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
@@ -314,6 +327,9 @@ function App() {
 
         {/* Help Modal */}
         <HelpModal isOpen={showHelp} onClose={() => setShowHelp(false)} calculatorData={calc} />
+
+        {/* Math Panel Overlay */}
+        {showMath && <DraggableMathPanel data={calc} onClose={() => setShowMath(false)} />}
       </div>
     </ConfigProvider>
   );

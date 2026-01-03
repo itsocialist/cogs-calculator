@@ -82,6 +82,10 @@ interface ConfigContextType {
     updateBatchConfig: (updates: Partial<UnitConfig['batch']>) => void;
     updateManifestConfig: (updates: Partial<UnitConfig['manifest']>) => void;
     updateSKUConfig: (updates: Partial<UnitConfig['sku']>) => void;
+    convertFromGrams: (grams: number, scale: WeightScale) => number;
+    convertToGrams: (value: number, scale: WeightScale) => number;
+    convertFromMl: (ml: number, scale: VolumeScale) => number;
+    convertToMl: (value: number, scale: VolumeScale) => number;
 }
 
 const ConfigContext = createContext<ConfigContextType | null>(null);
@@ -123,7 +127,17 @@ export function ConfigProvider({ children }: { children: ReactNode }) {
     };
 
     return (
-        <ConfigContext.Provider value={{ config, setConfig, updateBatchConfig, updateManifestConfig, updateSKUConfig }}>
+        <ConfigContext.Provider value={{
+            config,
+            setConfig,
+            updateBatchConfig,
+            updateManifestConfig,
+            updateSKUConfig,
+            convertFromGrams,
+            convertToGrams,
+            convertFromMl,
+            convertToMl
+        }}>
             {children}
         </ConfigContext.Provider>
     );

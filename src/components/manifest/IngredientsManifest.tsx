@@ -1,6 +1,7 @@
-import { ClipboardList, Download, Lock, Unlock, FileText, FileSpreadsheet, ChevronDown } from 'lucide-react';
+import { ClipboardList, Download, FileText, FileSpreadsheet, ChevronDown } from 'lucide-react';
 import { useState, useRef, useEffect } from 'react';
 import { Card } from '../ui/Card';
+import { useConfig } from '../../context/configContext';
 import type { RecipeConfig, ActiveIngredient, InactiveIngredient } from '../../lib/types';
 
 interface ManifestItem {
@@ -27,7 +28,7 @@ export const IngredientsManifest = ({
     inactiveIngredients,
     batchSizeKg
 }: Props) => {
-    const [isLocked, setIsLocked] = useState(true);
+    const { config, convertFromGrams, convertFromMl } = useConfig();
     const [showExportMenu, setShowExportMenu] = useState(false);
     const exportMenuRef = useRef<HTMLDivElement>(null);
 
@@ -348,14 +349,6 @@ export const IngredientsManifest = ({
             collapsible
             action={
                 <div className="flex items-center gap-2">
-                    <button
-                        onClick={() => setIsLocked(!isLocked)}
-                        className={`p-1.5 rounded ${isLocked ? 'bg-neutral-100 text-neutral-600' : 'bg-yellow-100 text-yellow-700'}`}
-                        title={isLocked ? 'Unlock to edit' : 'Lock ratios'}
-                    >
-                        {isLocked ? <Lock size={14} /> : <Unlock size={14} />}
-                    </button>
-
                     {/* Export Dropdown */}
                     <div className="relative" ref={exportMenuRef}>
                         <button
@@ -400,8 +393,8 @@ export const IngredientsManifest = ({
                                 <th className="text-left py-2 font-bold">Ingredient</th>
                                 <th className="text-left py-2 font-bold">Type</th>
                                 <th className="text-right py-2 font-bold">Per Unit</th>
-                                <th className="text-right py-2 font-bold">Total (g)</th>
-                                <th className="text-right py-2 font-bold">Volume (ml)</th>
+                                <th className="text-right py-2 font-bold">Total ({config.manifest.weightScale})</th>
+                                <th className="text-right py-2 font-bold">Volume ({config.manifest.volumeScale})</th>
                                 <th className="text-right py-2 font-bold">Cost</th>
                             </tr>
                         </thead>
@@ -418,10 +411,12 @@ export const IngredientsManifest = ({
                                         {item.amountPerUnit.toFixed(2)}g
                                     </td>
                                     <td className="py-2 text-right font-mono font-bold text-neutral-800">
-                                        {item.scaledAmount.toFixed(1)}g
+                                        {convertFromGrams(item.scaledAmount, config.manifest.weightScale).toLocaleString()}
+                                        {config.manifest.weightScale}
                                     </td>
                                     <td className="py-2 text-right font-mono text-neutral-500">
-                                        {(item.scaledAmount / recipeConfig.density).toFixed(1)}ml
+                                        {convertFromMl(item.scaledAmount / recipeConfig.density, config.manifest.volumeScale).toLocaleString()}
+                                        {config.manifest.volumeScale}
                                     </td>
                                     <td className="py-2 text-right font-mono text-green-600">
                                         ${item.totalCost.toFixed(2)}
@@ -434,8 +429,12 @@ export const IngredientsManifest = ({
                                 <td className="py-3 text-neutral-800">TOTAL</td>
                                 <td className="py-3"></td>
                                 <td className="py-3"></td>
-                                <td className="py-3 text-right font-mono text-neutral-800">{totalWeight.toFixed(1)}g</td>
-                                <td className="py-3 text-right font-mono text-neutral-600">{totalVolumeMl.toFixed(0)}ml</td>
+                                <td className="py-3 text-right font-mono text-neutral-800">
+                                    {convertFromGrams(totalWeight, config.manifest.weightScale).toLocaleString()}{config.manifest.weightScale}
+                                </td>
+                                <td className="py-3 text-right font-mono text-neutral-600">
+                                    {convertFromMl(totalVolumeMl, config.manifest.volumeScale).toLocaleString()}{config.manifest.volumeScale}
+                                </td>
                                 <td className="py-3 text-right font-mono text-green-700">${totalCost.toFixed(2)}</td>
                             </tr>
                         </tfoot>
@@ -448,13 +447,19 @@ export const IngredientsManifest = ({
                         <div className="text-xs text-slate-300 font-bold uppercase">Base Units</div>
                         <div className="text-xl font-black text-white">{baseUnits.toFixed(0)}</div>
                     </div>
-                    <div className="bg-slate-600 p-3 rounded-lg text-center">
+                    <div className="bg-slate-600 p-3 rounded-lg text-center shadow-lg">
                         <div className="text-xs text-slate-300 font-bold uppercase">Total Weight</div>
-                        <div className="text-xl font-black text-white">{(totalWeight / 1000).toFixed(2)}kg</div>
+                        <div className="text-xl font-black text-white">
+                            {convertFromGrams(totalWeight, config.manifest.weightScale).toLocaleString()}
+                            <span className="text-sm ml-1 text-slate-400">{config.manifest.weightScale}</span>
+                        </div>
                     </div>
-                    <div className="bg-slate-600 p-3 rounded-lg text-center">
+                    <div className="bg-slate-600 p-3 rounded-lg text-center shadow-lg">
                         <div className="text-xs text-slate-300 font-bold uppercase">Total Volume</div>
-                        <div className="text-xl font-black text-white">{(totalVolumeMl / 1000).toFixed(2)}L</div>
+                        <div className="text-xl font-black text-white">
+                            {convertFromMl(totalVolumeMl, config.manifest.volumeScale).toLocaleString()}
+                            <span className="text-sm ml-1 text-slate-400">{config.manifest.volumeScale}</span>
+                        </div>
                     </div>
                     <div className="bg-slate-800 p-3 rounded-lg text-center">
                         <div className="text-xs text-emerald-400 font-bold uppercase">Materials Cost</div>

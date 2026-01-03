@@ -11,6 +11,9 @@ interface CardProps {
     action?: React.ReactNode;
     collapsible?: boolean;
     defaultCollapsed?: boolean;
+    headerClassName?: string;
+    titleClassName?: string;
+    iconClassName?: string;
 }
 
 export const Card = ({
@@ -21,19 +24,22 @@ export const Card = ({
     className = "",
     action,
     collapsible = false,
-    defaultCollapsed = false
+    defaultCollapsed = false,
+    headerClassName = "bg-slate-100 border-b border-slate-200",
+    titleClassName = "text-slate-800",
+    iconClassName = "text-slate-600"
 }: CardProps) => {
     const [isCollapsed, setIsCollapsed] = useState(defaultCollapsed);
 
     return (
         <div className={`bg-slate-50 rounded-xl border border-slate-200 shadow-sm overflow-hidden print:shadow-none print:border-slate-300 ${className}`}>
             <div
-                className={`bg-slate-100 px-6 py-4 border-b border-slate-200 flex items-center justify-between print:bg-white print:border-b-2 print:border-black ${collapsible ? 'cursor-pointer hover:bg-slate-200 transition-colors' : ''}`}
+                className={`px-6 py-4 flex items-center justify-between print:bg-white print:border-b-2 print:border-black shadow-sm relative z-10 ${headerClassName} ${collapsible ? 'cursor-pointer hover:opacity-90 transition-opacity' : ''}`}
                 onClick={collapsible ? () => setIsCollapsed(!isCollapsed) : undefined}
             >
                 <div className="flex items-center gap-2">
-                    {Icon && <Icon size={18} className="text-slate-600 print:text-black" />}
-                    <h3 className="font-bold text-slate-800 text-sm uppercase tracking-wide print:text-black">{title}</h3>
+                    {Icon && <Icon size={18} className={`${iconClassName} print:text-black`} />}
+                    <h3 className={`font-bold text-sm uppercase tracking-wide print:text-black ${titleClassName}`}>{title}</h3>
                     {subtitle && <span className="text-xs text-slate-500 font-normal normal-case ml-2">— {subtitle}</span>}
                     {collapsible && (
                         <span className="text-slate-400 ml-1 print:hidden">

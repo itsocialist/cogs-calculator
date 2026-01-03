@@ -79,7 +79,7 @@ export const KPIGrid = ({
             {/* PRIMARY ROW - Hero KPIs */}
             <div className="grid grid-cols-2 lg:grid-cols-3 gap-3">
                 {/* Unit Cost */}
-                <div className={`p-5 rounded-lg bg-white border text-center ${fullyLoadedCost > 12 ? 'border-red-300' : 'border-slate-200'} print:border-slate-300`}>
+                <div className={`p-5 rounded-lg bg-white border text-center shadow-lg ${fullyLoadedCost > 12 ? 'border-red-300' : 'border-slate-200'} print:border-slate-300`}>
                     <div className="text-sm font-bold text-slate-600 uppercase mb-1 print:text-black">Unit Cost</div>
                     <div className={`text-3xl font-black ${fullyLoadedCost > 12 ? 'text-red-600' : 'text-slate-900'} print:text-black`}>${fullyLoadedCost.toFixed(2)}</div>
                     <div className="text-sm text-slate-500 mt-1 print:text-black">
@@ -88,7 +88,7 @@ export const KPIGrid = ({
                 </div>
 
                 {/* Batch Profit */}
-                <div className={`p-5 rounded-lg bg-white border text-center ${batchProfit >= 0 ? 'border-slate-200' : 'border-red-300'} print:border-slate-300`}>
+                <div className={`p-5 rounded-lg bg-white border text-center shadow-lg ${batchProfit >= 0 ? 'border-slate-200' : 'border-red-300'} print:border-slate-300`}>
                     <div className="text-sm font-bold text-slate-600 uppercase mb-1 flex items-center justify-center gap-1 print:text-black">
                         <DollarSign size={14} /> Batch Profit
                     </div>
@@ -101,7 +101,7 @@ export const KPIGrid = ({
                 </div>
 
                 {/* Gross Margin */}
-                <div className={`p-5 rounded-lg bg-white border text-center col-span-2 lg:col-span-1 ${grossMarginPercent >= 30 ? 'border-slate-200' : 'border-amber-300'} print:border-slate-300`}>
+                <div className={`p-5 rounded-lg bg-white border text-center col-span-2 lg:col-span-1 shadow-lg ${grossMarginPercent >= 30 ? 'border-slate-200' : 'border-amber-300'} print:border-slate-300`}>
                     <div className="text-sm font-bold text-slate-600 uppercase mb-1 flex items-center justify-center gap-1 print:text-black">
                         <TrendingUp size={14} /> Gross Margin
                     </div>
@@ -118,7 +118,7 @@ export const KPIGrid = ({
             <div className={`grid ${gridClass} gap-2`}>
                 {/* CBD Card */}
                 {hasCBD && (
-                    <div className="bg-slate-50 p-3 rounded-lg border border-slate-200 text-center print:border-slate-300">
+                    <div className="bg-slate-50 p-3 rounded-lg border border-slate-200 text-center shadow-lg print:border-slate-300">
                         <div className="text-sm font-bold text-slate-600 uppercase mb-0.5 flex items-center justify-center gap-1 print:text-black">
                             <span className="inline-block px-1.5 py-0.5 bg-blue-100 text-blue-700 rounded text-xs">CBD</span>
                             / {baseUnitLabel}
@@ -134,7 +134,7 @@ export const KPIGrid = ({
 
                 {/* THC Card */}
                 {hasTHC && (
-                    <div className="bg-slate-50 p-3 rounded-lg border border-slate-200 text-center print:border-slate-300">
+                    <div className="bg-slate-50 p-3 rounded-lg border border-slate-200 text-center shadow-lg print:border-slate-300">
                         <div className="text-sm font-bold text-slate-600 uppercase mb-0.5 flex items-center justify-center gap-1 print:text-black">
                             <span className="inline-block px-1.5 py-0.5 bg-amber-100 text-amber-700 rounded text-xs">THC</span>
                         </div>
@@ -149,7 +149,7 @@ export const KPIGrid = ({
 
                 {/* CBG Card */}
                 {hasCBG && (
-                    <div className="bg-slate-50 p-3 rounded-lg border border-slate-200 text-center print:border-slate-300">
+                    <div className="bg-slate-50 p-3 rounded-lg border border-slate-200 text-center shadow-lg print:border-slate-300">
                         <div className="text-sm font-bold text-slate-600 uppercase mb-0.5 flex items-center justify-center gap-1 print:text-black">
                             <span className="inline-block px-1.5 py-0.5 bg-purple-100 text-purple-700 rounded text-xs">CBG</span>
                         </div>
@@ -164,7 +164,7 @@ export const KPIGrid = ({
 
                 {/* Fallback: General Potency if no cannabinoids */}
                 {!hasCBD && !hasTHC && !hasCBG && (
-                    <div className={`bg-slate-50 p-3 rounded-lg border text-center ${isPotencyCritical ? 'border-red-400' : 'border-slate-200'} print:border-slate-300`}>
+                    <div className={`bg-slate-50 p-3 rounded-lg border text-center shadow-lg ${isPotencyCritical ? 'border-red-400' : 'border-slate-200'} print:border-slate-300`}>
                         <div className="text-sm font-bold text-slate-600 uppercase mb-0.5 print:text-black">Potency</div>
                         <div className={`text-xl font-black flex items-center justify-center gap-1 ${isPotencyCritical ? 'text-red-600' : isPotencySafe ? 'text-green-600' : 'text-amber-600'} print:text-black`}>
                             {Math.round(actualPotencyMg)}mg
@@ -178,7 +178,7 @@ export const KPIGrid = ({
                 )}
 
                 {/* Cost per Gram - Always show */}
-                <div className="bg-slate-50 p-3 rounded-lg border border-slate-200 text-center print:border-slate-300">
+                <div className="bg-slate-50 p-3 rounded-lg border border-slate-200 text-center shadow-lg print:border-slate-300">
                     <div className="text-sm font-bold text-slate-600 uppercase mb-0.5 flex items-center justify-center gap-1 print:text-black">
                         <Scale size={12} /> Cost/Gram
                     </div>
@@ -191,7 +191,7 @@ export const KPIGrid = ({
                 </div>
 
                 {/* Wholesale Margin */}
-                <div className="bg-slate-800 p-3 rounded-lg border border-slate-700 text-center print:bg-white print:text-black print:border-slate-300">
+                <div className="bg-slate-800 p-3 rounded-lg border border-slate-700 text-center shadow-lg print:bg-white print:text-black print:border-slate-300">
                     <div className="text-sm font-bold text-slate-300 uppercase mb-0.5 print:text-black">Wholesale</div>
                     <div className="text-xl font-black text-white print:text-black">{Math.round(wsMarginPercent)}%</div>
                     <div className="text-sm text-slate-400 mt-0.5 print:text-black">
@@ -200,7 +200,7 @@ export const KPIGrid = ({
                 </div>
 
                 {/* Retail Margin */}
-                <div className="bg-slate-900 p-3 rounded-lg border border-slate-800 text-center print:bg-white print:text-black print:border-slate-300">
+                <div className="bg-slate-900 p-3 rounded-lg border border-slate-800 text-center shadow-lg print:bg-white print:text-black print:border-slate-300">
                     <div className="text-sm font-bold text-slate-300 uppercase mb-0.5 print:text-black">Retail</div>
                     <div className="text-xl font-black text-white print:text-black">{Math.round(retailMarginPercent)}%</div>
                     <div className="text-sm text-slate-400 mt-0.5 print:text-black">

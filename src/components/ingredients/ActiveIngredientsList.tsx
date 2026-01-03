@@ -74,21 +74,10 @@ export const ActiveIngredientsList = ({ ingredients, onAdd, onRemove, onUpdate }
         updateItem(id, { name, densityGPerMl: density, cannabinoid });
     };
 
-    // Calculate total mg per cannabinoid (per base unit or batch? Let's show Batch Total for context)
-    // Actually, in the Recipe view, maybe we should show potency per base unit?
-    // The previous implementation showed total mg in batch.
-    // Let's stick to batch totals at the top since user might be thinking about batch output.
-    const cannabinoidTotals = ingredients.reduce((acc, i) => {
-        const mg = i.gramsInBatch * (i.purityPercent / 100) * 1000;
-        acc[i.cannabinoid] = (acc[i.cannabinoid] || 0) + mg;
-        return acc;
-    }, {} as Record<CannabinoidType, number>);
-
     return (
         <Card
             title="Active Ingredients"
             icon={Beaker}
-            subtitle={Object.entries(cannabinoidTotals).length > 0 ? "Totals for entire batch" : undefined}
             collapsible
             action={
                 <button onClick={() => setIsAdding(!isAdding)} className="text-xs bg-black text-white px-3 py-1.5 rounded hover:bg-neutral-800 transition-colors flex items-center gap-1">
@@ -97,18 +86,6 @@ export const ActiveIngredientsList = ({ ingredients, onAdd, onRemove, onUpdate }
             }
         >
             <div className="space-y-3">
-                {/* Cannabinoid Summary */}
-                {Object.keys(cannabinoidTotals).length > 0 && (
-                    <div className="flex gap-3 text-xs font-mono bg-green-50 border border-green-200 rounded-lg px-3 py-2">
-                        {Object.entries(cannabinoidTotals).map(([type, mg]) => (
-                            <div key={type} className="flex items-center gap-1">
-                                <span className="font-bold text-green-700">{type}:</span>
-                                <span className="text-green-600">{(mg / 1000).toFixed(1)}g</span>
-                            </div>
-                        ))}
-                    </div>
-                )}
-
                 {/* Header Row */}
                 <div className="grid grid-cols-12 gap-1 text-xs font-bold text-neutral-400 uppercase border-b border-neutral-100 pb-2">
                     <div className="col-span-2">Name</div>
