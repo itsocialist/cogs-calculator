@@ -4,6 +4,7 @@ import { NumberInput } from '../ui/NumberInput';
 import { RecipeSection } from '../recipe/RecipeSection';
 import { IngredientsManifest } from '../manifest/IngredientsManifest';
 import { SKUConfiguration } from '../ingredients/SKUConfiguration';
+import { useConfig, convertToMl, convertFromMl, convertToGrams, convertFromGrams } from '../../context/configContext';
 import type { BatchConfig, ActiveIngredient, InactiveIngredient, SKU, PackagingItem, RecipeConfig } from '../../lib/types';
 import type { SKUCalculation } from '../../hooks/useCalculator';
 
@@ -42,9 +43,16 @@ export const ManufacturingView = ({
     skus, skuCalculations, totalBatchWeightGrams, totalWeightAllocated, isOverAllocated, defaultPackaging,
     addSKU, removeSKU, updateSKU, updateSKUPackaging, addSKUPackagingItem, removeSKUPackagingItem
 }: Props) => {
+    const { config } = useConfig();
+
     const updateBatch = (field: keyof BatchConfig, value: number) => {
         setBatchConfig({ ...batchConfig, [field]: value });
     };
+
+    // Config-driven batch display
+    const batchType = config.batch.type;
+    const volumeScale = config.batch.volumeScale;
+    const weightScale = config.batch.weightScale;
 
     // Calculate units from batch - use targetVolumeMl for volume-based products
     const batchVolumeMl = batchConfig.targetVolumeMl;
@@ -52,6 +60,35 @@ export const ManufacturingView = ({
     const calculatedUnits = recipeConfig.baseUnitSize > 0
         ? Math.floor(batchWeightGrams / recipeConfig.baseUnitSize)
         : 0;
+
+    // Get display values based on config
+    const getBatchDisplayValue = () => {
+        if (batchType === 'volume') {
+            return convertFromMl(batchVolumeMl, volumeScale);
+        } else {
+            return convertFromGrams(batchWeightGrams, weightScale);
+        }
+    };
+
+    const getBatchSuffix = () => {
+        if (batchType === 'volume') {
+            return volumeScale === 'floz' ? 'fl oz' : volumeScale;
+        } else {
+            return weightScale;
+        }
+    };
+
+    const handleBatchChange = (value: number) => {
+        if (batchType === 'volume') {
+            const ml = convertToMl(value, volumeScale);
+            setBatchConfig({ ...batchConfig, targetVolumeMl: ml });
+        } else {
+            // Convert weight input to volume using density
+            const grams = convertToGrams(value, weightScale);
+            const ml = grams / recipeConfig.density;
+            setBatchConfig({ ...batchConfig, targetVolumeMl: ml });
+        }
+    };
 
     return (
         <div className="space-y-6 animate-in fade-in">
@@ -81,7 +118,12 @@ export const ManufacturingView = ({
                             className="w-full bg-neutral-50 border border-neutral-300 rounded px-2 py-1.5 text-sm font-bold mt-1"
                         />
                     </div>
-                    <NumberInput label="Batch Volume" value={batchConfig.targetVolumeMl / 1000} onChange={(v) => setBatchConfig({ ...batchConfig, targetVolumeMl: v * 1000 })} suffix="L" />
+                    <NumberInput
+                        label={batchType === 'volume' ? 'Batch Volume' : 'Batch Weight'}
+                        value={getBatchDisplayValue()}
+                        onChange={handleBatchChange}
+                        suffix={getBatchSuffix()}
+                    />
                     <NumberInput label="Labor Rate" value={batchConfig.laborRate} onChange={(v) => updateBatch('laborRate', v)} prefix="$" />
                     <NumberInput label="Labor Hours" value={batchConfig.laborHours} onChange={(v) => updateBatch('laborHours', v)} suffix="hrs" />
                     <NumberInput label="Fulfillment" value={batchConfig.fulfillmentCost} onChange={(v) => updateBatch('fulfillmentCost', v)} prefix="$" />
@@ -90,12 +132,16 @@ export const ManufacturingView = ({
                 {/* Batch Summary */}
                 <div className="mt-4 pt-4 border-t border-neutral-100 grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
                     <div>
-                        <span className="text-neutral-500">Total Weight: </span>
-                        <span className="font-bold text-neutral-800">{batchWeightGrams.toLocaleString()}g</span>
+                        <span className="text-neutral-500">Weight: </span>
+                        <span className="font-bold text-neutral-800">
+                            {convertFromGrams(batchWeightGrams, config.manifest.weightScale).toLocaleString()}{config.manifest.weightScale}
+                        </span>
                     </div>
                     <div>
-                        <span className="text-neutral-500">Est. Volume: </span>
-                        <span className="font-bold text-neutral-800">{Math.round(batchWeightGrams / recipeConfig.density).toLocaleString()}ml</span>
+                        <span className="text-neutral-500">Volume: </span>
+                        <span className="font-bold text-neutral-800">
+                            {convertFromMl(batchVolumeMl, config.manifest.volumeScale).toLocaleString()}{config.manifest.volumeScale === 'floz' ? ' fl oz' : config.manifest.volumeScale}
+                        </span>
                     </div>
                     <div>
                         <span className="text-neutral-500">Base Units: </span>
