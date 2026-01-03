@@ -40,6 +40,7 @@ export const RecipeSection = ({
             title="Recipe Configuration"
             icon={Beaker}
             collapsible
+            defaultCollapsed={true}
             headerClassName="bg-blue-100 border-b border-blue-200"
             subtitle={`${recipeConfig.baseUnitLabel} = ${totalRecipeGrams.toFixed(1)}g (${totalRecipeMl.toFixed(1)}ml)`}
         >
