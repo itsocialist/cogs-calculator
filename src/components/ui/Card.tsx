@@ -25,35 +25,53 @@ export const Card = ({
     action,
     collapsible = false,
     defaultCollapsed = false,
-    headerClassName = "backdrop-blur-md bg-stone-50/70 border-b border-stone-200/50",
+    headerClassName = "",
     titleClassName = "text-stone-700",
     iconClassName = "text-stone-500"
 }: CardProps) => {
     const [isCollapsed, setIsCollapsed] = useState(defaultCollapsed);
 
     return (
-        <div className={`bg-white/65 backdrop-blur-sm rounded-xl border border-stone-200/50 shadow-sm shadow-stone-400/10 overflow-hidden print:shadow-none print:border-slate-300 ${className}`}>
-            <div
-                className={`px-6 py-4 flex items-center justify-between print:bg-white print:border-b-2 print:border-black shadow-sm relative z-10 ${headerClassName} ${collapsible ? 'cursor-pointer hover:bg-white/80 transition-all' : ''}`}
-                onClick={collapsible ? () => setIsCollapsed(!isCollapsed) : undefined}
-            >
-                <div className="flex items-center gap-2">
-                    {Icon && <Icon size={18} className={`${iconClassName} print:text-black`} />}
-                    <h3 className={`font-bold text-sm uppercase tracking-wide print:text-black ${titleClassName}`}>{title}</h3>
-                    {subtitle && <span className="text-xs text-stone-400 font-normal normal-case ml-2">— {subtitle}</span>}
-                    {collapsible && (
-                        <span className="text-stone-400 ml-1 print:hidden">
-                            {isCollapsed ? <ChevronDown size={16} /> : <ChevronUp size={16} />}
-                        </span>
-                    )}
+        // Outer glass layer
+        <div className={`relative rounded-2xl overflow-hidden print:shadow-none print:border-slate-300 ${className}`}>
+            {/* Glass background layer */}
+            <div className="absolute inset-0 bg-white/40 backdrop-blur-xl" />
+            {/* Glass border/edge highlight */}
+            <div className="absolute inset-0 rounded-2xl border border-white/50 shadow-lg shadow-stone-400/20" />
+
+            {/* Content wrapper */}
+            <div className="relative">
+                {/* Header - thicker glass layer */}
+                <div
+                    className={`px-6 py-4 flex items-center justify-between print:bg-white print:border-b-2 print:border-black relative ${headerClassName} ${collapsible ? 'cursor-pointer hover:bg-white/30 transition-all' : ''}`}
+                    onClick={collapsible ? () => setIsCollapsed(!isCollapsed) : undefined}
+                >
+                    {/* Header glass effect */}
+                    <div className="absolute inset-0 bg-white/50 backdrop-blur-md border-b border-white/40" />
+
+                    <div className="relative flex items-center gap-2 z-10">
+                        {Icon && <Icon size={18} className={`${iconClassName} print:text-black`} />}
+                        <h3 className={`font-bold text-sm uppercase tracking-wide print:text-black ${titleClassName}`}>{title}</h3>
+                        {subtitle && <span className="text-xs text-stone-400 font-normal normal-case ml-2">— {subtitle}</span>}
+                        {collapsible && (
+                            <span className="text-stone-400 ml-1 print:hidden">
+                                {isCollapsed ? <ChevronDown size={16} /> : <ChevronUp size={16} />}
+                            </span>
+                        )}
+                    </div>
+                    {action && <div className="relative z-10 print:hidden" onClick={(e) => e.stopPropagation()}>{action}</div>}
                 </div>
-                {action && <div className="print:hidden" onClick={(e) => e.stopPropagation()}>{action}</div>}
+
+                {/* Content area - lighter glass layer */}
+                {!isCollapsed && (
+                    <div className="relative p-4 md:p-6">
+                        <div className="absolute inset-0 bg-white/60 backdrop-blur-sm" />
+                        <div className="relative z-10">
+                            {children}
+                        </div>
+                    </div>
+                )}
             </div>
-            {!isCollapsed && (
-                <div className="p-4 md:p-6 bg-white/95">
-                    {children}
-                </div>
-            )}
         </div>
     );
 };

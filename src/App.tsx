@@ -214,9 +214,14 @@ function App() {
         <div className="fixed bottom-0 right-1/4 w-80 h-80 bg-emerald-300/10 rounded-full blur-3xl pointer-events-none animate-pulse" style={{ animationDelay: '2s' }} />
         <div className="fixed top-1/2 right-0 w-64 h-64 bg-amber-200/10 rounded-full blur-3xl pointer-events-none animate-pulse" style={{ animationDelay: '4s' }} />
 
-        {/* Sticky Header - Cohesive translucent glass */}
-        <div className="sticky top-0 z-40 backdrop-blur-xl bg-stone-100/55 border-b border-stone-300/40 shadow-md shadow-stone-900/10 print:static print:border-none">
-          <div className="max-w-7xl mx-auto px-4 md:px-8 py-4">
+        {/* Sticky Header - Liquid Glass */}
+        <div className="sticky top-0 z-40 print:static print:border-none">
+          {/* Stacked glass layers */}
+          <div className="absolute inset-0 bg-white/30 backdrop-blur-2xl" />
+          <div className="absolute inset-0 bg-gradient-to-b from-white/40 to-white/20" />
+          <div className="absolute inset-x-0 bottom-0 h-px bg-white/50" />
+          <div className="absolute inset-0 shadow-lg shadow-stone-400/15" />
+          <div className="relative max-w-7xl mx-auto px-4 md:px-8 py-4">
             {/* Header */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 print:hidden">
               <div>
