@@ -80,6 +80,7 @@ export const ActiveIngredientsList = ({ ingredients, onAdd, onRemove, onUpdate, 
             title="Active Ingredients"
             icon={Beaker}
             collapsible
+            tooltip="Add cannabinoids (CBD, THC, CBG, etc.) with purity percentages. The calculator automatically tracks total active mg per base unit and compares to your target potency."
             action={
                 <button onClick={() => setIsAdding(!isAdding)} className="text-xs bg-black text-white px-3 py-1.5 rounded hover:bg-neutral-800 transition-colors flex items-center gap-1">
                     <Plus size={14} /> Add Active

@@ -49,6 +49,7 @@ export const RecipeSection = ({
             collapsible
             defaultCollapsed={true}
             subtitle={`${recipeConfig.baseUnitLabel} = ${totalRecipeGrams.toFixed(1)}g (${totalRecipeMl.toFixed(1)}ml)`}
+            tooltip="Define your base unit (e.g., 1 oz jar) and target potency. The formula weight shows total ingredient mass per base unit. Coverage indicates if ingredients match your base unit size."
         >
             <div className="space-y-6">
                 {/* Base Unit Configuration */}

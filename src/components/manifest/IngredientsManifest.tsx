@@ -348,6 +348,7 @@ export const IngredientsManifest = ({
             icon={ClipboardList}
             subtitle={`${baseUnits.toFixed(0)} units × ${recipeConfig.baseUnitLabel}`}
             collapsible
+            tooltip="Production shopping list showing scaled ingredient quantities for your batch size. Export as CSV or PDF for manufacturing."
             action={
                 <div className="flex items-center gap-2">
                     {/* Export Dropdown */}
@@ -355,7 +356,6 @@ export const IngredientsManifest = ({
                         <button
                             onClick={() => setShowExportMenu(!showExportMenu)}
                             className="flex items-center gap-1 px-2 py-1.5 rounded bg-white/15 backdrop-blur-sm text-white/80 hover:bg-white/25 text-xs font-medium transition-colors"
-                            title="Export manifest"
                         >
                             <Download size={14} />
                             Export

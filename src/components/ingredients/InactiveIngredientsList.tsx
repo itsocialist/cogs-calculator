@@ -70,6 +70,7 @@ export const InactiveIngredientsList = ({ ingredients, onAdd, onRemove, onUpdate
             title="Base & Inactive Ingredients"
             icon={FlaskConical}
             collapsible
+            tooltip="Add carriers (coconut oil, MCT), bases (butter, wax), and terpenes. These ingredients provide volume and texture but don't contribute to cannabinoid potency."
             action={
                 <button onClick={() => setIsAdding(!isAdding)} className="text-xs bg-black text-white px-3 py-1.5 rounded hover:bg-neutral-800 transition-colors flex items-center gap-1">
                     <Plus size={14} /> Add Inactive

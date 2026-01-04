@@ -109,7 +109,8 @@ export const ManufacturingView = ({
             {/* SECTION 2: Batch Scaling - Volume/weight based */}
             <Card
                 title="Batch Scaling"
-                icon={Settings}
+                icon={Scale}
+                tooltip="Set your batch volume (L, ml, or fl oz). The calculator converts volume to weight using density and determines how many base units you can produce."
                 collapsible
             >
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 items-end">

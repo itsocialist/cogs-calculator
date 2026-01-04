@@ -72,20 +72,28 @@ export const SKUConfiguration = ({
 
     const getSkuCalc = (skuId: number) => skuCalculations.find(c => c.skuId === skuId);
 
+    const handleAddSKU = () => {
+        if (!isOverAllocated) {
+            setIsAdding(!isAdding);
+        }
+    };
+
     return (
         <Card
             title="SKU Configuration"
             icon={Package}
+            subtitle={`${totalWeightAllocated.toFixed(0)}g allocated / ${totalBatchWeightGrams.toFixed(0)}g batch`}
             collapsible
+            tooltip="Define product sizes and quantities. Total allocated weight cannot exceed batch weight. Each SKU's potency is calculated based on its weight allocation from the formula."
             action={
                 <button
-                    onClick={() => !isOverAllocated && setIsAdding(!isAdding)}
+                    onClick={handleAddSKU}
                     disabled={isOverAllocated}
-                    title={isOverAllocated ? "Cannot add SKU: Batch is over-allocated" : "Add new SKU"}
                     className={`text-xs px-3 py-1.5 rounded transition-colors flex items-center gap-1 ${isOverAllocated
-                        ? 'bg-neutral-100 text-neutral-400 cursor-not-allowed border border-neutral-200'
+                        ? 'bg-neutral-600 text-neutral-400 cursor-not-allowed'
                         : 'bg-black text-white hover:bg-neutral-800'
                         }`}
+                    title={isOverAllocated ? "Cannot add SKU: Batch is over-allocated" : "Add new SKU"}
                 >
                     <Plus size={14} /> Add SKU
                 </button>

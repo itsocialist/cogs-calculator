@@ -17,6 +17,8 @@ interface CardProps {
     iconClassName?: string;
     /** Enable mouse-tracking spotlight effect */
     spotlight?: boolean;
+    /** Tooltip text to display on info icon hover */
+    tooltip?: string;
 }
 
 export const Card = ({
@@ -31,7 +33,8 @@ export const Card = ({
     headerClassName = "",
     titleClassName = "text-white/90",
     iconClassName = "text-amber-300/80",
-    spotlight = true
+    spotlight = true,
+    tooltip
 }: CardProps) => {
     const [isCollapsed, setIsCollapsed] = useState(defaultCollapsed);
     const { containerProps, spotlightStyle, isHovering } = useSpotlight({
@@ -72,6 +75,18 @@ export const Card = ({
                     <div className="relative flex items-center gap-2 z-10">
                         {Icon && <Icon size={18} className={`${iconClassName} print:text-black`} />}
                         <h3 className={`font-bold text-sm uppercase tracking-wide print:text-black ${titleClassName}`}>{title}</h3>
+                        {tooltip && (
+                            <span
+                                className="text-white/40 hover:text-white/70 transition-colors cursor-help print:hidden group relative"
+                                title={tooltip}
+                            >
+                                ⓘ
+                                {/* Custom tooltip on hover */}
+                                <span className="invisible group-hover:visible absolute left-0 top-full mt-2 w-64 bg-stone-900/95 backdrop-blur-xl border border-white/20 rounded-lg p-3 text-xs text-white/90 font-normal normal-case shadow-xl z-50 pointer-events-none">
+                                    {tooltip}
+                                </span>
+                            </span>
+                        )}
                         {subtitle && <span className="text-xs text-white/60 font-normal normal-case ml-2">— {subtitle}</span>}
                         {collapsible && (
                             <span className="text-white/60 ml-1 print:hidden">
