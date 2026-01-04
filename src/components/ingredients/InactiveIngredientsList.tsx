@@ -93,7 +93,7 @@ export const InactiveIngredientsList = ({ ingredients, onAdd, onRemove, onUpdate
                                 type="text"
                                 value={item.name}
                                 onChange={(e) => handleNameChange(item.id, e.target.value)}
-                                className="w-full bg-transparent font-medium text-neutral-900 text-sm focus:outline-none focus:bg-yellow-50 rounded px-1"
+                                className="w-full bg-transparent font-medium text-white/90 text-sm focus:outline-none focus:bg-white/10 focus:text-white rounded px-1"
                             />
                         </div>
                         <div className="col-span-2">
@@ -129,10 +129,10 @@ export const InactiveIngredientsList = ({ ingredients, onAdd, onRemove, onUpdate
                             </select>
                         </div>
                         <div className="col-span-2 flex items-center gap-1">
-                            <span className="text-xs text-neutral-400 font-mono">
+                            <span className="text-xs text-white/50 font-mono">
                                 {item.gramsPerRecipeUnit ? item.gramsPerRecipeUnit.toFixed(1) : "0.0"}g
                             </span>
-                            <button onClick={() => onRemove(item.id)} className="text-neutral-300 hover:text-red-500 print:hidden ml-auto">
+                            <button onClick={() => onRemove(item.id)} className="text-white/40 hover:text-red-500 print:hidden ml-auto">
                                 <Trash2 size={14} />
                             </button>
                         </div>

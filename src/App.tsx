@@ -383,6 +383,28 @@ function App() {
                   }}
                   onDelete={(id) => calc.setSnapshots(calc.snapshots.filter(s => s.id !== id))}
                   onSave={() => calc.saveSnapshot()}
+                  onImport={(json) => {
+                    try {
+                      const data = JSON.parse(json);
+                      const snap: import('./lib/types').Snapshot = {
+                        id: Date.now(),
+                        name: data.name || `Imported ${new Date().toLocaleTimeString()}`,
+                        config: {
+                          recipeConfig: data.recipeConfig,
+                          batchConfig: data.batchConfig,
+                          activeIngredients: data.activeIngredients,
+                          inactiveIngredients: data.inactiveIngredients,
+                          skus: data.skus,
+                          logistics: data.logistics,
+                          pricing: data.pricing,
+                        },
+                        cost: 0, // Will be recalculated on load
+                      };
+                      calc.setSnapshots([snap, ...calc.snapshots]);
+                    } catch (e) {
+                      console.error('Failed to import snapshot:', e);
+                    }
+                  }}
                 />
               )}
 

@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react';
-import { History, Trash2, Save, Upload, Clock } from 'lucide-react';
+import { History, Trash2, Save, Upload, Clock, Download } from 'lucide-react';
 import type { Snapshot } from '../../lib/types';
 
 interface Props {
@@ -30,6 +30,23 @@ export const SnapshotsView = ({ snapshots, onLoad, onDelete, onSave, onImport }:
 
     const handleImportClick = () => {
         fileInputRef.current?.click();
+    };
+
+    const handleExport = (snap: Snapshot) => {
+        const exportData = {
+            name: snap.name,
+            exportedAt: new Date().toISOString(),
+            version: '1.0',
+            ...snap.config
+        };
+        const json = JSON.stringify(exportData, null, 2);
+        const blob = new Blob([json], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `${snap.name.replace(/[^a-z0-9]/gi, '_')}_snapshot.json`;
+        a.click();
+        URL.revokeObjectURL(url);
     };
 
     const handleImportFile = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -159,6 +176,14 @@ export const SnapshotsView = ({ snapshots, onLoad, onDelete, onSave, onImport }:
                                         className="px-3 py-1.5 bg-white/15 text-white rounded-lg hover:bg-white/20 transition-colors text-sm font-medium border border-white/10"
                                     >
                                         Load
+                                    </button>
+
+                                    <button
+                                        onClick={() => handleExport(snap)}
+                                        className="p-1.5 text-white/40 hover:text-white/70 hover:bg-white/10 rounded transition-colors"
+                                        title="Export as JSON"
+                                    >
+                                        <Download size={16} />
                                     </button>
 
                                     <button
