@@ -1,4 +1,4 @@
-import { Settings } from 'lucide-react';
+import { Scale } from 'lucide-react';
 import { Card } from '../ui/Card';
 import { NumberInput } from '../ui/NumberInput';
 import { RecipeSection } from '../recipe/RecipeSection';
