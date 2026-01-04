@@ -27,7 +27,7 @@ export const InactiveIngredientsList = ({ ingredients, onAdd, onRemove, onUpdate
     const [newItem, setNewItem] = useState<Omit<InactiveIngredient, 'id'>>({
         name: "",
         costPerKg: 0,
-        unit: 'cup',
+        unit: 'g',
         amount: 0,
         densityGPerMl: 1.0,
         gramsPerRecipeUnit: 0,
@@ -39,7 +39,7 @@ export const InactiveIngredientsList = ({ ingredients, onAdd, onRemove, onUpdate
         if (!newItem.name) return;
         // Calculation handled by derived state in useCalculator
         onAdd(newItem);
-        setNewItem({ name: "", costPerKg: 0, unit: 'cup', amount: 0, densityGPerMl: 1.0, gramsPerRecipeUnit: 0, gramsInBatch: 0, type: 'base' });
+        setNewItem({ name: "", costPerKg: 0, unit: 'g', amount: 0, densityGPerMl: 1.0, gramsPerRecipeUnit: 0, gramsInBatch: 0, type: 'base' });
         setIsAdding(false);
     };
 

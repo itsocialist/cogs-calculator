@@ -106,6 +106,61 @@ export const DraggableMathPanel = ({ data, onClose }: Props) => {
                     Accounting Tape
                 </div>
                 <div className="flex items-center gap-2">
+                    <button
+                        onClick={() => {
+                            // Generate CSV with version metadata
+                            const csvLines = [
+                                `"ROLOS KITCHEN COGS Calculator v0.1.0"`,
+                                `"Exported: ${new Date().toISOString()}"`,
+                                `"Product: ${data.batchConfig.productName}"`,
+                                ``,
+                                `"Section","Metric","Value"`,
+                                `"Batch","Input Weight (kg)","${data.batchConfig.batchSizeKg}"`,
+                                `"Batch","Formula Weight (g)","${data.totalBatchWeightGrams}"`,
+                                `"Batch","Total Active (mg)","${data.totalActiveMg.toFixed(0)}"`,
+                                `"Batch","Total Units","${data.unitsProduced}"`,
+                                ``,
+                                `"Unit Economics","Base Unit Size","${data.recipeConfig.baseUnitSize.toFixed(2)}g"`,
+                                `"Unit Economics","Base Unit Label","${data.recipeConfig.baseUnitLabel}"`,
+                                `"Unit Economics","Total Units","${data.unitsProduced}"`,
+                                ``,
+                                `"Potency","Target per Unit (mg)","${data.recipeConfig.targetPotencyMg}"`,
+                                `"Potency","Actual per Unit (mg)","${potencyPerUnit.toFixed(0)}"`,
+                                `"Potency","Variance (mg)","${(potencyPerUnit - data.recipeConfig.targetPotencyMg).toFixed(0)}"`,
+                                `"Potency","Safe","${isPotencySafe ? 'Yes' : 'No'}"`,
+                                ``,
+                                `"Costs","Material per Unit","$${materialCostPerUnit.toFixed(4)}"`,
+                                `"Costs","Labor per Unit","$${mfgLaborCostPerUnit.toFixed(4)}"`,
+                                `"Costs","Packaging per Unit","$${packagingCostPerUnit.toFixed(4)}"`,
+                                `"Costs","Fulfillment per Unit","$${fulfillmentCostPerUnit.toFixed(4)}"`,
+                                `"Costs","Logistics per Unit","$${logisticsCostPerUnit.toFixed(4)}"`,
+                                `"Costs","Fully Loaded per Unit","$${fullyLoadedPerUnit.toFixed(4)}"`,
+                            ];
+
+                            if (firstSku) {
+                                csvLines.push(``);
+                                csvLines.push(`"Margins","Wholesale Price","$${firstSku.wholesalePrice.toFixed(2)}"`);
+                                csvLines.push(`"Margins","Wholesale Margin","$${firstSku.wholesaleMargin.toFixed(2)}"`);
+                                csvLines.push(`"Margins","Wholesale Margin %","${firstSku.wholesaleMarginPercent.toFixed(1)}%"`);
+                                csvLines.push(`"Margins","MSRP","$${firstSku.msrp.toFixed(2)}"`);
+                                csvLines.push(`"Margins","Retail Margin","$${firstSku.retailMargin.toFixed(2)}"`);
+                                csvLines.push(`"Margins","Retail Margin %","${firstSku.retailMarginPercent.toFixed(1)}%"`);
+                            }
+
+                            const csv = csvLines.join('\n');
+                            const blob = new Blob([csv], { type: 'text/csv' });
+                            const url = URL.createObjectURL(blob);
+                            const a = document.createElement('a');
+                            a.href = url;
+                            a.download = `${data.batchConfig.productName.replace(/\s+/g, '_')}_calculations.csv`;
+                            a.click();
+                            URL.revokeObjectURL(url);
+                        }}
+                        className="text-xs px-2 py-1 bg-white/10 hover:bg-white/20 rounded transition-colors"
+                        title="Download calculations as CSV"
+                    >
+                        Export CSV
+                    </button>
                     <GripHorizontal size={16} className="text-neutral-500" />
                     <button onClick={onClose} className="hover:text-red-400">
                         <X size={16} />

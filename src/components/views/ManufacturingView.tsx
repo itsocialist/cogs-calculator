@@ -154,12 +154,43 @@ export const ManufacturingView = ({
                     </div>
                     <div>
                         <span className="text-white/50">Formula: </span>
-                        <span className={`font-mono font-bold ${totalBatchWeightGrams > batchWeightGrams ? 'text-red-500' : 'text-green-600'}`}>
-                            {totalBatchWeightGrams.toLocaleString()}g
-                            {totalBatchWeightGrams > batchWeightGrams && (
-                                <span className="text-xs ml-1">⚠️ Over</span>
-                            )}
-                        </span>
+                        {(() => {
+                            const variance = totalBatchWeightGrams - batchWeightGrams;
+                            const variancePercent = batchWeightGrams > 0 ? Math.abs(variance / batchWeightGrams * 100) : 0;
+
+                            // Determine color based on variance percentage
+                            let colorClass = 'text-green-500';
+                            let statusIcon = '✓';
+                            let statusText = 'within tolerance';
+
+                            if (variancePercent >= 5) {
+                                colorClass = 'text-red-500';
+                                statusIcon = '❌';
+                                statusText = 'action required';
+                            } else if (variancePercent >= 2) {
+                                colorClass = 'text-yellow-500';
+                                statusIcon = '⚠️';
+                                statusText = 'review recommended';
+                            }
+
+                            const tooltipText = variance > 0
+                                ? `Formula weight is ${Math.abs(variance).toFixed(0)}g over target batch weight. This ${variancePercent.toFixed(1)}% variance is ${statusText}.`
+                                : variance < 0
+                                    ? `Formula weight is ${Math.abs(variance).toFixed(0)}g under target batch weight. This ${variancePercent.toFixed(1)}% variance is ${statusText}.`
+                                    : `Formula weight matches target batch weight exactly.`;
+
+                            return (
+                                <span
+                                    className={`font-mono font-bold ${colorClass} cursor-help`}
+                                    title={tooltipText}
+                                >
+                                    {totalBatchWeightGrams.toLocaleString(undefined, { maximumFractionDigits: 0 })}g / {batchWeightGrams.toLocaleString(undefined, { maximumFractionDigits: 0 })}g
+                                    <span className="text-xs ml-1">
+                                        ({variance >= 0 ? '+' : ''}{variancePercent.toFixed(1)}%) {statusIcon}
+                                    </span>
+                                </span>
+                            );
+                        })()}
                     </div>
                 </div>
             </Card>

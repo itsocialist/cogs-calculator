@@ -12,6 +12,8 @@ Format based on [Keep a Changelog](https://keepachangelog.com/).
 - Mouse-tracking spotlight effect on cards (planned)
 
 ### Changed
+- **Ingredient defaults** — Inactive ingredients now default to grams (g) instead of cups for consistency with active ingredients
+- **Help documentation** — Clarified that JSON format is not required for calculations; all math works directly in the UI
 - Export dropdown now fully opaque with proper click handling
 - StickyNotes use dark translucent glass aesthetic
 - KPI status indicators moved from left to top border
