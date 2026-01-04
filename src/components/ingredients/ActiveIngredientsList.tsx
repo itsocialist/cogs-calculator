@@ -103,7 +103,7 @@ export const ActiveIngredientsList = ({ ingredients, onAdd, onRemove, onUpdate }
                                 type="text"
                                 value={item.name}
                                 onChange={(e) => handleNameChange(item.id, e.target.value)}
-                                className="w-full bg-transparent font-medium text-neutral-900 text-sm focus:outline-none focus:bg-yellow-50 rounded px-1 truncate"
+                                className="w-full bg-transparent font-medium text-white/90 text-sm focus:outline-none focus:bg-white/10 focus:text-white rounded px-1 truncate"
                                 title={item.name}
                             />
                         </div>
@@ -148,15 +148,15 @@ export const ActiveIngredientsList = ({ ingredients, onAdd, onRemove, onUpdate }
                                     className="w-12 bg-white/15 backdrop-blur-sm border-0 rounded px-1 py-1 text-xs text-right text-white/90 focus:outline-none focus:ring-1 focus:ring-white/30"
                                     step={0.5}
                                 />
-                                <span className="text-xs text-neutral-400">%</span>
+                                <span className="text-xs text-white/50">%</span>
                             </div>
-                            <span className="text-xs text-neutral-400 text-right w-12 truncate">
+                            <span className="text-xs text-white/50 text-right w-12 truncate">
                                 ({item.gramsPerRecipeUnit.toFixed(2)}g)
                             </span>
                             <span className="text-xs font-mono text-green-600 font-bold ml-1">
                                 ~{(item.gramsPerRecipeUnit * item.purityPercent / 100 * 1000).toFixed(0)}mg
                             </span>
-                            <button onClick={() => onRemove(item.id)} className="text-neutral-300 hover:text-red-500 print:hidden ml-auto">
+                            <button onClick={() => onRemove(item.id)} className="text-white/40 hover:text-red-500 print:hidden ml-auto">
                                 <Trash2 size={14} />
                             </button>
                         </div>
@@ -165,12 +165,12 @@ export const ActiveIngredientsList = ({ ingredients, onAdd, onRemove, onUpdate }
 
                 {/* Add Row */}
                 {isAdding && (
-                    <div className="grid grid-cols-12 gap-1 items-center bg-yellow-50 p-2 rounded-lg animate-in fade-in">
+                    <div className="grid grid-cols-12 gap-1 items-center bg-white/10 border border-white/20 p-2 rounded-lg animate-in fade-in">
                         <div className="col-span-2">
                             <input
                                 autoFocus
                                 placeholder="Name"
-                                className="w-full bg-white border border-neutral-300 rounded px-2 py-1.5 text-sm"
+                                className="w-full bg-white/15 border border-white/20 rounded px-2 py-1.5 text-sm text-white placeholder-white/40 focus:outline-none focus:ring-1 focus:ring-white/30"
                                 value={newItem.name}
                                 onChange={(e) => {
                                     const name = e.target.value;
@@ -184,7 +184,7 @@ export const ActiveIngredientsList = ({ ingredients, onAdd, onRemove, onUpdate }
                             <select
                                 value={newItem.cannabinoid}
                                 onChange={(e) => setNewItem({ ...newItem, cannabinoid: e.target.value as CannabinoidType })}
-                                className="w-full bg-white border border-neutral-300 rounded px-0.5 py-1 text-xs"
+                                className="w-full bg-white/15 border border-white/20 rounded px-0.5 py-1 text-xs text-white/80 focus:outline-none focus:ring-1 focus:ring-white/30"
                             >
                                 {CANNABINOID_OPTIONS.map(opt => (
                                     <option key={opt.value} value={opt.value}>{opt.label}</option>
@@ -201,7 +201,7 @@ export const ActiveIngredientsList = ({ ingredients, onAdd, onRemove, onUpdate }
                             <select
                                 value={newItem.unit}
                                 onChange={(e) => setNewItem({ ...newItem, unit: e.target.value as VolumeUnit })}
-                                className="bg-white border border-neutral-300 rounded px-1 py-1 text-xs w-14"
+                                className="bg-white/15 border border-white/20 rounded px-1 py-1 text-xs text-white/80 w-14 focus:outline-none focus:ring-1 focus:ring-white/30"
                             >
                                 {UNIT_OPTIONS.map(opt => (
                                     <option key={opt.value} value={opt.value}>{opt.label}</option>
@@ -209,7 +209,7 @@ export const ActiveIngredientsList = ({ ingredients, onAdd, onRemove, onUpdate }
                             </select>
                         </div>
                         <div className="col-span-3 flex items-center justify-end gap-2">
-                            <button onClick={handleAdd} className="text-xs bg-black text-white px-2 py-1 rounded">Save</button>
+                            <button onClick={handleAdd} className="text-xs bg-white/20 text-white px-3 py-1.5 rounded hover:bg-white/30 transition-colors border border-white/20">Save</button>
                         </div>
                     </div>
                 )}
