@@ -9,7 +9,17 @@ Format based on [Keep a Changelog](https://keepachangelog.com/).
 ## [Unreleased]
 
 ### Added
-- Mouse-tracking spotlight effect on cards (planned)
+- (empty)
+
+### Changed
+- (empty)
+
+### Fixed
+- (empty)
+
+---
+
+## [v0.1.1] - 2026-01-04
 
 ### Changed
 - **Ingredient defaults** — Inactive ingredients now default to grams (g) instead of cups for consistency with active ingredients
