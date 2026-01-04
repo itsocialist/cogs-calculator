@@ -1,11 +1,18 @@
 # COGS Calculator Backlog
 
+## Next Sprint
+
+- [ ] **Theme toggle in Config** - Add switch to toggle between current production styling and new Liquid Glass styling
+- [ ] **Auto-tallying** - Automatic calculation updates as values change
+
 ## Planned Features
 
-_No current items - backlog is empty!_
+_No additional items_
 
 ## Completed
-- [x] **Mouse-tracking spotlight on cards** - Added subtle gradient light that follows cursor on hover for Cards, Manifest totals, and KPI cards
+- [x] **Export dropdown z-index fix** - Action container raised to z-30, dropdown fully functional
+- [x] **Mouse-tracking spotlight on cards** - Subtle gradient that follows cursor on Cards, Manifest totals, and KPI cards
+- [x] **Staging workflow fix** - Changed clean:true to clean:false to prevent production wipes
 - [x] **GitHub Workflow System** - `/issue`, `/release`, `/docs` workflows with doc maintenance rules
 - [x] Glass UI style system refactor
 - [x] Config page dark glass styling
