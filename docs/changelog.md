@@ -20,6 +20,7 @@ Format based on [Keep a Changelog](https://keepachangelog.com/).
 - Config page updated to dark glass styling
 
 ### Fixed
+- **COST/GRAM KPI** — Fixed KPI always showing $0.000 by passing `totalBatchWeight` prop to KPIGrid component
 - Export dropdown click-through to underlying table rows
 
 ---
