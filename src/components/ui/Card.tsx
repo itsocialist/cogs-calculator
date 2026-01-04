@@ -82,7 +82,7 @@ export const Card = ({
                             >
                                 ⓘ
                                 {/* Custom tooltip on hover */}
-                                <span className="invisible group-hover:visible absolute left-0 top-full mt-2 w-64 bg-stone-900/95 backdrop-blur-xl border border-white/20 rounded-lg p-3 text-xs text-white/90 font-normal normal-case shadow-xl z-50 pointer-events-none">
+                                <span className="invisible group-hover:visible absolute left-0 top-full mt-2 w-64 bg-stone-900/95 backdrop-blur-xl border border-white/20 rounded-lg p-3 text-xs text-white/90 font-normal normal-case shadow-xl z-[9999] pointer-events-none">
                                     {tooltip}
                                 </span>
                             </span>
