@@ -43,10 +43,10 @@ export const Card = ({
         // Outer glass layer - darkened for better contrast
         <div
             {...containerProps}
-            className={`relative rounded-2xl overflow-hidden print:shadow-none print:border-slate-300 print:bg-white transition-all duration-300 ${isHovering ? 'shadow-2xl shadow-black/40' : ''} ${className}`}
+            className={`relative rounded-2xl print:shadow-none print:border-slate-300 print:bg-white transition-all duration-300 ${isHovering ? 'shadow-2xl shadow-black/40' : ''} ${className}`}
         >
             {/* Glass background layer - darker base for contrast */}
-            <div className="absolute inset-0 bg-stone-900/70 backdrop-blur-xl" />
+            <div className="absolute inset-0 bg-stone-900/70 backdrop-blur-xl rounded-2xl overflow-hidden" />
 
             {/* Spotlight layer - mouse tracking gradient */}
             {spotlight && (
@@ -79,7 +79,7 @@ export const Card = ({
                             </span>
                         )}
                     </div>
-                    {action && <div className="relative z-10 print:hidden" onClick={(e) => e.stopPropagation()}>{action}</div>}
+                    {action && <div className="relative z-30 print:hidden" onClick={(e) => e.stopPropagation()}>{action}</div>}
                 </div>
 
                 {/* Content area - slightly lighter glass layer for subtle depth */}

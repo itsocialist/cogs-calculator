@@ -364,24 +364,22 @@ export const IngredientsManifest = ({
 
                         {showExportMenu && (
                             <div
-                                className="absolute right-0 top-full mt-1 w-48 bg-stone-900 backdrop-blur-xl rounded-lg shadow-2xl border border-white/20 overflow-hidden z-50 animate-in fade-in slide-in-from-top-2 pointer-events-auto"
-                                onClick={(e) => e.stopPropagation()}
-                                onMouseEnter={(e) => e.stopPropagation()}
-                                onMouseMove={(e) => e.stopPropagation()}
+                                className="absolute right-0 top-full mt-1 w-36 bg-neutral-900 rounded-lg shadow-2xl border border-neutral-700 z-[100]"
+                                style={{ pointerEvents: 'auto' }}
                             >
                                 <button
-                                    onClick={(e) => { e.stopPropagation(); handleExportCSV(); }}
-                                    className="w-full text-left px-4 py-3 hover:bg-white/15 text-sm flex items-center gap-3 text-white/90 transition-colors"
+                                    onClick={() => { handleExportCSV(); setShowExportMenu(false); }}
+                                    className="w-full text-left px-4 py-3 hover:bg-neutral-800 text-sm flex items-center gap-3 text-white transition-colors rounded-t-lg"
                                 >
                                     <FileSpreadsheet size={16} className="text-emerald-400" />
-                                    <span>Download CSV</span>
+                                    <span>CSV</span>
                                 </button>
                                 <button
-                                    onClick={(e) => { e.stopPropagation(); handleExportPDF(); }}
-                                    className="w-full text-left px-4 py-3 hover:bg-white/15 text-sm flex items-center gap-3 border-t border-white/15 text-white/90 transition-colors"
+                                    onClick={() => { handleExportPDF(); setShowExportMenu(false); }}
+                                    className="w-full text-left px-4 py-3 hover:bg-neutral-800 text-sm flex items-center gap-3 border-t border-neutral-700 text-white transition-colors rounded-b-lg"
                                 >
                                     <FileText size={16} className="text-rose-400" />
-                                    <span>Export PDF (PO Style)</span>
+                                    <span>PDF</span>
                                 </button>
                             </div>
                         )}
