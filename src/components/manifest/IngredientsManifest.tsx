@@ -1,6 +1,7 @@
 import { ClipboardList, Download, FileText, FileSpreadsheet, ChevronDown } from 'lucide-react';
 import { useState, useRef, useEffect } from 'react';
 import { Card } from '../ui/Card';
+import { SpotlightCard } from '../ui/SpotlightCard';
 import { useConfig } from '../../context/configContext';
 import type { RecipeConfig, ActiveIngredient, InactiveIngredient } from '../../lib/types';
 
@@ -446,30 +447,30 @@ export const IngredientsManifest = ({
                     </table>
                 </div>
 
-                {/* Summary Cards - Glass Style */}
+                {/* Summary Cards - Glass Style with Spotlight */}
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-3 pt-2">
-                    <div className="bg-white/10 backdrop-blur-sm p-3 rounded-lg text-center border border-white/15">
+                    <SpotlightCard className="bg-white/10 backdrop-blur-sm p-3 rounded-lg text-center border border-white/15">
                         <div className="text-xs text-white/50 font-bold uppercase">Base Units</div>
                         <div className="text-xl font-black text-white/90">{baseUnits.toFixed(0)}</div>
-                    </div>
-                    <div className="bg-white/10 backdrop-blur-sm p-3 rounded-lg text-center border border-white/15">
+                    </SpotlightCard>
+                    <SpotlightCard className="bg-white/10 backdrop-blur-sm p-3 rounded-lg text-center border border-white/15">
                         <div className="text-xs text-white/50 font-bold uppercase">Total Weight</div>
                         <div className="text-xl font-black text-white/90">
                             {convertFromGrams(totalWeight, config.manifest.weightScale).toLocaleString()}
                             <span className="text-sm ml-1 text-white/40">{config.manifest.weightScale}</span>
                         </div>
-                    </div>
-                    <div className="bg-white/10 backdrop-blur-sm p-3 rounded-lg text-center border border-white/15">
+                    </SpotlightCard>
+                    <SpotlightCard className="bg-white/10 backdrop-blur-sm p-3 rounded-lg text-center border border-white/15">
                         <div className="text-xs text-white/50 font-bold uppercase">Total Volume</div>
                         <div className="text-xl font-black text-white/90">
                             {convertFromMl(totalVolumeMl, config.manifest.volumeScale).toLocaleString()}
                             <span className="text-sm ml-1 text-white/40">{config.manifest.volumeScale}</span>
                         </div>
-                    </div>
-                    <div className="bg-emerald-500/15 backdrop-blur-sm p-3 rounded-lg text-center border border-emerald-400/30">
+                    </SpotlightCard>
+                    <SpotlightCard className="bg-emerald-500/15 backdrop-blur-sm p-3 rounded-lg text-center border border-emerald-400/30" opacity={0.15}>
                         <div className="text-xs text-emerald-400/80 font-bold uppercase">Materials Cost</div>
                         <div className="text-xl font-black text-emerald-400">${totalCost.toFixed(2)}</div>
-                    </div>
+                    </SpotlightCard>
                 </div>
             </div>
         </Card>

@@ -2,10 +2,10 @@
 
 ## Planned Features
 
-### P1 - UI Enhancements
-- [ ] **Mouse-tracking spotlight on cards** - Add subtle gradient light that follows cursor on hover for Manifest totals, KPI cards, and other interactive cards
+_No current items - backlog is empty!_
 
 ## Completed
+- [x] **Mouse-tracking spotlight on cards** - Added subtle gradient light that follows cursor on hover for Cards, Manifest totals, and KPI cards
 - [x] **GitHub Workflow System** - `/issue`, `/release`, `/docs` workflows with doc maintenance rules
 - [x] Glass UI style system refactor
 - [x] Config page dark glass styling

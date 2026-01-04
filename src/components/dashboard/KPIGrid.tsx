@@ -1,32 +1,53 @@
 import { useState, useRef, useCallback } from 'react';
 import { CheckCircle2, AlertTriangle, TrendingUp, DollarSign, Scale } from 'lucide-react';
+import { useSpotlight } from '../../hooks/useSpotlight';
 
-// Wrapper for hover-expand effect after 2 seconds
+// Wrapper for hover-expand effect after 2 seconds + spotlight
 const HoverExpandCard = ({ children, className }: { children: React.ReactNode; className: string }) => {
     const [isExpanded, setIsExpanded] = useState(false);
     const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+    const { containerProps, spotlightStyle, isHovering } = useSpotlight({
+        size: 250,
+        opacity: 0.1
+    });
 
     const handleMouseEnter = useCallback(() => {
+        containerProps.onMouseEnter();
         timerRef.current = setTimeout(() => {
             setIsExpanded(true);
         }, 2000);
-    }, []);
+    }, [containerProps]);
 
     const handleMouseLeave = useCallback(() => {
+        containerProps.onMouseLeave();
         if (timerRef.current) {
             clearTimeout(timerRef.current);
             timerRef.current = null;
         }
         setIsExpanded(false);
-    }, []);
+    }, [containerProps]);
 
     return (
         <div
-            className={`${className} transition-transform duration-300 ${isExpanded ? 'scale-125 z-50 shadow-2xl' : ''}`}
+            ref={containerProps.ref}
+            onMouseMove={containerProps.onMouseMove}
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
+            className={`${className} relative overflow-hidden transition-all duration-300 ${isExpanded ? 'scale-125 z-50 shadow-2xl' : ''} ${isHovering && !isExpanded ? 'shadow-xl shadow-black/40' : ''}`}
         >
-            {children}
+            {/* Spotlight layer */}
+            <div
+                className="absolute inset-0 pointer-events-none transition-opacity duration-200 z-10 rounded-lg"
+                style={spotlightStyle}
+            />
+            {/* Border highlight on hover */}
+            <div
+                className={`absolute inset-0 rounded-lg border-2 transition-colors duration-300 pointer-events-none z-20 ${isHovering ? 'border-white/25' : 'border-transparent'}`}
+            />
+            {/* Content */}
+            <div className="relative z-30">
+                {children}
+            </div>
         </div>
     );
 };

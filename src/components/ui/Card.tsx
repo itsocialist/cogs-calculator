@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import type { LucideIcon } from 'lucide-react';
 import { ChevronDown, ChevronUp } from 'lucide-react';
+import { useSpotlight } from '../../hooks/useSpotlight';
 
 interface CardProps {
     children: React.ReactNode;
@@ -14,6 +15,8 @@ interface CardProps {
     headerClassName?: string;
     titleClassName?: string;
     iconClassName?: string;
+    /** Enable mouse-tracking spotlight effect */
+    spotlight?: boolean;
 }
 
 export const Card = ({
@@ -27,20 +30,37 @@ export const Card = ({
     defaultCollapsed = false,
     headerClassName = "",
     titleClassName = "text-white/90",
-    iconClassName = "text-amber-300/80"
+    iconClassName = "text-amber-300/80",
+    spotlight = true
 }: CardProps) => {
     const [isCollapsed, setIsCollapsed] = useState(defaultCollapsed);
+    const { containerProps, spotlightStyle, isHovering } = useSpotlight({
+        size: 400,
+        opacity: 0.06
+    });
 
     return (
         // Outer glass layer - darkened for better contrast
-        <div className={`relative rounded-2xl overflow-hidden print:shadow-none print:border-slate-300 print:bg-white ${className}`}>
+        <div
+            {...containerProps}
+            className={`relative rounded-2xl overflow-hidden print:shadow-none print:border-slate-300 print:bg-white transition-all duration-300 ${isHovering ? 'shadow-2xl shadow-black/40' : ''} ${className}`}
+        >
             {/* Glass background layer - darker base for contrast */}
             <div className="absolute inset-0 bg-stone-900/70 backdrop-blur-xl" />
+
+            {/* Spotlight layer - mouse tracking gradient */}
+            {spotlight && (
+                <div
+                    className="absolute inset-0 pointer-events-none transition-opacity duration-300 z-10"
+                    style={spotlightStyle}
+                />
+            )}
+
             {/* Glass border/edge highlight */}
-            <div className="absolute inset-0 rounded-2xl border border-white/15 shadow-xl shadow-black/30" />
+            <div className={`absolute inset-0 rounded-2xl border shadow-xl shadow-black/30 transition-colors duration-300 ${isHovering ? 'border-white/25' : 'border-white/15'}`} />
 
             {/* Content wrapper */}
-            <div className="relative">
+            <div className="relative z-20">
                 {/* Header - thicker glass layer */}
                 <div
                     className={`px-6 py-4 flex items-center justify-between print:bg-white print:border-b-2 print:border-black relative ${headerClassName} ${collapsible ? 'cursor-pointer hover:bg-white/5 transition-all' : ''}`}
