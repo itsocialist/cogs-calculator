@@ -382,6 +382,7 @@ function App() {
                     setActiveTab('manufacturing');
                   }}
                   onDelete={(id) => calc.setSnapshots(calc.snapshots.filter(s => s.id !== id))}
+                  onSave={() => calc.saveSnapshot()}
                 />
               )}
 

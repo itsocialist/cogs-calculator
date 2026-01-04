@@ -135,7 +135,25 @@ export function useCalculator() {
     const [skus, setSkus] = useState<SKU[]>(DEFAULT_SKUS);
     const [logistics, setLogistics] = useState<LogisticsConfig>(DEFAULT_LOGISTICS);
     const [pricing, setPricing] = useState({ wholesale: 25, msrp: 55 });
-    const [snapshots, setSnapshots] = useState<Snapshot[]>([]);
+
+    // Snapshots with localStorage persistence
+    const [snapshots, setSnapshots] = useState<Snapshot[]>(() => {
+        try {
+            const saved = localStorage.getItem('rolos-cogs-snapshots');
+            return saved ? JSON.parse(saved) : [];
+        } catch {
+            return [];
+        }
+    });
+
+    // Persist snapshots to localStorage
+    useEffect(() => {
+        try {
+            localStorage.setItem('rolos-cogs-snapshots', JSON.stringify(snapshots));
+        } catch (e) {
+            console.error('Failed to save snapshots:', e);
+        }
+    }, [snapshots]);
 
     // -------------------------------------------------------------------------
     // CORE CALCULATION LOOP
