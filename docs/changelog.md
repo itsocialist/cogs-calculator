@@ -22,6 +22,13 @@ Format based on [Keep a Changelog](https://keepachangelog.com/).
 
 ---
 
+## [v0.1.0] - 2026-01-04
+
+### Fixed
+- **Inactive ingredient batch calculations** — `gramsInBatch` for inactive (base) ingredients was showing `0` in the Manufacturing Manifest. Now correctly calculates using `gramsPerRecipeUnit × baseUnitsInBatch`. (Fixes #3)
+
+---
+
 ## [v1.0.0] - 2026-01-03
 
 ### Added

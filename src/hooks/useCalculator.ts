@@ -425,7 +425,8 @@ export function useCalculator() {
         const snap: Snapshot = {
             id: Date.now(),
             name: `${batchConfig.productName} (${new Date().toLocaleTimeString()})`,
-            config: { recipeConfig, batchConfig, activeIngredients, inactiveIngredients, skus, logistics, pricing },
+            // Use derived ingredients (with computed gramsInBatch) for accurate snapshot
+            config: { recipeConfig, batchConfig, activeIngredients: derivedActiveIngredients, inactiveIngredients: derivedInactiveIngredients, skus, logistics, pricing },
             cost: calculations.fullyLoadedCost
         };
         setSnapshots([snap, ...snapshots]);
@@ -433,11 +434,20 @@ export function useCalculator() {
     };
 
     const loadSnapshot = (snap: Snapshot) => {
-        // Migration logic would go here if needed
+        // Migration logic: reset gramsInBatch to force recalculation from amount/unit
         if (snap.config.recipeConfig) setRecipeConfig(snap.config.recipeConfig);
         setBatchConfig(snap.config.batchConfig);
-        setActiveIngredients(snap.config.activeIngredients); // Ideally migrate old gramsInBatch to amount
-        setInactiveIngredients(snap.config.inactiveIngredients);
+        // Force recalculation by resetting gramsInBatch to 0 (derived values will recompute)
+        setActiveIngredients(snap.config.activeIngredients.map(i => ({
+            ...i,
+            gramsInBatch: 0,
+            gramsPerRecipeUnit: 0
+        })));
+        setInactiveIngredients(snap.config.inactiveIngredients.map(i => ({
+            ...i,
+            gramsInBatch: 0,
+            gramsPerRecipeUnit: 0
+        })));
         setSkus(snap.config.skus);
         setLogistics(snap.config.logistics);
         setPricing(snap.config.pricing);

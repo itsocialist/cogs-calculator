@@ -50,19 +50,19 @@ export const DraggableMathPanel = ({ data, onClose }: Props) => {
     const totalUnits = data.unitsProduced;
     const firstSku = data.skuCalculations[0];
 
-    // Combine Manifest for "Formula Costs"
-    const fullManifest = [
-        ...data.activeIngredients.map(i => ({
-            name: i.name,
-            cost: (i.gramsInBatch / 1000) * i.costPerKg,
-            isActive: true
-        })),
-        ...data.inactiveIngredients.map(i => ({
-            name: i.name,
-            cost: (i.gramsInBatch / 1000) * i.costPerKg,
-            isActive: false
-        }))
-    ];
+    // Separate manifests for Active and Inactive with subtotals
+    const activeManifest = data.activeIngredients.map(i => ({
+        name: i.name,
+        cost: (i.gramsInBatch / 1000) * i.costPerKg,
+        weight: i.gramsInBatch
+    }));
+    const inactiveManifest = data.inactiveIngredients.map(i => ({
+        name: i.name,
+        cost: (i.gramsInBatch / 1000) * i.costPerKg,
+        weight: i.gramsInBatch
+    }));
+    const activeSubtotal = activeManifest.reduce((sum, i) => sum + i.cost, 0);
+    const inactiveSubtotal = inactiveManifest.reduce((sum, i) => sum + i.cost, 0);
 
     const totalFormulaCost = data.totalFormulaCost;
     const materialCostPerUnit = totalUnits > 0 ? totalFormulaCost / totalUnits : 0;
@@ -124,13 +124,29 @@ export const DraggableMathPanel = ({ data, onClose }: Props) => {
                         <span>{batchSizeKg} kg</span>
                     </div>
                     <div className="flex justify-between py-0.5 text-neutral-500">
-                        <span>→ Convert to g</span>
+                        <span>→ Formula Weight</span>
                         <span>{data.totalBatchWeightGrams.toLocaleString()} g</span>
                     </div>
                     <div className="flex justify-between py-0.5">
                         <span>Total Active mg</span>
                         <span>{totalActiveMg.toLocaleString(undefined, { maximumFractionDigits: 0 })} mg</span>
                     </div>
+                    {/* Recipe Coverage */}
+                    {(() => {
+                        const ingredientWeightPerUnit = data.activeIngredients.reduce((s, i) => s + i.gramsPerRecipeUnit, 0)
+                            + data.inactiveIngredients.reduce((s, i) => s + i.gramsPerRecipeUnit, 0);
+                        const coverage = data.recipeConfig.baseUnitSize > 0
+                            ? (ingredientWeightPerUnit / data.recipeConfig.baseUnitSize) * 100 : 0;
+                        const isWarning = coverage < 90 || coverage > 110;
+                        return (
+                            <div className={`flex justify-between py-0.5 px-1 -mx-1 rounded ${isWarning ? 'bg-amber-100' : ''}`}>
+                                <span>Recipe Coverage</span>
+                                <span className={isWarning ? 'text-amber-700 font-bold' : 'text-green-700 font-bold'}>
+                                    {coverage.toFixed(1)}%
+                                </span>
+                            </div>
+                        );
+                    })()}
                 </div>
 
                 {/* Section: UNIT ECONOMICS */}
@@ -193,18 +209,43 @@ export const DraggableMathPanel = ({ data, onClose }: Props) => {
                     </div>
                 </div>
 
-                {/* Section: INGREDIENTS */}
+                {/* Section: ACTIVE INGREDIENTS */}
                 <div className="mb-4">
-                    <div className="border-b border-dashed border-neutral-300 mb-2 pb-1 font-bold text-neutral-500">FORMULA COSTS (Per Unit)</div>
+                    <div className="border-b border-dashed border-neutral-300 mb-2 pb-1 font-bold text-neutral-500">ACTIVE INGREDIENTS (Per Unit)</div>
 
-                    {fullManifest.map((item, i) => (
-                        <div key={i} className={`flex justify-between py-0.5 group hover:bg-neutral-50 ${item.isActive ? 'text-blue-700' : ''}`}>
+                    {activeManifest.map((item, i) => (
+                        <div key={i} className="flex justify-between py-0.5 group hover:bg-neutral-50 text-blue-700">
                             <span className="truncate pr-2 w-2/3">{item.name}</span>
                             <span>{fmtMoney(totalUnits > 0 ? item.cost / totalUnits : 0)}</span>
                         </div>
                     ))}
 
-                    <div className="border-t border-neutral-800 mt-2 pt-1 flex justify-between font-bold">
+                    <div className="border-t border-neutral-300 mt-1 pt-1 flex justify-between font-medium text-blue-800">
+                        <span>Active Subtotal</span>
+                        <span>{fmtMoney(totalUnits > 0 ? activeSubtotal / totalUnits : 0)}</span>
+                    </div>
+                </div>
+
+                {/* Section: INACTIVE INGREDIENTS */}
+                <div className="mb-4">
+                    <div className="border-b border-dashed border-neutral-300 mb-2 pb-1 font-bold text-neutral-500">INACTIVE INGREDIENTS (Per Unit)</div>
+
+                    {inactiveManifest.map((item, i) => (
+                        <div key={i} className="flex justify-between py-0.5 group hover:bg-neutral-50">
+                            <span className="truncate pr-2 w-2/3">{item.name}</span>
+                            <span>{fmtMoney(totalUnits > 0 ? item.cost / totalUnits : 0)}</span>
+                        </div>
+                    ))}
+
+                    <div className="border-t border-neutral-300 mt-1 pt-1 flex justify-between font-medium">
+                        <span>Inactive Subtotal</span>
+                        <span>{fmtMoney(totalUnits > 0 ? inactiveSubtotal / totalUnits : 0)}</span>
+                    </div>
+                </div>
+
+                {/* Section: FORMULA TOTAL */}
+                <div className="mb-4">
+                    <div className="border-t border-neutral-800 pt-1 flex justify-between font-bold bg-yellow-100 px-1 -mx-1 rounded">
                         <span>Formula Total</span>
                         <span>{fmtMoney(materialCostPerUnit)}</span>
                     </div>

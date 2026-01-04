@@ -222,6 +222,26 @@ export function HelpModal({ isOpen, onClose, calculatorData }: HelpModalProps) {
                     </HelpSection>
 
                     <HelpSection
+                        title="Updates (v0.1.0)"
+                        icon={<Zap size={18} className="text-orange-500" />}
+                        level="basic"
+                        defaultOpen={true}
+                    >
+                        <div className="space-y-3">
+                            <div className="p-3 bg-green-50 border border-green-200 rounded-lg">
+                                <h4 className="font-bold text-green-800 mb-1">🐛 Bug Fix: Inactive Ingredient Batch Calculations</h4>
+                                <p className="text-xs text-green-700">
+                                    Fixed an issue where inactive (base) ingredients showed <code className="bg-green-100 px-1 rounded">0g</code> for batch quantities in the Ingredients Manifest.
+                                    The <code className="bg-green-100 px-1 rounded">gramsInBatch</code> value is now correctly calculated using <code className="bg-green-100 px-1 rounded">gramsPerRecipeUnit × baseUnitsInBatch</code>.
+                                </p>
+                                <p className="text-xs text-green-600 mt-1 italic">
+                                    Example: Butter now shows 88.5g instead of 0g for a 520-unit batch.
+                                </p>
+                            </div>
+                        </div>
+                    </HelpSection>
+
+                    <HelpSection
                         title="Tips & Best Practices"
                         icon={<Lightbulb size={18} className="text-amber-500" />}
                         level="basic"

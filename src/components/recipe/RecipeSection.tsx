@@ -1,4 +1,4 @@
-import { Beaker } from 'lucide-react';
+import { Beaker, AlertTriangle, CheckCircle } from 'lucide-react';
 import { Card } from '../ui/Card';
 import { NumberInput } from '../ui/NumberInput';
 import { ActiveIngredientsList } from '../ingredients/ActiveIngredientsList';
@@ -34,6 +34,13 @@ export const RecipeSection = ({
         const pureMg = item.gramsPerRecipeUnit * 1000 * (item.purityPercent / 100);
         return sum + pureMg;
     }, 0);
+
+    // Coverage calculation
+    const coveragePercent = recipeConfig.baseUnitSize > 0
+        ? (totalRecipeGrams / recipeConfig.baseUnitSize) * 100
+        : 0;
+    const isUnderDefined = coveragePercent < 90;
+    const isOverDefined = coveragePercent > 110;
 
     return (
         <Card
@@ -95,12 +102,38 @@ export const RecipeSection = ({
                     </div>
                 </div>
 
+                {/* Recipe Coverage Warning */}
+                {(isUnderDefined || isOverDefined) && (
+                    <div className={`p-3 rounded-lg border flex items-start gap-3 ${isUnderDefined ? 'bg-amber-500/10 border-amber-500/30' : 'bg-red-500/10 border-red-500/30'}`}>
+                        <AlertTriangle size={18} className={isUnderDefined ? 'text-amber-400 mt-0.5' : 'text-red-400 mt-0.5'} />
+                        <div>
+                            <div className={`font-bold text-sm ${isUnderDefined ? 'text-amber-300' : 'text-red-300'}`}>
+                                Recipe {isUnderDefined ? 'Under-Defined' : 'Over-Defined'}: {coveragePercent.toFixed(1)}% coverage
+                            </div>
+                            <div className="text-xs text-white/60 mt-1">
+                                Ingredients sum to <span className="font-mono font-bold">{totalRecipeGrams.toFixed(1)}g</span> but base unit is <span className="font-mono font-bold">{recipeConfig.baseUnitSize.toFixed(1)}g</span>.
+                                {isUnderDefined && ' Add ingredients or reduce base unit size.'}
+                                {isOverDefined && ' Remove ingredients or increase base unit size.'}
+                            </div>
+                        </div>
+                    </div>
+                )}
+                {!isUnderDefined && !isOverDefined && totalRecipeGrams > 0 && (
+                    <div className="p-3 rounded-lg border bg-green-500/10 border-green-500/30 flex items-center gap-3">
+                        <CheckCircle size={18} className="text-green-400" />
+                        <div className="text-sm text-green-300 font-medium">
+                            Recipe Complete: {coveragePercent.toFixed(1)}% coverage ({totalRecipeGrams.toFixed(1)}g / {recipeConfig.baseUnitSize.toFixed(1)}g)
+                        </div>
+                    </div>
+                )}
+
                 {/* Active Ingredients - Collapsible */}
                 <ActiveIngredientsList
                     ingredients={activeIngredients}
                     onAdd={addActive}
                     onRemove={removeActive}
                     onUpdate={setActiveIngredients}
+                    baseUnitSize={recipeConfig.baseUnitSize}
                 />
 
                 {/* Inactive Ingredients - Collapsible */}
@@ -109,6 +142,7 @@ export const RecipeSection = ({
                     onAdd={addInactive}
                     onRemove={removeInactive}
                     onUpdate={setInactiveIngredients}
+                    baseUnitSize={recipeConfig.baseUnitSize}
                 />
             </div>
         </Card>

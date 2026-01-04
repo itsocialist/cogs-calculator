@@ -37,9 +37,10 @@ interface Props {
     onAdd: (item: Omit<ActiveIngredient, 'id' | 'type'>) => void;
     onRemove: (id: number) => void;
     onUpdate: (ingredients: ActiveIngredient[]) => void;
+    baseUnitSize?: number; // For coverage calculation
 }
 
-export const ActiveIngredientsList = ({ ingredients, onAdd, onRemove, onUpdate }: Props) => {
+export const ActiveIngredientsList = ({ ingredients, onAdd, onRemove, onUpdate, baseUnitSize = 0 }: Props) => {
     const [isAdding, setIsAdding] = useState(false);
     const [newItem, setNewItem] = useState({
         name: "",
@@ -211,6 +212,32 @@ export const ActiveIngredientsList = ({ ingredients, onAdd, onRemove, onUpdate }
                         <div className="col-span-3 flex items-center justify-end gap-2">
                             <button onClick={handleAdd} className="text-xs bg-white/20 text-white px-3 py-1.5 rounded hover:bg-white/30 transition-colors border border-white/20">Save</button>
                         </div>
+                    </div>
+                )}
+
+                {/* Summary Footer */}
+                {ingredients.length > 0 && (
+                    <div className="border-t border-white/20 mt-3 pt-3">
+                        <div className="grid grid-cols-12 gap-1 text-xs">
+                            <div className="col-span-5 font-bold text-white/70">TOTAL</div>
+                            <div className="col-span-3 text-right">
+                                <span className="text-white/50">Weight: </span>
+                                <span className="font-mono font-bold text-white">
+                                    {ingredients.reduce((sum, i) => sum + i.gramsPerRecipeUnit, 0).toFixed(2)}g
+                                </span>
+                            </div>
+                            <div className="col-span-4 text-right">
+                                <span className="text-white/50">Active: </span>
+                                <span className="font-mono font-bold text-green-500">
+                                    {ingredients.reduce((sum, i) => sum + (i.gramsPerRecipeUnit * i.purityPercent / 100 * 1000), 0).toFixed(0)}mg
+                                </span>
+                            </div>
+                        </div>
+                        {baseUnitSize > 0 && (
+                            <div className="mt-1 text-xs text-white/50">
+                                Coverage: {((ingredients.reduce((sum, i) => sum + i.gramsPerRecipeUnit, 0) / baseUnitSize) * 100).toFixed(1)}% of {baseUnitSize.toFixed(1)}g base unit
+                            </div>
+                        )}
                     </div>
                 )}
             </div>
