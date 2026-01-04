@@ -46,7 +46,7 @@ export function useNotes() {
         const newSticky: StickyNoteData = {
             id: `sticky-${Date.now()}`,
             text: '',
-            color: 'yellow',
+            color: 'amber',
             position: {
                 x: Math.random() * (window.innerWidth - 250) + 50,
                 y: Math.random() * (window.innerHeight - 200) + 100

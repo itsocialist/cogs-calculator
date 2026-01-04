@@ -362,17 +362,20 @@ export const IngredientsManifest = ({
                         </button>
 
                         {showExportMenu && (
-                            <div className="absolute right-0 top-full mt-1 w-44 bg-white/20 backdrop-blur-xl rounded-lg shadow-xl border border-white/25 overflow-hidden z-50 animate-in fade-in slide-in-from-top-2">
+                            <div
+                                className="absolute right-0 top-full mt-1 w-48 bg-stone-900/95 backdrop-blur-xl rounded-lg shadow-2xl border border-white/20 overflow-hidden z-50 animate-in fade-in slide-in-from-top-2"
+                                onClick={(e) => e.stopPropagation()}
+                            >
                                 <button
-                                    onClick={handleExportCSV}
-                                    className="w-full text-left px-3 py-2.5 hover:bg-white/15 text-sm flex items-center gap-2 text-white/90"
+                                    onClick={(e) => { e.stopPropagation(); handleExportCSV(); }}
+                                    className="w-full text-left px-4 py-3 hover:bg-white/15 text-sm flex items-center gap-3 text-white/90 transition-colors"
                                 >
                                     <FileSpreadsheet size={16} className="text-emerald-400" />
                                     <span>Download CSV</span>
                                 </button>
                                 <button
-                                    onClick={handleExportPDF}
-                                    className="w-full text-left px-3 py-2.5 hover:bg-white/15 text-sm flex items-center gap-2 border-t border-white/15 text-white/90"
+                                    onClick={(e) => { e.stopPropagation(); handleExportPDF(); }}
+                                    className="w-full text-left px-4 py-3 hover:bg-white/15 text-sm flex items-center gap-3 border-t border-white/15 text-white/90 transition-colors"
                                 >
                                     <FileText size={16} className="text-rose-400" />
                                     <span>Export PDF (PO Style)</span>

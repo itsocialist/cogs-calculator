@@ -110,36 +110,36 @@ export const KPIGrid = ({
             {/* PRIMARY ROW - Hero KPIs */}
             <div className="grid grid-cols-2 lg:grid-cols-3 gap-3">
                 {/* Unit Cost */}
-                <HoverExpandCard className={`p-5 rounded-lg bg-white/15 backdrop-blur-xl border border-white/20 shadow-lg shadow-black/20 text-center ${fullyLoadedCost > 12 ? 'border-l-4 border-l-red-400/60' : ''} print:bg-white print:border-slate-300`}>
-                    <div className="text-sm font-bold text-white/50 uppercase mb-1 print:text-black">Unit Cost</div>
-                    <div className={`text-3xl font-black ${fullyLoadedCost > 12 ? 'text-red-400' : 'text-white/90'} print:text-black`}>${fullyLoadedCost.toFixed(2)}</div>
-                    <div className="text-sm text-white/40 mt-1 print:text-black">
+                <HoverExpandCard className={`p-5 rounded-lg bg-stone-900/50 backdrop-blur-xl border border-white/15 shadow-lg shadow-black/25 text-center ${fullyLoadedCost > 12 ? 'border-t-4 border-t-red-400/60' : ''} print:bg-white print:border-slate-300`}>
+                    <div className="text-sm font-bold text-white/60 uppercase mb-1 print:text-black">Unit Cost</div>
+                    <div className={`text-3xl font-black ${fullyLoadedCost > 12 ? 'text-red-400' : 'text-white'} print:text-black`}>${fullyLoadedCost.toFixed(2)}</div>
+                    <div className="text-sm text-white/50 mt-1 print:text-black">
                         Mfg ${manufCostPerUnit.toFixed(2)} + Dist ${totalLogisticsPerUnit.toFixed(2)}
                     </div>
                 </HoverExpandCard>
 
                 {/* Batch Profit */}
-                <HoverExpandCard className={`p-5 rounded-lg bg-white/15 backdrop-blur-xl border border-white/20 shadow-lg shadow-black/20 text-center ${batchProfit >= 0 ? 'border-l-4 border-l-emerald-400/60' : 'border-l-4 border-l-red-400/60'} print:bg-white print:border-slate-300`}>
-                    <div className="text-sm font-bold text-white/50 uppercase mb-1 flex items-center justify-center gap-1 print:text-black">
+                <HoverExpandCard className={`p-5 rounded-lg bg-stone-900/50 backdrop-blur-xl border border-white/15 shadow-lg shadow-black/25 text-center ${batchProfit >= 0 ? 'border-t-4 border-t-emerald-400/60' : 'border-t-4 border-t-red-400/60'} print:bg-white print:border-slate-300`}>
+                    <div className="text-sm font-bold text-white/60 uppercase mb-1 flex items-center justify-center gap-1 print:text-black">
                         <DollarSign size={14} /> Batch Profit
                     </div>
                     <div className={`text-3xl font-black ${batchProfit >= 0 ? 'text-emerald-400' : 'text-red-400'} print:text-black`}>
                         ${batchProfit.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
                     </div>
-                    <div className="text-sm text-white/40 mt-1 print:text-black">
+                    <div className="text-sm text-white/50 mt-1 print:text-black">
                         ${totalUnits > 0 ? (batchProfit / totalUnits).toFixed(2) : '0.00'}/unit · {totalUnits.toLocaleString()} units
                     </div>
                 </HoverExpandCard>
 
                 {/* Gross Margin */}
-                <HoverExpandCard className={`p-5 rounded-lg bg-white/15 backdrop-blur-xl border border-white/20 shadow-lg shadow-black/20 text-center col-span-2 lg:col-span-1 ${grossMarginPercent >= 30 ? 'border-l-4 border-l-blue-400/60' : 'border-l-4 border-l-amber-400/60'} print:bg-white print:border-slate-300`}>
-                    <div className="text-sm font-bold text-white/50 uppercase mb-1 flex items-center justify-center gap-1 print:text-black">
+                <HoverExpandCard className={`p-5 rounded-lg bg-stone-900/50 backdrop-blur-xl border border-white/15 shadow-lg shadow-black/25 text-center col-span-2 lg:col-span-1 ${grossMarginPercent >= 30 ? 'border-t-4 border-t-blue-400/60' : 'border-t-4 border-t-amber-400/60'} print:bg-white print:border-slate-300`}>
+                    <div className="text-sm font-bold text-white/60 uppercase mb-1 flex items-center justify-center gap-1 print:text-black">
                         <TrendingUp size={14} /> Gross Margin
                     </div>
                     <div className={`text-3xl font-black ${grossMarginPercent >= 30 ? 'text-blue-400' : 'text-amber-400'} print:text-black`}>
                         {grossMarginPercent.toFixed(0)}%
                     </div>
-                    <div className="text-sm text-white/40 mt-1 print:text-black">
+                    <div className="text-sm text-white/50 mt-1 print:text-black">
                         ${batchProfit.toLocaleString(undefined, { maximumFractionDigits: 0 })} on ${totalRevenue.toLocaleString(undefined, { maximumFractionDigits: 0 })} rev
                     </div>
                 </HoverExpandCard>
@@ -149,15 +149,15 @@ export const KPIGrid = ({
             <div className={`grid ${gridClass} gap-2`}>
                 {/* CBD Card */}
                 {hasCBD && (
-                    <div className="bg-white/15 backdrop-blur-xl p-3 rounded-lg border border-white/20 text-center shadow-md shadow-black/15 print:bg-white print:border-slate-300">
-                        <div className="text-sm font-bold text-white/50 uppercase mb-0.5 flex items-center justify-center gap-1 print:text-black">
+                    <div className="bg-stone-900/50 backdrop-blur-xl p-3 rounded-lg border border-white/15 text-center shadow-md shadow-black/20 print:bg-white print:border-slate-300">
+                        <div className="text-sm font-bold text-white/60 uppercase mb-0.5 flex items-center justify-center gap-1 print:text-black">
                             <span className="inline-block px-1.5 py-0.5 bg-blue-500/30 text-blue-300 rounded text-xs">CBD</span>
                             / {baseUnitLabel}
                         </div>
-                        <div className="text-xl font-black text-white/90 print:text-black">
+                        <div className="text-xl font-black text-white print:text-black">
                             {Math.round(cbdPerUnit)}mg
                         </div>
-                        <div className="text-sm text-white/40 mt-0.5 print:text-black">
+                        <div className="text-sm text-white/50 mt-0.5 print:text-black">
                             {cbdThcRatio ? `${cbdThcRatio} CBD:THC` : `Target: ${targetPotencyMg}mg`}
                         </div>
                     </div>
@@ -165,14 +165,14 @@ export const KPIGrid = ({
 
                 {/* THC Card */}
                 {hasTHC && (
-                    <div className="bg-white/15 backdrop-blur-xl p-3 rounded-lg border border-white/20 text-center shadow-md shadow-black/15 print:bg-white print:border-slate-300">
-                        <div className="text-sm font-bold text-white/50 uppercase mb-0.5 flex items-center justify-center gap-1 print:text-black">
+                    <div className="bg-stone-900/50 backdrop-blur-xl p-3 rounded-lg border border-white/15 text-center shadow-md shadow-black/20 print:bg-white print:border-slate-300">
+                        <div className="text-sm font-bold text-white/60 uppercase mb-0.5 flex items-center justify-center gap-1 print:text-black">
                             <span className="inline-block px-1.5 py-0.5 bg-amber-500/30 text-amber-300 rounded text-xs">THC</span>
                         </div>
-                        <div className="text-xl font-black text-white/90 print:text-black">
+                        <div className="text-xl font-black text-white print:text-black">
                             {Math.round(thcPerUnit)}mg
                         </div>
-                        <div className="text-sm text-white/40 mt-0.5 print:text-black">
+                        <div className="text-sm text-white/50 mt-0.5 print:text-black">
                             {(thcMg / 1000).toFixed(1)}g total
                         </div>
                     </div>
@@ -180,14 +180,14 @@ export const KPIGrid = ({
 
                 {/* CBG Card */}
                 {hasCBG && (
-                    <div className="bg-white/15 backdrop-blur-xl p-3 rounded-lg border border-white/20 text-center shadow-md shadow-black/15 print:bg-white print:border-slate-300">
-                        <div className="text-sm font-bold text-white/50 uppercase mb-0.5 flex items-center justify-center gap-1 print:text-black">
+                    <div className="bg-stone-900/50 backdrop-blur-xl p-3 rounded-lg border border-white/15 text-center shadow-md shadow-black/20 print:bg-white print:border-slate-300">
+                        <div className="text-sm font-bold text-white/60 uppercase mb-0.5 flex items-center justify-center gap-1 print:text-black">
                             <span className="inline-block px-1.5 py-0.5 bg-purple-500/30 text-purple-300 rounded text-xs">CBG</span>
                         </div>
-                        <div className="text-xl font-black text-white/90 print:text-black">
+                        <div className="text-xl font-black text-white print:text-black">
                             {Math.round(cbgPerUnit)}mg
                         </div>
-                        <div className="text-sm text-white/40 mt-0.5 print:text-black">
+                        <div className="text-sm text-white/50 mt-0.5 print:text-black">
                             {(cbgMg / 1000).toFixed(1)}g total
                         </div>
                     </div>
@@ -195,46 +195,46 @@ export const KPIGrid = ({
 
                 {/* Fallback: General Potency if no cannabinoids */}
                 {!hasCBD && !hasTHC && !hasCBG && (
-                    <div className={`bg-white/15 backdrop-blur-xl p-3 rounded-lg border border-white/20 text-center shadow-md shadow-black/15 ${isPotencyCritical ? 'border-l-4 border-l-red-400/60' : ''} print:bg-white print:border-slate-300`}>
-                        <div className="text-sm font-bold text-white/50 uppercase mb-0.5 print:text-black">Potency</div>
+                    <div className={`bg-stone-900/50 backdrop-blur-xl p-3 rounded-lg border border-white/15 text-center shadow-md shadow-black/20 ${isPotencyCritical ? 'border-t-4 border-t-red-400/60' : ''} print:bg-white print:border-slate-300`}>
+                        <div className="text-sm font-bold text-white/60 uppercase mb-0.5 print:text-black">Potency</div>
                         <div className={`text-xl font-black flex items-center justify-center gap-1 ${isPotencyCritical ? 'text-red-400' : isPotencySafe ? 'text-emerald-400' : 'text-amber-400'} print:text-black`}>
                             {Math.round(actualPotencyMg)}mg
                             {isPotencyCritical ? <AlertTriangle size={14} /> :
                                 isPotencySafe ? <CheckCircle2 size={14} /> : <AlertTriangle size={14} />}
                         </div>
-                        <div className="text-sm text-white/40 mt-0.5 print:text-black">
+                        <div className="text-sm text-white/50 mt-0.5 print:text-black">
                             Target: {targetPotencyMg}mg
                         </div>
                     </div>
                 )}
 
                 {/* Cost per Gram - Always show */}
-                <div className="bg-white/15 backdrop-blur-xl p-3 rounded-lg border border-white/20 text-center shadow-md shadow-black/15 print:bg-white print:border-slate-300">
-                    <div className="text-sm font-bold text-white/50 uppercase mb-0.5 flex items-center justify-center gap-1 print:text-black">
+                <div className="bg-stone-900/50 backdrop-blur-xl p-3 rounded-lg border border-white/15 text-center shadow-md shadow-black/20 print:bg-white print:border-slate-300">
+                    <div className="text-sm font-bold text-white/60 uppercase mb-0.5 flex items-center justify-center gap-1 print:text-black">
                         <Scale size={12} /> Cost/Gram
                     </div>
-                    <div className="text-xl font-black text-white/90 print:text-black">
+                    <div className="text-xl font-black text-white print:text-black">
                         ${costPerGram.toFixed(3)}
                     </div>
-                    <div className="text-sm text-white/40 mt-0.5 print:text-black">
+                    <div className="text-sm text-white/50 mt-0.5 print:text-black">
                         {(totalBatchWeight / 1000).toFixed(1)}kg batch
                     </div>
                 </div>
 
                 {/* Wholesale Margin */}
-                <div className="bg-white/20 backdrop-blur-xl p-3 rounded-lg border border-white/25 text-center shadow-md shadow-black/15 print:bg-white print:border-slate-300">
-                    <div className="text-sm font-bold text-white/50 uppercase mb-0.5 print:text-black">Wholesale</div>
-                    <div className="text-xl font-black text-white/90 print:text-black">{Math.round(wsMarginPercent)}%</div>
-                    <div className="text-sm text-white/40 mt-0.5 print:text-black">
+                <div className="bg-stone-900/60 backdrop-blur-xl p-3 rounded-lg border border-white/15 text-center shadow-md shadow-black/20 print:bg-white print:border-slate-300">
+                    <div className="text-sm font-bold text-white/60 uppercase mb-0.5 print:text-black">Wholesale</div>
+                    <div className="text-xl font-black text-white print:text-black">{Math.round(wsMarginPercent)}%</div>
+                    <div className="text-sm text-white/50 mt-0.5 print:text-black">
                         ${wholesalePrice.toFixed(0)} → ${wholesaleMargin.toFixed(2)}
                     </div>
                 </div>
 
                 {/* Retail Margin */}
-                <div className="bg-white/20 backdrop-blur-xl p-3 rounded-lg border border-white/25 text-center shadow-md shadow-black/15 print:bg-white print:border-slate-300">
-                    <div className="text-sm font-bold text-white/50 uppercase mb-0.5 print:text-black">Retail</div>
-                    <div className="text-xl font-black text-white/90 print:text-black">{Math.round(retailMarginPercent)}%</div>
-                    <div className="text-sm text-white/40 mt-0.5 print:text-black">
+                <div className="bg-stone-900/60 backdrop-blur-xl p-3 rounded-lg border border-white/15 text-center shadow-md shadow-black/20 print:bg-white print:border-slate-300">
+                    <div className="text-sm font-bold text-white/60 uppercase mb-0.5 print:text-black">Retail</div>
+                    <div className="text-xl font-black text-white print:text-black">{Math.round(retailMarginPercent)}%</div>
+                    <div className="text-sm text-white/50 mt-0.5 print:text-black">
                         ${msrp.toFixed(0)} → ${retailMargin.toFixed(2)}
                     </div>
                 </div>

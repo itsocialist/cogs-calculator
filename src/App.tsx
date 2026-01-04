@@ -207,8 +207,8 @@ function App() {
           backgroundAttachment: 'fixed',
         }}
       >
-        {/* Dark overlay to dim the background */}
-        <div className="fixed inset-0 bg-gradient-to-br from-stone-900/60 via-stone-800/50 to-stone-900/60 pointer-events-none" />
+        {/* Dark overlay to dim the background - increased opacity for better contrast */}
+        <div className="fixed inset-0 bg-gradient-to-br from-stone-900/80 via-stone-900/70 to-stone-900/80 pointer-events-none" />
 
         {/* Floating particles - biology & chemistry connections */}
         <div className="fixed inset-0 opacity-25 pointer-events-none print:hidden">
@@ -222,11 +222,11 @@ function App() {
 
         {/* Sticky Header - Liquid Glass */}
         <div className="sticky top-0 z-40 print:static print:border-none">
-          {/* Stacked glass layers */}
-          <div className="absolute inset-0 bg-white/20 backdrop-blur-2xl" />
-          <div className="absolute inset-0 bg-gradient-to-b from-white/30 to-white/10" />
-          <div className="absolute inset-x-0 bottom-0 h-px bg-white/30" />
-          <div className="absolute inset-0 shadow-lg shadow-black/20" />
+          {/* Stacked glass layers - darkened for better contrast */}
+          <div className="absolute inset-0 bg-stone-900/60 backdrop-blur-2xl" />
+          <div className="absolute inset-0 bg-gradient-to-b from-white/15 to-white/5" />
+          <div className="absolute inset-x-0 bottom-0 h-px bg-white/20" />
+          <div className="absolute inset-0 shadow-lg shadow-black/30" />
           <div className="relative max-w-7xl mx-auto px-4 md:px-8 py-4">
             {/* Header */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 print:hidden">
@@ -321,130 +321,136 @@ function App() {
           </div>
         </div>
 
-        {/* Main Content */}
-        <div className="max-w-7xl mx-auto px-4 md:px-8 pt-6 pb-24 space-y-6">
-          {activeTab === 'manufacturing' && (
-            <ManufacturingView
-              recipeConfig={calc.recipeConfig}
-              setRecipeConfig={calc.setRecipeConfig}
-              batchConfig={calc.batchConfig}
-              setBatchConfig={calc.setBatchConfig}
-              activeIngredients={calc.activeIngredients}
-              addActive={calc.addActive}
-              removeActive={calc.removeActive}
-              setActiveIngredients={calc.setActiveIngredients}
-              inactiveIngredients={calc.inactiveIngredients}
-              addInactive={calc.addInactive}
-              removeInactive={calc.removeInactive}
-              setInactiveIngredients={calc.setInactiveIngredients}
-              skus={calc.skus}
-              skuCalculations={calc.skuCalculations}
-              totalBatchWeightGrams={calc.totalBatchWeightGrams}
-              totalWeightAllocated={calc.totalWeightAllocated}
-              isOverAllocated={calc.isOverAllocated}
-              defaultPackaging={calc.defaultPackaging}
-              addSKU={calc.addSKU}
-              removeSKU={calc.removeSKU}
-              updateSKU={calc.updateSKU}
-              updateSKUPackaging={calc.updateSKUPackaging}
-              addSKUPackagingItem={calc.addSKUPackagingItem}
-              removeSKUPackagingItem={calc.removeSKUPackagingItem}
-            />
-          )}
+        {/* Main Content - with subtle glow for separation */}
+        <div className="max-w-7xl mx-auto px-4 md:px-8 pt-6 pb-24">
+          <div className="space-y-6 relative">
+            {/* Subtle glow behind content for separation */}
+            <div className="absolute inset-0 -m-4 bg-gradient-to-b from-black/20 via-black/30 to-black/20 rounded-3xl blur-xl pointer-events-none" />
+            <div className="relative space-y-6">
+              {activeTab === 'manufacturing' && (
+                <ManufacturingView
+                  recipeConfig={calc.recipeConfig}
+                  setRecipeConfig={calc.setRecipeConfig}
+                  batchConfig={calc.batchConfig}
+                  setBatchConfig={calc.setBatchConfig}
+                  activeIngredients={calc.activeIngredients}
+                  addActive={calc.addActive}
+                  removeActive={calc.removeActive}
+                  setActiveIngredients={calc.setActiveIngredients}
+                  inactiveIngredients={calc.inactiveIngredients}
+                  addInactive={calc.addInactive}
+                  removeInactive={calc.removeInactive}
+                  setInactiveIngredients={calc.setInactiveIngredients}
+                  skus={calc.skus}
+                  skuCalculations={calc.skuCalculations}
+                  totalBatchWeightGrams={calc.totalBatchWeightGrams}
+                  totalWeightAllocated={calc.totalWeightAllocated}
+                  isOverAllocated={calc.isOverAllocated}
+                  defaultPackaging={calc.defaultPackaging}
+                  addSKU={calc.addSKU}
+                  removeSKU={calc.removeSKU}
+                  updateSKU={calc.updateSKU}
+                  updateSKUPackaging={calc.updateSKUPackaging}
+                  addSKUPackagingItem={calc.addSKUPackagingItem}
+                  removeSKUPackagingItem={calc.removeSKUPackagingItem}
+                />
+              )}
 
-          {activeTab === 'logistics' && (
-            <LogisticsView
-              logistics={calc.logistics}
-              setLogistics={calc.setLogistics}
-              pricing={calc.pricing}
-              setPricing={calc.setPricing}
-              fullyLoadedCost={calc.fullyLoadedCost}
-              manufCostPerUnit={calc.manufCostPerUnit}
-              totalDistroFeesPerUnit={calc.totalDistroFeesPerUnit}
-              labTestPerUnit={calc.labTestPerUnit}
-              shippingPerUnit={calc.shippingPerUnit}
-              addDistroFee={calc.addDistroFee}
-              removeDistroFee={calc.removeDistroFee}
-              updateDistroFee={calc.updateDistroFee}
-            />
-          )}
+              {activeTab === 'logistics' && (
+                <LogisticsView
+                  logistics={calc.logistics}
+                  setLogistics={calc.setLogistics}
+                  pricing={calc.pricing}
+                  setPricing={calc.setPricing}
+                  fullyLoadedCost={calc.fullyLoadedCost}
+                  manufCostPerUnit={calc.manufCostPerUnit}
+                  totalDistroFeesPerUnit={calc.totalDistroFeesPerUnit}
+                  labTestPerUnit={calc.labTestPerUnit}
+                  shippingPerUnit={calc.shippingPerUnit}
+                  addDistroFee={calc.addDistroFee}
+                  removeDistroFee={calc.removeDistroFee}
+                  updateDistroFee={calc.updateDistroFee}
+                />
+              )}
 
 
-          {activeTab === 'snapshots' && (
-            <SnapshotsView
-              snapshots={calc.snapshots}
-              onLoad={(snap) => {
-                calc.loadSnapshot(snap);
-                setActiveTab('manufacturing');
-              }}
-              onDelete={(id) => calc.setSnapshots(calc.snapshots.filter(s => s.id !== id))}
-            />
-          )}
+              {activeTab === 'snapshots' && (
+                <SnapshotsView
+                  snapshots={calc.snapshots}
+                  onLoad={(snap) => {
+                    calc.loadSnapshot(snap);
+                    setActiveTab('manufacturing');
+                  }}
+                  onDelete={(id) => calc.setSnapshots(calc.snapshots.filter(s => s.id !== id))}
+                />
+              )}
 
-          {activeTab === 'recipes' && (
-            <RecipesView
-              recipes={recipeLib.recipes}
-              recipeConfig={calc.recipeConfig}
-              activeIngredients={calc.activeIngredients}
-              inactiveIngredients={calc.inactiveIngredients}
-              onSaveRecipe={recipeLib.saveRecipe}
-              onLoadRecipe={(recipe) => {
-                calc.setRecipeConfig(recipe.recipeConfig);
-                calc.setActiveIngredients(recipe.activeIngredients.map((ing, idx) => ({
-                  ...ing,
-                  id: idx + 1,
-                  type: 'active' as const,
-                  unit: 'g' as const,
-                  densityGPerMl: 1.0,
-                  gramsPerRecipeUnit: ing.amount,
-                  gramsInBatch: 0,
-                })));
-                calc.setInactiveIngredients(recipe.inactiveIngredients.map((ing, idx) => ({
-                  ...ing,
-                  id: 100 + idx + 1,
-                  unit: 'g' as const,
-                  densityGPerMl: 1.0,
-                  gramsPerRecipeUnit: ing.amount,
-                  gramsInBatch: 0,
-                })));
-                setActiveTab('manufacturing');
-              }}
-              onDeleteRecipe={recipeLib.deleteRecipe}
-              onDuplicateRecipe={recipeLib.duplicateRecipe}
-              onExportRecipe={recipeLib.exportRecipe}
-              onImportRecipe={recipeLib.importRecipe}
-            />
-          )}
+              {activeTab === 'recipes' && (
+                <RecipesView
+                  recipes={recipeLib.recipes}
+                  recipeConfig={calc.recipeConfig}
+                  activeIngredients={calc.activeIngredients}
+                  inactiveIngredients={calc.inactiveIngredients}
+                  onSaveRecipe={recipeLib.saveRecipe}
+                  onLoadRecipe={(recipe) => {
+                    calc.setRecipeConfig(recipe.recipeConfig);
+                    calc.setActiveIngredients(recipe.activeIngredients.map((ing, idx) => ({
+                      ...ing,
+                      id: idx + 1,
+                      type: 'active' as const,
+                      unit: 'g' as const,
+                      densityGPerMl: 1.0,
+                      gramsPerRecipeUnit: ing.amount,
+                      gramsInBatch: 0,
+                    })));
+                    calc.setInactiveIngredients(recipe.inactiveIngredients.map((ing, idx) => ({
+                      ...ing,
+                      id: 100 + idx + 1,
+                      unit: 'g' as const,
+                      densityGPerMl: 1.0,
+                      gramsPerRecipeUnit: ing.amount,
+                      gramsInBatch: 0,
+                    })));
+                    setActiveTab('manufacturing');
+                  }}
+                  onDeleteRecipe={recipeLib.deleteRecipe}
+                  onDuplicateRecipe={recipeLib.duplicateRecipe}
+                  onExportRecipe={recipeLib.exportRecipe}
+                  onImportRecipe={recipeLib.importRecipe}
+                />
+              )}
 
-          {activeTab === 'edibles' && (
-            <EdiblesCalculator
-              onApplyToManufacturing={(data) => {
-                calc.setRecipeConfig(data.recipeConfig);
-                calc.setActiveIngredients(data.activeIngredients.map((ing, idx) => ({
-                  ...ing,
-                  id: idx + 1,
-                  type: 'active' as const,
-                  unit: 'g' as const,
-                  densityGPerMl: 1.0,
-                  gramsPerRecipeUnit: ing.amount,
-                  gramsInBatch: 0,
-                })));
-                calc.setInactiveIngredients(data.inactiveIngredients.map((ing, idx) => ({
-                  ...ing,
-                  id: 100 + idx + 1,
-                  unit: 'g' as const,
-                  densityGPerMl: 1.0,
-                  gramsPerRecipeUnit: ing.amount,
-                  gramsInBatch: 0,
-                })));
-                setActiveTab('manufacturing');
-              }}
-            />
-          )}
+              {activeTab === 'edibles' && (
+                <EdiblesCalculator
+                  onApplyToManufacturing={(data) => {
+                    calc.setRecipeConfig(data.recipeConfig);
+                    calc.setActiveIngredients(data.activeIngredients.map((ing, idx) => ({
+                      ...ing,
+                      id: idx + 1,
+                      type: 'active' as const,
+                      unit: 'g' as const,
+                      densityGPerMl: 1.0,
+                      gramsPerRecipeUnit: ing.amount,
+                      gramsInBatch: 0,
+                    })));
+                    calc.setInactiveIngredients(data.inactiveIngredients.map((ing, idx) => ({
+                      ...ing,
+                      id: 100 + idx + 1,
+                      unit: 'g' as const,
+                      densityGPerMl: 1.0,
+                      gramsPerRecipeUnit: ing.amount,
+                      gramsInBatch: 0,
+                    })));
+                    setActiveTab('manufacturing');
+                  }}
+                />
+              )}
 
-          {activeTab === 'config' && (
-            <ConfigView />
-          )}
+              {activeTab === 'config' && (
+                <ConfigView />
+              )}
+            </div>
+          </div>
         </div>
 
         {/* Help Modal */}
