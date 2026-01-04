@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react';
-import { Settings2, Save } from 'lucide-react';
+import { Settings2, Save, Palette } from 'lucide-react';
 import { Card } from '../ui/Card';
 import { useConfig, type VolumeScale, type WeightScale, type SKUUnit } from '../../context/configContext';
+import { useTheme } from '../../context/themeContext';
 import { form, text, button, glass } from '../../styles/theme';
 
 export const ConfigView = () => {
     const { config, updateBatchConfig, updateManifestConfig, updateSKUConfig } = useConfig();
+    const { theme, setTheme } = useTheme();
 
     // Local state for pending changes
     const [localConfig, setLocalConfig] = useState(config);
@@ -59,6 +61,36 @@ export const ConfigView = () => {
                     {showSavedMsg ? 'Saved!' : 'Save Changes'}
                 </button>
             </div>
+
+            {/* Appearance / Theme */}
+            <Card title="Appearance" icon={Palette}>
+                <div className="flex items-center justify-between">
+                    <div>
+                        <p className={`font-medium ${text.primary}`}>Theme</p>
+                        <p className={`text-sm ${text.muted}`}>Switch between styling modes</p>
+                    </div>
+                    <div className="flex bg-white/10 rounded-lg p-1">
+                        <button
+                            onClick={() => setTheme('production')}
+                            className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${theme === 'production'
+                                    ? 'bg-white text-neutral-900 shadow-md'
+                                    : 'text-white/60 hover:text-white/80'
+                                }`}
+                        >
+                            Production
+                        </button>
+                        <button
+                            onClick={() => setTheme('glass')}
+                            className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${theme === 'glass'
+                                    ? 'bg-gradient-to-r from-amber-500 to-emerald-500 text-white shadow-md'
+                                    : 'text-white/60 hover:text-white/80'
+                                }`}
+                        >
+                            Liquid Glass
+                        </button>
+                    </div>
+                </div>
+            </Card>
 
             {/* Batch Configuration */}
             <Card title="Batch Scaling Units" icon={Settings2}>
