@@ -363,8 +363,10 @@ export const IngredientsManifest = ({
 
                         {showExportMenu && (
                             <div
-                                className="absolute right-0 top-full mt-1 w-48 bg-stone-900/95 backdrop-blur-xl rounded-lg shadow-2xl border border-white/20 overflow-hidden z-50 animate-in fade-in slide-in-from-top-2"
+                                className="absolute right-0 top-full mt-1 w-48 bg-stone-900 backdrop-blur-xl rounded-lg shadow-2xl border border-white/20 overflow-hidden z-50 animate-in fade-in slide-in-from-top-2 pointer-events-auto"
                                 onClick={(e) => e.stopPropagation()}
+                                onMouseEnter={(e) => e.stopPropagation()}
+                                onMouseMove={(e) => e.stopPropagation()}
                             >
                                 <button
                                     onClick={(e) => { e.stopPropagation(); handleExportCSV(); }}
