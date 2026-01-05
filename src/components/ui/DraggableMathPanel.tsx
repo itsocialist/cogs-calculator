@@ -72,9 +72,10 @@ export const DraggableMathPanel = ({ data, onClose }: Props) => {
     const logisticsCostPerUnit = firstSku?.logisticsCostPerUnit || 0;
     const fullyLoadedPerUnit = data.fullyLoadedCost;
 
-    // Potency
+    // Potency - use base recipe unit potency, not SKU potency
     const totalActiveMg = data.totalActiveMg;
-    const potencyPerUnit = firstSku?.potencyMg || 0;
+    const baseUnits = data.batchScale.calculatedBaseUnits;
+    const potencyPerUnit = baseUnits > 0 ? totalActiveMg / baseUnits : 0;
     const isPotencySafe = firstSku?.isPotencySafe ?? true;
 
     // Allocation
