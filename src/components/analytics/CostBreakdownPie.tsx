@@ -114,6 +114,7 @@ export const CostBreakdownPie = ({
                             ))}
                         </Pie>
                         <Tooltip
+                            wrapperStyle={{ zIndex: 1000 }}
                             contentStyle={{
                                 backgroundColor: 'rgba(30, 30, 30, 0.95)',
                                 border: '1px solid rgba(255, 255, 255, 0.2)',
@@ -123,9 +124,9 @@ export const CostBreakdownPie = ({
                             }}
                             labelStyle={{ color: '#fff' }}
                             itemStyle={{ color: '#fff' }}
-                            formatter={(value) => [
+                            formatter={(value, name) => [
                                 `$${(value as number).toFixed(4)} (${(((value as number) / total) * 100).toFixed(1)}%)`,
-                                'Cost'
+                                name
                             ]}
                         />
                     </PieChart>

@@ -215,17 +215,16 @@ export const ActiveIngredientsList = ({ ingredients, onAdd, onRemove, onUpdate, 
                 {/* Summary Footer */}
                 {ingredients.length > 0 && (
                     <div className="border-t border-white/20 mt-3 pt-3">
-                        <div className="grid grid-cols-12 gap-1 text-xs">
-                            <div className="col-span-5 font-bold text-white/70">TOTAL</div>
-                            <div className="col-span-3 text-right">
-                                <span className="text-white/50">Weight: </span>
-                                <span className="font-mono font-bold text-white">
+                        <div className="grid grid-cols-12 gap-2 items-center text-xs">
+                            <div className="col-span-2 font-bold text-white/70">TOTAL</div>
+                            <div className="col-span-1"></div>
+                            <div className="col-span-2"></div>
+                            <div className="col-span-3"></div>
+                            <div className="col-span-4 flex items-center justify-end gap-2">
+                                <span className="badge-blue">
                                     {ingredients.reduce((sum, i) => sum + i.gramsPerRecipeUnit, 0).toFixed(2)}g
                                 </span>
-                            </div>
-                            <div className="col-span-4 text-right">
-                                <span className="text-white/50">Active: </span>
-                                <span className="font-mono font-bold text-green-500">
+                                <span className="badge-green">
                                     {ingredients.reduce((sum, i) => sum + (i.gramsPerRecipeUnit * i.purityPercent / 100 * 1000), 0).toFixed(0)}mg
                                 </span>
                             </div>
