@@ -151,7 +151,7 @@ export const ActiveIngredientsList = ({ ingredients, onAdd, onRemove, onUpdate, 
                             />
                             <span className="text-[10px] text-white/40">%</span>
                             <span className="text-[10px] text-white/40 font-mono">({item.gramsPerRecipeUnit.toFixed(2)}g)</span>
-                            <span className="text-xs font-mono font-bold px-2 py-0.5 bg-green-500/20 text-green-400 rounded-full border border-green-500/30 ml-auto">
+                            <span className="badge-green ml-auto">
                                 ~{(item.gramsPerRecipeUnit * item.purityPercent / 100 * 1000).toFixed(0)}mg
                             </span>
                             <button onClick={() => onRemove(item.id)} className="text-white/40 hover:text-red-500 print:hidden ml-1">

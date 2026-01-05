@@ -107,7 +107,8 @@ export const CostBreakdownPie = ({
                                 <Cell
                                     key={`cell-${index}`}
                                     fill={entry.color}
-                                    opacity={hovered === null || hovered === index ? 1 : 0.4}
+                                    stroke="none"
+                                    opacity={hovered === null || hovered === index ? 0.75 : 0.35}
                                     style={{ cursor: 'pointer', transition: 'opacity 0.2s' }}
                                 />
                             ))}

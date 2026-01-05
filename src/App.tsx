@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { FlaskConical, Truck, History, BookOpen, Cookie, Printer, Save, Download, FileJson, HelpCircle, Settings2, Calculator, FileText, BarChart3 } from 'lucide-react';
+import { FlaskConical, Truck, History, BookOpen, Cookie, Printer, Download, FileJson, HelpCircle, Settings2, Calculator, FileText, BarChart3 } from 'lucide-react';
 import { AnalyticsTab } from './components/analytics';
 import { TabButton } from './components/ui/TabButton';
 import { KPIGrid } from './components/dashboard/KPIGrid';
@@ -84,11 +84,6 @@ function App() {
     document.body.appendChild(downloadAnchorNode);
     downloadAnchorNode.click();
     downloadAnchorNode.remove();
-  };
-
-  const handleSaveSnapshot = () => {
-    calc.saveSnapshot();
-    alert("Snapshot Saved!");
   };
 
 

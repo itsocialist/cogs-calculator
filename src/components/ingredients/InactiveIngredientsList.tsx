@@ -131,7 +131,7 @@ export const InactiveIngredientsList = ({ ingredients, onAdd, onRemove, onUpdate
                             </select>
                         </div>
                         <div className="col-span-2 flex items-center gap-1">
-                            <span className="text-xs text-white/50 font-mono">
+                            <span className="badge-blue">
                                 {item.gramsPerRecipeUnit ? item.gramsPerRecipeUnit.toFixed(1) : "0.0"}g
                             </span>
                             <button onClick={() => onRemove(item.id)} className="text-white/40 hover:text-red-500 print:hidden ml-auto">
