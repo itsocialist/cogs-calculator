@@ -19,6 +19,19 @@ Format based on [Keep a Changelog](https://keepachangelog.com/).
 
 ---
 
+## [v0.1.2] - 2026-01-04
+
+### Added
+- **Cost Per Unit display (#18)** — Added `$/Unit` column to Ingredients Manifest showing cost per base recipe unit for each ingredient
+- CSV and PDF exports now include cost-per-unit calculations
+
+### Fixed
+- **Potency calculation bug (#17)** — KPI Grid and Accounting Tape now correctly display potency per base recipe unit instead of SKU potency
+  - Example: 1oz base unit with 500mg target now shows ~500mg instead of incorrectly showing 2oz SKU potency (1053mg)
+  - Fixed both KPIGrid component and DraggableMathPanel (ticker)
+
+---
+
 ## [v0.1.1] - 2026-01-04
 
 ### Changed

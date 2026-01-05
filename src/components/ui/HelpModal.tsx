@@ -222,10 +222,37 @@ export function HelpModal({ isOpen, onClose, calculatorData }: HelpModalProps) {
                     </HelpSection>
 
                     <HelpSection
-                        title="Updates (v0.1.1)"
+                        title="Updates (v0.1.2)"
                         icon={<Zap size={18} className="text-orange-500" />}
                         level="basic"
                         defaultOpen={true}
+                    >
+                        <div className="space-y-3">
+                            <div className="p-3 bg-green-50 border border-green-200 rounded-lg">
+                                <h4 className="font-bold text-green-800 mb-1">🐛 Bug Fix: Potency Calculations (#17)</h4>
+                                <p className="text-xs text-green-700">
+                                    <strong>Fixed potency display:</strong> Both the KPI Grid and Accounting Tape now correctly show potency per <em>base recipe unit</em> instead of SKU potency.
+                                </p>
+                                <p className="text-xs text-green-700 mt-2">
+                                    <strong>Example:</strong> For a 1oz base unit with 500mg target, the display now shows ~500mg instead of incorrectly showing the 2oz SKU potency (1053mg).
+                                </p>
+                            </div>
+                            <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                                <h4 className="font-bold text-blue-800 mb-1">✨ New Feature: Cost Per Unit (#18)</h4>
+                                <p className="text-xs text-blue-700">
+                                    <strong>Ingredients Manifest:</strong> Added new <code className="bg-blue-100 px-1 rounded">$/Unit</code> column showing the cost per base recipe unit for each ingredient.
+                                </p>
+                                <p className="text-xs text-blue-700 mt-2">
+                                    This helps you understand unit economics at a glance. The column appears in both the table view and CSV/PDF exports.
+                                </p>
+                            </div>
+                        </div>
+                    </HelpSection>
+
+                    <HelpSection
+                        title="Previous Updates (v0.1.1)"
+                        icon={<Zap size={18} className="text-gray-500" />}
+                        level="basic"
                     >
                         <div className="space-y-3">
                             <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
