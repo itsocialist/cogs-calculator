@@ -130,11 +130,13 @@ export const KPIGrid = ({
 
     return (
         <div className="space-y-3 print:space-y-2">
-            {/* PRIMARY ROW - Hero KPIs - Collapsible */}
-            <details className="group" open>
-                <summary className="flex items-center justify-between cursor-pointer bg-stone-800/50 backdrop-blur px-3 py-2 rounded-lg mb-2 text-white/80 text-sm font-bold uppercase tracking-wide hover:bg-stone-700/50 transition-colors">
-                    <span>📊 Primary Metrics</span>
-                    <span className="group-open:rotate-180 transition-transform">▼</span>
+            {/* PRIMARY ROW - Hero KPIs */}
+            <details className="group relative" open>
+                <summary className="list-none cursor-pointer absolute -top-1 right-0 z-10">
+                    <span className="text-amber-400/50 hover:text-amber-300 text-[10px] transition-colors">
+                        <span className="group-open:hidden">▸ show</span>
+                        <span className="hidden group-open:inline">▾ hide</span>
+                    </span>
                 </summary>
                 <div className="grid grid-cols-2 lg:grid-cols-3 gap-3">
                     {/* Unit Cost */}
@@ -174,11 +176,13 @@ export const KPIGrid = ({
                 </div>
             </details>
 
-            {/* SECONDARY ROW - Collapsible */}
-            <details className="group" open>
-                <summary className="flex items-center justify-between cursor-pointer bg-stone-800/30 backdrop-blur px-3 py-2 rounded-lg mb-2 text-white/60 text-xs font-bold uppercase tracking-wide hover:bg-stone-700/30 transition-colors">
-                    <span>📈 Secondary Metrics</span>
-                    <span className="group-open:rotate-180 transition-transform">▼</span>
+            {/* SECONDARY ROW */}
+            <details className="group relative" open>
+                <summary className="list-none cursor-pointer absolute -top-1 right-0 z-10">
+                    <span className="text-amber-400/50 hover:text-amber-300 text-[10px] transition-colors">
+                        <span className="group-open:hidden">▸ show</span>
+                        <span className="hidden group-open:inline">▾ hide</span>
+                    </span>
                 </summary>
                 <div className={`grid ${gridClass} gap-2`}>
                     {/* CBD Card */}

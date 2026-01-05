@@ -55,9 +55,9 @@ export const RecipeSection = ({
                 {/* Base Unit Configuration */}
                 <div className="bg-white/10 backdrop-blur-sm p-4 rounded-lg border border-white/15">
                     <div className="text-xs font-bold text-amber-300/80 uppercase mb-3">Base Unit Definition</div>
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 items-end">
                         <div>
-                            <label className="text-[10px] font-bold text-white/50 uppercase">Unit Label</label>
+                            <label className="text-[10px] font-bold text-white/50 uppercase block">Unit Label</label>
                             <input
                                 type="text"
                                 value={recipeConfig.baseUnitLabel}

@@ -82,6 +82,7 @@ export const IngredientsManifest = ({
 
     // Totals
     const totalWeight = manifestItems.reduce((sum, item) => sum + item.scaledAmount, 0);
+    const totalWeightPerUnit = manifestItems.reduce((sum, item) => sum + item.amountPerUnit, 0);
     const totalCostPerUnit = manifestItems.reduce((sum, item) => sum + item.costPerUnit, 0);
     const totalCost = manifestItems.reduce((sum, item) => sum + item.totalCost, 0);
     const totalVolumeMl = totalWeight / recipeConfig.density;
@@ -441,11 +442,13 @@ export const IngredientsManifest = ({
                             ))}
                         </tbody>
                         <tfoot>
-                            <tr className="border-t border-white/20 bg-white/10 font-bold">
-                                <td className="py-3 text-white/90">TOTAL</td>
+                            <tr className="border-t-2 border-amber-500/50 bg-amber-500/10 font-bold">
+                                <td className="py-3 text-amber-300 text-sm uppercase">TOTAL</td>
                                 <td className="py-3"></td>
-                                <td className="py-3"></td>
-                                <td className="py-3 text-right font-mono text-amber-400">
+                                <td className="py-3 text-right font-mono text-amber-300">
+                                    {totalWeightPerUnit.toFixed(2)}g
+                                </td>
+                                <td className="py-3 text-right font-mono text-amber-400 text-lg">
                                     ${totalCostPerUnit.toFixed(4)}
                                 </td>
                                 <td className="py-3 text-right font-mono text-white/90">
@@ -454,7 +457,7 @@ export const IngredientsManifest = ({
                                 <td className="py-3 text-right font-mono text-white/60">
                                     {convertFromMl(totalVolumeMl, config.manifest.volumeScale).toLocaleString()}{config.manifest.volumeScale}
                                 </td>
-                                <td className="py-3 text-right font-mono text-emerald-400">${totalCost.toFixed(2)}</td>
+                                <td className="py-3 text-right font-mono text-emerald-400 text-lg">${totalCost.toFixed(2)}</td>
                             </tr>
                         </tfoot>
                     </table>
