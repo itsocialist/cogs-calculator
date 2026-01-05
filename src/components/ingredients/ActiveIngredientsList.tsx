@@ -150,7 +150,7 @@ export const ActiveIngredientsList = ({ ingredients, onAdd, onRemove, onUpdate, 
                                 step={0.5}
                             />
                             <span className="text-[10px] text-white/40">%</span>
-                            <span className="badge-blue text-[10px]">({item.gramsPerRecipeUnit.toFixed(2)}g)</span>
+                            <span className="badge-neutral text-[10px]">({item.gramsPerRecipeUnit.toFixed(2)}g)</span>
                             <span className="badge-green ml-auto">
                                 ~{(item.gramsPerRecipeUnit * item.purityPercent / 100 * 1000).toFixed(0)}mg
                             </span>
@@ -221,7 +221,7 @@ export const ActiveIngredientsList = ({ ingredients, onAdd, onRemove, onUpdate, 
                             <div className="col-span-2"></div>
                             <div className="col-span-3"></div>
                             <div className="col-span-4 flex items-center justify-end gap-2">
-                                <span className="badge-blue">
+                                <span className="badge-neutral">
                                     {ingredients.reduce((sum, i) => sum + i.gramsPerRecipeUnit, 0).toFixed(2)}g
                                 </span>
                                 <span className="badge-green">

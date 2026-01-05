@@ -88,17 +88,17 @@ export const RecipeSection = ({
 
                     {/* Recipe Summary */}
                     <div className="mt-4 pt-3 border-t border-white/15 flex flex-wrap gap-6 text-sm">
-                        <div>
+                        <div className="flex items-center gap-1">
                             <span className="text-white/50">Formula Weight: </span>
-                            <span className="font-bold text-white/90">{totalRecipeGrams.toFixed(1)}g</span>
-                            <span className="text-white/40"> ({totalRecipeMl.toFixed(1)}ml)</span>
+                            <span className="badge-neutral">{totalRecipeGrams.toFixed(1)}g</span>
+                            <span className="text-white/40 text-xs">({totalRecipeMl.toFixed(1)}ml)</span>
                         </div>
-                        <div>
+                        <div className="flex items-center gap-1">
                             <span className="text-white/50">Actual Potency: </span>
-                            <span className={`font-bold ${Math.abs(totalActiveMg - recipeConfig.targetPotencyMg) < recipeConfig.targetPotencyMg * 0.1 ? 'text-green-400' : 'text-orange-400'}`}>
+                            <span className={Math.abs(totalActiveMg - recipeConfig.targetPotencyMg) < recipeConfig.targetPotencyMg * 0.1 ? 'badge-green' : 'badge-amber'}>
                                 {totalActiveMg.toFixed(0)}mg
                             </span>
-                            <span className="text-white/40"> (target: {recipeConfig.targetPotencyMg}mg)</span>
+                            <span className="text-white/40 text-xs">(target: {recipeConfig.targetPotencyMg}mg)</span>
                         </div>
                     </div>
                 </div>

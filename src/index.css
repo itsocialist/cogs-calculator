@@ -21,6 +21,10 @@
   .badge-amber {
     @apply text-xs font-mono font-bold px-2 py-0.5 rounded border bg-amber-500/20 text-amber-400 border-amber-500/30;
   }
+
+  .badge-neutral {
+    @apply text-xs font-mono font-bold px-2 py-0.5 rounded border bg-white/10 text-white/80 border-white/25;
+  }
 }
 
 @media print {

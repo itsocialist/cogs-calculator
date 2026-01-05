@@ -131,7 +131,7 @@ export const InactiveIngredientsList = ({ ingredients, onAdd, onRemove, onUpdate
                             </select>
                         </div>
                         <div className="col-span-2 flex items-center gap-1">
-                            <span className="badge-blue">
+                            <span className="badge-neutral">
                                 {item.gramsPerRecipeUnit ? item.gramsPerRecipeUnit.toFixed(1) : "0.0"}g
                             </span>
                             <button onClick={() => onRemove(item.id)} className="text-white/40 hover:text-red-500 print:hidden ml-auto">
@@ -204,7 +204,7 @@ export const InactiveIngredientsList = ({ ingredients, onAdd, onRemove, onUpdate
                         <div className="col-span-3"></div>
                         <div className="col-span-2"></div>
                         <div className="col-span-2 flex justify-start">
-                            <span className="badge-blue">
+                            <span className="badge-neutral">
                                 {ingredients.reduce((sum, i) => sum + i.gramsPerRecipeUnit, 0).toFixed(2)}g
                             </span>
                         </div>

@@ -139,13 +139,13 @@ export const ManufacturingView = ({
                 <div className="mt-4 pt-4 border-t border-white/10 grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
                     <div>
                         <span className="text-white/50">Weight: </span>
-                        <span className="badge-blue">
+                        <span className="badge-neutral">
                             {convertFromGrams(batchWeightGrams, config.manifest.weightScale).toLocaleString()}{config.manifest.weightScale}
                         </span>
                     </div>
                     <div>
                         <span className="text-white/50">Volume: </span>
-                        <span className="badge-blue">
+                        <span className="badge-neutral">
                             {convertFromMl(batchVolumeMl, config.manifest.volumeScale).toLocaleString()}{config.manifest.volumeScale === 'floz' ? ' fl oz' : config.manifest.volumeScale}
                         </span>
                     </div>
@@ -160,17 +160,17 @@ export const ManufacturingView = ({
                             const variance = totalBatchWeightGrams - batchWeightGrams;
                             const variancePercent = batchWeightGrams > 0 ? Math.abs(variance / batchWeightGrams * 100) : 0;
 
-                            // Determine color based on variance percentage
-                            let colorClass = 'text-green-500';
+                            // Determine badge class based on variance percentage
+                            let badgeClass = 'badge-green';
                             let statusIcon = '✓';
                             let statusText = 'within tolerance';
 
                             if (variancePercent >= 5) {
-                                colorClass = 'text-red-500';
+                                badgeClass = 'text-xs font-mono font-bold px-2 py-0.5 rounded border bg-red-500/20 text-red-400 border-red-500/30';
                                 statusIcon = '❌';
                                 statusText = 'action required';
                             } else if (variancePercent >= 2) {
-                                colorClass = 'text-yellow-500';
+                                badgeClass = 'badge-amber';
                                 statusIcon = '⚠️';
                                 statusText = 'review recommended';
                             }
@@ -183,11 +183,11 @@ export const ManufacturingView = ({
 
                             return (
                                 <span
-                                    className={`font-mono font-bold ${colorClass} cursor-help`}
+                                    className={`${badgeClass} cursor-help`}
                                     title={tooltipText}
                                 >
                                     {totalBatchWeightGrams.toLocaleString(undefined, { maximumFractionDigits: 0 })}g / {batchWeightGrams.toLocaleString(undefined, { maximumFractionDigits: 0 })}g
-                                    <span className="text-xs ml-1">
+                                    <span className="ml-1">
                                         ({variance >= 0 ? '+' : ''}{variancePercent.toFixed(1)}%) {statusIcon}
                                     </span>
                                 </span>
