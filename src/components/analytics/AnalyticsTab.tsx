@@ -19,13 +19,17 @@ interface Props {
 export const AnalyticsTab = ({ data }: Props) => {
     const firstSku = data.skuCalculations[0];
 
-    // Derive analytics data
+    // Use top-level margins to match KPI cards (not SKU-specific)
     const marginData = {
-        wholesaleMargin: firstSku?.wholesaleMarginPercent || 0,
-        retailMargin: firstSku?.retailMarginPercent || 0,
-        wholesalePrice: firstSku?.wholesalePrice || 0,
-        msrp: firstSku?.msrp || 0,
-        fullyLoadedCost: firstSku?.fullyLoadedCost || 0,
+        wholesaleMargin: data.wholesaleMargin > 0
+            ? ((data.pricing.wholesale - data.fullyLoadedCost) / data.pricing.wholesale) * 100
+            : 0,
+        retailMargin: data.retailMargin > 0
+            ? ((data.pricing.msrp - data.fullyLoadedCost) / data.pricing.msrp) * 100
+            : 0,
+        wholesalePrice: data.pricing.wholesale,
+        msrp: data.pricing.msrp,
+        fullyLoadedCost: data.fullyLoadedCost,
     };
 
     const costBreakdown = {
@@ -64,13 +68,10 @@ export const AnalyticsTab = ({ data }: Props) => {
     return (
         <div className="space-y-6 pb-8">
             {/* Header */}
-            <div className="flex items-center justify-between">
-                <h2 className="text-lg font-black text-white/90 uppercase tracking-wider">
-                    📊 Analytics Dashboard
+            <div className="mb-2">
+                <h2 className="text-2xl font-black text-amber-400/80 tracking-wide">
+                    {data.batchConfig.productName}
                 </h2>
-                <span className="text-xs text-white/50">
-                    {data.skus[0]?.name || 'No SKU Selected'}
-                </span>
             </div>
 
             {/* TIER 1: Hero - Business Viability */}

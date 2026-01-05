@@ -3,6 +3,7 @@
  * Part of Tier 2 analytics
  */
 
+import { useState } from 'react';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
 
 interface Props {
@@ -22,6 +23,43 @@ const COLORS = {
     Logistics: '#ef4444',
 };
 
+// Custom label for callouts
+const renderLabel = (props: {
+    cx?: number;
+    cy?: number;
+    midAngle?: number;
+    innerRadius?: number;
+    outerRadius?: number;
+    percent?: number;
+    name?: string;
+    value?: number;
+}) => {
+    const { cx = 0, cy = 0, midAngle = 0, outerRadius = 0, percent = 0, name = '', value = 0 } = props;
+
+    if (percent < 0.08) return null;
+
+    const RADIAN = Math.PI / 180;
+    const radius = outerRadius * 1.35;
+    const x = cx + radius * Math.cos(-midAngle * RADIAN);
+    const y = cy + radius * Math.sin(-midAngle * RADIAN);
+
+    return (
+        <text
+            x={x}
+            y={y}
+            fill="rgba(255,255,255,0.8)"
+            textAnchor={x > cx ? 'start' : 'end'}
+            dominantBaseline="central"
+            fontSize={10}
+        >
+            {name}
+            <tspan x={x} dy={12} fill="rgba(255,255,255,0.5)" fontSize={9}>
+                ${value.toFixed(2)} ({(percent * 100).toFixed(0)}%)
+            </tspan>
+        </text>
+    );
+};
+
 export const CostBreakdownPie = ({
     material,
     labor,
@@ -30,6 +68,8 @@ export const CostBreakdownPie = ({
     logistics,
     total
 }: Props) => {
+    const [hovered, setHovered] = useState<number | null>(null);
+
     const data = [
         { name: 'Material', value: material, color: COLORS.Material },
         { name: 'Labor', value: labor, color: COLORS.Labor },
@@ -47,20 +87,29 @@ export const CostBreakdownPie = ({
                 Per unit: <span className="text-green-400 font-mono">${total.toFixed(4)}</span>
             </div>
 
-            <div className="h-[180px] relative">
+            <div className="h-[200px] relative">
                 <ResponsiveContainer width="100%" height="100%">
                     <PieChart>
                         <Pie
                             data={data}
                             cx="50%"
                             cy="50%"
-                            innerRadius={45}
-                            outerRadius={70}
+                            innerRadius={35}
+                            outerRadius={50}
                             paddingAngle={2}
                             dataKey="value"
+                            label={renderLabel}
+                            labelLine={{ stroke: 'rgba(255,255,255,0.2)', strokeWidth: 1 }}
+                            onMouseEnter={(_, index) => setHovered(index)}
+                            onMouseLeave={() => setHovered(null)}
                         >
                             {data.map((entry, index) => (
-                                <Cell key={`cell-${index}`} fill={entry.color} />
+                                <Cell
+                                    key={`cell-${index}`}
+                                    fill={entry.color}
+                                    opacity={hovered === null || hovered === index ? 1 : 0.4}
+                                    style={{ cursor: 'pointer', transition: 'opacity 0.2s' }}
+                                />
                             ))}
                         </Pie>
                         <Tooltip
@@ -81,7 +130,7 @@ export const CostBreakdownPie = ({
                     </PieChart>
                 </ResponsiveContainer>
                 {/* Center label */}
-                <div className="absolute inset-0 flex items-center justify-center">
+                <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
                     <div className="text-center">
                         <div className="text-lg font-black text-white/90">
                             ${total.toFixed(2)}
@@ -95,8 +144,13 @@ export const CostBreakdownPie = ({
 
             {/* Legend */}
             <div className="flex flex-wrap gap-2 mt-2 justify-center">
-                {data.map(item => (
-                    <div key={item.name} className="flex items-center gap-1 text-[10px]">
+                {data.map((item, idx) => (
+                    <div
+                        key={item.name}
+                        className={`flex items-center gap-1 text-[10px] cursor-pointer transition-opacity ${hovered !== null && hovered !== idx ? 'opacity-40' : ''}`}
+                        onMouseEnter={() => setHovered(idx)}
+                        onMouseLeave={() => setHovered(null)}
+                    >
                         <div
                             className="w-2 h-2 rounded-sm"
                             style={{ backgroundColor: item.color }}

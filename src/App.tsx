@@ -281,9 +281,6 @@ function App() {
                         <button onClick={handleExportCSV} className="w-full text-left px-4 py-3 hover:bg-neutral-50 text-sm flex items-center gap-2">
                           <Download size={16} /> Export CSV
                         </button>
-                        <button onClick={handleSaveSnapshot} className="w-full text-left px-4 py-3 hover:bg-neutral-50 text-sm flex items-center gap-2 text-blue-600">
-                          <Save size={16} /> Save Snapshot
-                        </button>
                         <button onClick={handleSaveToDrive} className="w-full text-left px-4 py-3 hover:bg-neutral-50 text-sm flex items-center gap-2 text-green-600">
                           <FileJson size={16} /> Save Config (JSON)
                         </button>

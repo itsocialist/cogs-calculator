@@ -3,6 +3,7 @@
  * Part of Tier 2/3 analytics
  */
 
+import { useState } from 'react';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
 
 interface IngredientData {
@@ -18,7 +19,7 @@ interface Props {
     dataKey: 'cost' | 'weight';
 }
 
-// More varied color palette - distinct colors for each segment
+// More varied color palette
 const COLORS = [
     '#10b981', // Emerald
     '#3b82f6', // Blue
@@ -30,8 +31,8 @@ const COLORS = [
     '#84cc16', // Lime
 ];
 
-// Custom label renderer for callouts
-const renderCustomLabel = (props: {
+// Custom label for callouts
+const renderLabel = (props: {
     cx?: number;
     cy?: number;
     midAngle?: number;
@@ -42,16 +43,14 @@ const renderCustomLabel = (props: {
 }, dataKey: string) => {
     const { cx = 0, cy = 0, midAngle = 0, outerRadius = 0, percent = 0, name = '', value = 0 } = props;
 
-    if (percent < 0.05) return null; // Don't show label for tiny slices
+    if (percent < 0.08) return null;
 
     const RADIAN = Math.PI / 180;
-    const radius = outerRadius * 1.25;
+    const radius = outerRadius * 1.35;
     const x = cx + radius * Math.cos(-midAngle * RADIAN);
     const y = cy + radius * Math.sin(-midAngle * RADIAN);
 
-    const formattedValue = dataKey === 'cost'
-        ? `$${value.toFixed(2)}`
-        : `${value.toFixed(1)}g`;
+    const formattedValue = dataKey === 'cost' ? `$${value.toFixed(2)}` : `${value.toFixed(1)}g`;
 
     return (
         <text
@@ -60,10 +59,10 @@ const renderCustomLabel = (props: {
             fill="rgba(255,255,255,0.8)"
             textAnchor={x > cx ? 'start' : 'end'}
             dominantBaseline="central"
-            fontSize={10}
+            fontSize={9}
         >
-            {name.length > 12 ? name.slice(0, 10) + '...' : name}
-            <tspan x={x} dy={12} fill="rgba(255,255,255,0.6)" fontSize={9}>
+            {name.length > 10 ? name.slice(0, 8) + '..' : name}
+            <tspan x={x} dy={11} fill="rgba(255,255,255,0.5)" fontSize={8}>
                 {formattedValue} ({(percent * 100).toFixed(0)}%)
             </tspan>
         </text>
@@ -71,6 +70,8 @@ const renderCustomLabel = (props: {
 };
 
 export const IngredientCostPie = ({ ingredients, title, dataKey }: Props) => {
+    const [hovered, setHovered] = useState<number | null>(null);
+
     // Take top 5 and group rest as "Other"
     const topN = 5;
     const sorted = [...ingredients].sort((a, b) => b[dataKey] - a[dataKey]);
@@ -109,21 +110,28 @@ export const IngredientCostPie = ({ ingredients, title, dataKey }: Props) => {
                 </span>
             </div>
 
-            <div className="h-[220px]">
+            <div className="h-[200px]">
                 <ResponsiveContainer width="100%" height="100%">
                     <PieChart>
                         <Pie
                             data={data}
                             cx="50%"
                             cy="50%"
-                            outerRadius={60}
+                            outerRadius={50}
                             paddingAngle={2}
                             dataKey="value"
-                            label={(props) => renderCustomLabel(props, dataKey)}
-                            labelLine={{ stroke: 'rgba(255,255,255,0.3)', strokeWidth: 1 }}
+                            label={(props) => renderLabel(props, dataKey)}
+                            labelLine={{ stroke: 'rgba(255,255,255,0.2)', strokeWidth: 1 }}
+                            onMouseEnter={(_, index) => setHovered(index)}
+                            onMouseLeave={() => setHovered(null)}
                         >
                             {data.map((entry, index) => (
-                                <Cell key={`cell-${index}`} fill={entry.color} />
+                                <Cell
+                                    key={`cell-${index}`}
+                                    fill={entry.color}
+                                    opacity={hovered === null || hovered === index ? 1 : 0.4}
+                                    style={{ cursor: 'pointer', transition: 'opacity 0.2s' }}
+                                />
                             ))}
                         </Pie>
                         <Tooltip
@@ -147,13 +155,18 @@ export const IngredientCostPie = ({ ingredients, title, dataKey }: Props) => {
 
             {/* Legend */}
             <div className="flex flex-wrap gap-2 mt-2 justify-center">
-                {data.slice(0, 4).map(item => (
-                    <div key={item.name} className="flex items-center gap-1 text-[10px]">
+                {data.slice(0, 4).map((item, idx) => (
+                    <div
+                        key={item.name}
+                        className={`flex items-center gap-1 text-[10px] cursor-pointer transition-opacity ${hovered !== null && hovered !== idx ? 'opacity-40' : ''}`}
+                        onMouseEnter={() => setHovered(idx)}
+                        onMouseLeave={() => setHovered(null)}
+                    >
                         <div
                             className="w-2 h-2 rounded-sm"
                             style={{ backgroundColor: item.color }}
                         />
-                        <span className="text-white/50 truncate max-w-[80px]" title={item.name}>
+                        <span className="text-white/50 truncate max-w-[70px]" title={item.name}>
                             {item.name}
                         </span>
                     </div>
