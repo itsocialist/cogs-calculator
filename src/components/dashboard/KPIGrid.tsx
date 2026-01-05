@@ -64,6 +64,7 @@ interface KPIGridProps {
     wholesalePrice: number;
     msrp: number;
     totalUnits: number;
+    baseUnits: number; // Base recipe units for per-unit cannabinoid calculations
     totalRevenue: number;
     totalCOGS: number;
     cannabinoidTotals: Record<string, number>;
@@ -83,6 +84,7 @@ export const KPIGrid = ({
     wholesalePrice,
     msrp,
     totalUnits,
+    baseUnits,
     totalRevenue,
     totalCOGS,
     cannabinoidTotals,
@@ -106,10 +108,10 @@ export const KPIGrid = ({
     const hasTHC = thcMg > 0;
     const hasCBG = cbgMg > 0;
 
-    // Per-unit potency
-    const cbdPerUnit = totalUnits > 0 ? cbdMg / totalUnits : 0;
-    const thcPerUnit = totalUnits > 0 ? thcMg / totalUnits : 0;
-    const cbgPerUnit = totalUnits > 0 ? cbgMg / totalUnits : 0;
+    // Per-unit potency (using base recipe units, not SKU units)
+    const cbdPerUnit = baseUnits > 0 ? cbdMg / baseUnits : 0;
+    const thcPerUnit = baseUnits > 0 ? thcMg / baseUnits : 0;
+    const cbgPerUnit = baseUnits > 0 ? cbgMg / baseUnits : 0;
 
     // Cost per gram
     const costPerGram = totalBatchWeight > 0 ? totalCOGS / totalBatchWeight : 0;

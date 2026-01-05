@@ -314,6 +314,7 @@ function App() {
               wholesalePrice={calc.pricing.wholesale}
               msrp={calc.pricing.msrp}
               totalUnits={calc.skuCalculations.reduce((sum, s) => sum + s.quantity, 0)}
+              baseUnits={calc.batchScale.calculatedBaseUnits}
               totalRevenue={calc.skuCalculations.reduce((sum, s) => sum + (s.wholesalePrice * s.quantity), 0)}
               totalCOGS={calc.skuCalculations.reduce((sum, s) => sum + (s.fullyLoadedCost * s.quantity), 0)}
               cannabinoidTotals={calc.cannabinoidTotals}
