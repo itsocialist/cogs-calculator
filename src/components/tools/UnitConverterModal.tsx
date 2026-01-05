@@ -1,5 +1,6 @@
 import React, { useState, useCallback } from 'react';
-import { X, ArrowRightLeft } from 'lucide-react';
+import { ArrowRightLeft } from 'lucide-react';
+import { DraggableToolPanel } from '../ui/DraggableToolPanel';
 
 interface UnitConverterModalProps {
     isOpen: boolean;
@@ -88,91 +89,85 @@ export const UnitConverterModal: React.FC<UnitConverterModalProps> = ({ isOpen, 
     if (!isOpen) return null;
 
     return (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50" onClick={onClose}>
-            <div
-                className="bg-stone-900/95 backdrop-blur-xl border border-white/20 rounded-2xl p-6 w-full max-w-md shadow-2xl"
-                onClick={(e) => e.stopPropagation()}
-            >
-                {/* Header */}
-                <div className="flex items-center justify-between mb-6">
-                    <h2 className="text-lg font-bold text-white">Unit Converter</h2>
-                    <button onClick={onClose} className="text-white/60 hover:text-white">
-                        <X size={20} />
+        <DraggableToolPanel
+            title="Unit Converter"
+            isOpen={isOpen}
+            onClose={onClose}
+            width="w-full max-w-md"
+            icon={ArrowRightLeft}
+            initialPosition={{ x: window.innerWidth / 2 - 100, y: 150 }}
+        >
+            {/* Type Tabs */}
+            <div className="flex gap-2 mb-6">
+                {(['weight', 'volume', 'temperature'] as ConversionType[]).map((type) => (
+                    <button
+                        key={type}
+                        onClick={() => handleTypeChange(type)}
+                        className={`flex-1 py-2 rounded-lg text-sm font-medium transition-colors ${conversionType === type
+                            ? 'bg-amber-500/20 text-amber-400 border border-amber-500/30'
+                            : 'bg-white/10 text-white/60 hover:bg-white/15'
+                            }`}
+                    >
+                        {type.charAt(0).toUpperCase() + type.slice(1)}
+                    </button>
+                ))}
+            </div>
+
+            {/* Converter */}
+            <div className="space-y-4">
+                {/* From */}
+                <div className="flex gap-3">
+                    <input
+                        type="number"
+                        value={inputValue}
+                        onChange={(e) => setInputValue(e.target.value)}
+                        className="flex-1 bg-white/10 border border-white/20 rounded-lg px-4 py-3 text-white text-lg font-mono focus:outline-none focus:ring-2 focus:ring-amber-500/50"
+                        placeholder="Enter value"
+                    />
+                    <select
+                        value={fromUnit}
+                        onChange={(e) => setFromUnit(e.target.value)}
+                        className="bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white font-medium focus:outline-none focus:ring-2 focus:ring-amber-500/50"
+                    >
+                        {getUnits().map((unit) => (
+                            <option key={unit} value={unit} className="bg-stone-900">{formatUnit(unit)}</option>
+                        ))}
+                    </select>
+                </div>
+
+                {/* Swap Button */}
+                <div className="flex justify-center">
+                    <button
+                        onClick={swapUnits}
+                        className="p-2 rounded-full bg-white/10 hover:bg-white/20 text-white/60 hover:text-white transition-colors"
+                    >
+                        <ArrowRightLeft size={20} className="rotate-90" />
                     </button>
                 </div>
 
-                {/* Type Tabs */}
-                <div className="flex gap-2 mb-6">
-                    {(['weight', 'volume', 'temperature'] as ConversionType[]).map((type) => (
-                        <button
-                            key={type}
-                            onClick={() => handleTypeChange(type)}
-                            className={`flex-1 py-2 rounded-lg text-sm font-medium transition-colors ${conversionType === type
-                                    ? 'bg-amber-500/20 text-amber-400 border border-amber-500/30'
-                                    : 'bg-white/10 text-white/60 hover:bg-white/15'
-                                }`}
-                        >
-                            {type.charAt(0).toUpperCase() + type.slice(1)}
-                        </button>
-                    ))}
-                </div>
-
-                {/* Converter */}
-                <div className="space-y-4">
-                    {/* From */}
-                    <div className="flex gap-3">
-                        <input
-                            type="number"
-                            value={inputValue}
-                            onChange={(e) => setInputValue(e.target.value)}
-                            className="flex-1 bg-white/10 border border-white/20 rounded-lg px-4 py-3 text-white text-lg font-mono focus:outline-none focus:ring-2 focus:ring-amber-500/50"
-                            placeholder="Enter value"
-                        />
-                        <select
-                            value={fromUnit}
-                            onChange={(e) => setFromUnit(e.target.value)}
-                            className="bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white font-medium focus:outline-none focus:ring-2 focus:ring-amber-500/50"
-                        >
-                            {getUnits().map((unit) => (
-                                <option key={unit} value={unit} className="bg-stone-900">{formatUnit(unit)}</option>
-                            ))}
-                        </select>
+                {/* To (Result) */}
+                <div className="flex gap-3">
+                    <div className="flex-1 bg-green-500/10 border border-green-500/30 rounded-lg px-4 py-3 text-green-400 text-lg font-mono font-bold">
+                        {convert().toLocaleString(undefined, { maximumFractionDigits: 6 })}
                     </div>
-
-                    {/* Swap Button */}
-                    <div className="flex justify-center">
-                        <button
-                            onClick={swapUnits}
-                            className="p-2 rounded-full bg-white/10 hover:bg-white/20 text-white/60 hover:text-white transition-colors"
-                        >
-                            <ArrowRightLeft size={20} className="rotate-90" />
-                        </button>
-                    </div>
-
-                    {/* To (Result) */}
-                    <div className="flex gap-3">
-                        <div className="flex-1 bg-green-500/10 border border-green-500/30 rounded-lg px-4 py-3 text-green-400 text-lg font-mono font-bold">
-                            {convert().toLocaleString(undefined, { maximumFractionDigits: 6 })}
-                        </div>
-                        <select
-                            value={toUnit}
-                            onChange={(e) => setToUnit(e.target.value)}
-                            className="bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white font-medium focus:outline-none focus:ring-2 focus:ring-amber-500/50"
-                        >
-                            {getUnits().map((unit) => (
-                                <option key={unit} value={unit} className="bg-stone-900">{formatUnit(unit)}</option>
-                            ))}
-                        </select>
-                    </div>
-                </div>
-
-                {/* Quick Reference */}
-                <div className="mt-6 pt-4 border-t border-white/10 text-xs text-white/40">
-                    {conversionType === 'weight' && '1 oz = 28.35g • 1 lb = 453.59g • 1 kg = 1000g'}
-                    {conversionType === 'volume' && '1 fl oz = 29.57ml • 1 gal = 3785.41ml • 1 L = 1000ml'}
-                    {conversionType === 'temperature' && '°F = (°C × 9/5) + 32 • °C = (°F - 32) × 5/9'}
+                    <select
+                        value={toUnit}
+                        onChange={(e) => setToUnit(e.target.value)}
+                        className="bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white font-medium focus:outline-none focus:ring-2 focus:ring-amber-500/50"
+                    >
+                        {getUnits().map((unit) => (
+                            <option key={unit} value={unit} className="bg-stone-900">{formatUnit(unit)}</option>
+                        ))}
+                    </select>
                 </div>
             </div>
-        </div>
+
+            {/* Quick Reference */}
+            <div className="mt-6 pt-4 border-t border-white/10 text-xs text-white/40">
+                {conversionType === 'weight' && '1 oz = 28.35g • 1 lb = 453.59g • 1 kg = 1000g'}
+                {conversionType === 'volume' && '1 fl oz = 29.57ml • 1 gal = 3785.41ml • 1 L = 1000ml'}
+                {conversionType === 'temperature' && '°F = (°C × 9/5) + 32 • °C = (°F - 32) × 5/9'}
+            </div>
+        </DraggableToolPanel>
     );
 };

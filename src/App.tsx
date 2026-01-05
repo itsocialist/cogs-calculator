@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { FlaskConical, Truck, History, BookOpen, Cookie, Printer, Download, FileJson, HelpCircle, Settings2, Calculator, FileText, BarChart3, Wrench, ArrowRightLeft, Target } from 'lucide-react';
+import { FlaskConical, Truck, History, BookOpen, Cookie, Printer, Download, FileJson, HelpCircle, Settings2, Calculator, FileText, BarChart3, Wrench, ArrowRightLeft, Target, StickyNote as StickyNoteIcon } from 'lucide-react';
 import { AnalyticsTab } from './components/analytics';
 import { TabButton } from './components/ui/TabButton';
 import { KPIGrid } from './components/dashboard/KPIGrid';
@@ -247,50 +247,72 @@ function App() {
                 </div>
 
                 <div className="flex gap-2 h-full">
-                  <button
-                    onClick={() => setShowMath(!showMath)}
-                    className={`border border-neutral-200 rounded-xl px-3 md:px-4 py-2 font-medium transition-colors shadow-sm flex items-center gap-2 ${showMath ? 'bg-neutral-800 text-white border-neutral-800' : 'bg-white text-neutral-600 hover:bg-neutral-50'}`}
-                    title="See the Math"
-                  >
-                    <Calculator size={18} />
-                    <span className="hidden md:inline">Math</span>
-                  </button>
-
-                  <button
-                    onClick={() => setShowNotes(!showNotes)}
-                    className={`border border-neutral-200 rounded-xl px-3 md:px-4 py-2 font-medium transition-colors shadow-sm flex items-center gap-2 ${showNotes ? 'bg-neutral-800 text-white border-neutral-800' : 'bg-white text-neutral-600 hover:bg-neutral-50'}`}
-                    title="Notes"
-                  >
-                    <FileText size={18} />
-                    <span className="hidden md:inline">Notes</span>
-                  </button>
-
                   {/* Tools Dropdown */}
-                  <div className="relative">
+                  <div
+                    className="relative"
+                    onMouseLeave={() => setShowTools(false)}
+                  >
                     <button
                       onClick={() => setShowTools(!showTools)}
-                      className="bg-white border border-neutral-200 text-neutral-600 rounded-xl px-4 py-3 font-medium hover:bg-neutral-50 transition-colors shadow-sm h-full flex items-center gap-2"
+                      className={`border border-neutral-200 text-neutral-600 rounded-xl px-4 py-3 font-medium hover:bg-neutral-50 transition-colors shadow-sm h-full flex items-center gap-2 ${(showTools || showCalculator || showUnitConverter || showDosageCalc || showMath || showNotes) ? 'bg-neutral-50 border-neutral-300' : 'bg-white'}`}
                     >
                       <Wrench size={18} />
                       <span className="hidden md:inline">Tools</span>
                     </button>
 
                     {showTools && (
-                      <div className="absolute right-0 top-full mt-2 w-48 bg-white rounded-xl shadow-xl border border-neutral-200 overflow-hidden z-50 animate-in fade-in slide-in-from-top-2">
-                        <button onClick={() => { setShowCalculator(true); setShowTools(false); }} className="w-full text-left px-4 py-3 hover:bg-neutral-50 text-sm flex items-center gap-2">
-                          <Calculator size={16} /> Calculator
-                        </button>
-                        <button onClick={() => { setShowUnitConverter(true); setShowTools(false); }} className="w-full text-left px-4 py-3 hover:bg-neutral-50 text-sm flex items-center gap-2">
-                          <ArrowRightLeft size={16} /> Unit Converter
-                        </button>
-                        <button onClick={() => { setShowDosageCalc(true); setShowTools(false); }} className="w-full text-left px-4 py-3 hover:bg-neutral-50 text-sm flex items-center gap-2 border-t border-neutral-100">
-                          <Target size={16} /> Dosage Calculator
-                        </button>
+                      <div className="absolute right-0 top-full mt-2 w-56 bg-white rounded-xl shadow-xl border border-neutral-200 overflow-hidden z-50 animate-in fade-in slide-in-from-top-2">
+                        <div className="p-1">
+                          <button onClick={() => { setShowMath(!showMath); setShowTools(false); }} className="w-full text-left px-3 py-2 hover:bg-neutral-50 rounded-lg text-sm flex items-center gap-2 group">
+                            <div className={`p-1.5 rounded-md ${showMath ? 'bg-amber-100 text-amber-700' : 'bg-neutral-100 text-neutral-500 group-hover:bg-neutral-200'}`}>
+                              <Calculator size={16} />
+                            </div>
+                            <span className={showMath ? 'font-medium text-amber-900' : 'text-neutral-700'}>Math Tape</span>
+                          </button>
+
+                          <button onClick={() => { setShowNotes(!showNotes); setShowTools(false); }} className="w-full text-left px-3 py-2 hover:bg-neutral-50 rounded-lg text-sm flex items-center gap-2 group">
+                            <div className={`p-1.5 rounded-md ${showNotes ? 'bg-yellow-100 text-yellow-700' : 'bg-neutral-100 text-neutral-500 group-hover:bg-neutral-200'}`}>
+                              <FileText size={16} />
+                            </div>
+                            <span className={showNotes ? 'font-medium text-yellow-900' : 'text-neutral-700'}>Notepad</span>
+                          </button>
+
+                          <button onClick={() => { notesData.createSticky(); setShowTools(false); }} className="w-full text-left px-3 py-2 hover:bg-neutral-50 rounded-lg text-sm flex items-center gap-2 group">
+                            <div className="p-1.5 rounded-md bg-neutral-100 text-neutral-500 group-hover:bg-neutral-200">
+                              <StickyNoteIcon size={16} />
+                            </div>
+                            <span className="text-neutral-700">New Sticky</span>
+                          </button>
+                        </div>
+
+                        <div className="border-t border-neutral-100 p-1">
+                          <button onClick={() => { setShowCalculator(true); setShowTools(false); }} className="w-full text-left px-3 py-2 hover:bg-neutral-50 rounded-lg text-sm flex items-center gap-2 group">
+                            <div className="p-1.5 rounded-md bg-stone-100 text-stone-500 group-hover:bg-stone-200">
+                              <Calculator size={16} />
+                            </div>
+                            <span className="text-neutral-700">Calculator</span>
+                          </button>
+                          <button onClick={() => { setShowUnitConverter(true); setShowTools(false); }} className="w-full text-left px-3 py-2 hover:bg-neutral-50 rounded-lg text-sm flex items-center gap-2 group">
+                            <div className="p-1.5 rounded-md bg-stone-100 text-stone-500 group-hover:bg-stone-200">
+                              <ArrowRightLeft size={16} />
+                            </div>
+                            <span className="text-neutral-700">Unit Converter</span>
+                          </button>
+                          <button onClick={() => { setShowDosageCalc(true); setShowTools(false); }} className="w-full text-left px-3 py-2 hover:bg-neutral-50 rounded-lg text-sm flex items-center gap-2 group">
+                            <div className="p-1.5 rounded-md bg-stone-100 text-stone-500 group-hover:bg-stone-200">
+                              <Target size={16} />
+                            </div>
+                            <span className="text-neutral-700">Dosage Calc</span>
+                          </button>
+                        </div>
                       </div>
                     )}
                   </div>
 
-                  <div className="relative">
+                  <div
+                    className="relative"
+                    onMouseLeave={() => setShowActions(false)}
+                  >
                     <button
                       onClick={() => setShowActions(!showActions)}
                       className="bg-white border border-neutral-200 text-neutral-600 rounded-xl px-4 py-3 font-medium hover:bg-neutral-50 transition-colors shadow-sm h-full flex items-center gap-2"
@@ -540,7 +562,7 @@ function App() {
         <UnitConverterModal isOpen={showUnitConverter} onClose={() => setShowUnitConverter(false)} />
         <DosageCalculatorModal isOpen={showDosageCalc} onClose={() => setShowDosageCalc(false)} />
       </div>
-    </ConfigProvider>
+    </ConfigProvider >
   );
 }
 

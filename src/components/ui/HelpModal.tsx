@@ -188,6 +188,19 @@ export function HelpModal({ isOpen, onClose, calculatorData }: HelpModalProps) {
                         level="basic"
                     >
                         <div className="space-y-4">
+                            {/* v0.1.5 */}
+                            <div>
+                                <h4 className="font-bold text-neutral-700 mb-2 text-sm">v0.1.5 — Tools & Usability</h4>
+                                <div className="space-y-2">
+                                    <div className="p-2 bg-purple-50 border border-purple-200 rounded text-xs text-purple-700">
+                                        <strong>🛠️ Tools Menu:</strong> New unified Tools menu with Calculator, Unit Converter, Dosage Calc, Math, Notes, and Stickies.
+                                    </div>
+                                    <div className="p-2 bg-blue-50 border border-blue-200 rounded text-xs text-blue-700">
+                                        <strong>🪟 Floating Panels:</strong> Tools are now non-blocking and draggable. Run multiple tools at once!
+                                    </div>
+                                </div>
+                            </div>
+
                             {/* v0.1.3 */}
                             <div>
                                 <h4 className="font-bold text-neutral-700 mb-2 text-sm">v0.1.3 — Analytics Dashboard</h4>

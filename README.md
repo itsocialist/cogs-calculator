@@ -30,11 +30,13 @@ npm run dev
 
 ## Current Version
 
-**v0.1.0** (January 2026)
+**v0.1.5** (January 2026)
 
 ### Recent Updates
 
-- 🐛 **Bug Fix**: Fixed inactive ingredient batch calculations — `gramsInBatch` now correctly calculates for all ingredient types using `gramsPerRecipeUnit × baseUnitsInBatch`
+- 🛠️ **Tools Menu**: Refactored Tools menu for better accessibility. "Math" and "Notes" are now integrated into the Tools dropdown.
+- 🪟 **Non-Blocking Modals**: Calculator, Unit Converter, and Dosage Calculator are now draggable, non-blocking panels that can be used alongside other features.
+- 🐛 **Bug Fixes**: Improved menu closing behavior on desktop (close on mouse leave).
 
 ## Environments
 
