@@ -13,6 +13,7 @@ interface ManifestItem {
     scaledAmount: number;
     unit: string;
     costPerKg: number;
+    costPerUnit: number; // Cost per base recipe unit
     totalCost: number;
 }
 
@@ -63,6 +64,7 @@ export const IngredientsManifest = ({
             scaledAmount: ing.gramsInBatch,
             unit: ing.unit,
             costPerKg: ing.costPerKg,
+            costPerUnit: (ing.gramsPerRecipeUnit / 1000) * ing.costPerKg,
             totalCost: (ing.gramsInBatch / 1000) * ing.costPerKg
         })),
         ...inactiveIngredients.map(ing => ({
@@ -73,22 +75,25 @@ export const IngredientsManifest = ({
             scaledAmount: ing.gramsInBatch,
             unit: ing.unit,
             costPerKg: ing.costPerKg,
+            costPerUnit: (ing.gramsPerRecipeUnit / 1000) * ing.costPerKg,
             totalCost: (ing.gramsInBatch / 1000) * ing.costPerKg
         }))
     ];
 
     // Totals
     const totalWeight = manifestItems.reduce((sum, item) => sum + item.scaledAmount, 0);
+    const totalCostPerUnit = manifestItems.reduce((sum, item) => sum + item.costPerUnit, 0);
     const totalCost = manifestItems.reduce((sum, item) => sum + item.totalCost, 0);
     const totalVolumeMl = totalWeight / recipeConfig.density;
 
     // Export as CSV
     const handleExportCSV = () => {
-        const headers = ['Ingredient', 'Type', 'Per Unit (g)', 'Unit', 'Total (g)', 'Volume (ml)', 'Cost'];
+        const headers = ['Ingredient', 'Type', 'Per Unit (g)', '$/Unit', 'Unit', 'Total (g)', 'Volume (ml)', 'Cost'];
         const rows = manifestItems.map(item => [
             item.name,
             item.type,
             item.amountPerUnit.toFixed(2),
+            item.costPerUnit.toFixed(4),
             item.unit,
             item.scaledAmount.toFixed(1),
             (item.scaledAmount / recipeConfig.density).toFixed(1),
@@ -96,7 +101,7 @@ export const IngredientsManifest = ({
         ]);
 
         // Add totals row
-        rows.push(['TOTAL', '', '', '', totalWeight.toFixed(1), totalVolumeMl.toFixed(0), totalCost.toFixed(2)]);
+        rows.push(['TOTAL', '', '', totalCostPerUnit.toFixed(4), '', totalWeight.toFixed(1), totalVolumeMl.toFixed(0), totalCost.toFixed(2)]);
 
         const csvContent = [
             headers.join(','),
@@ -276,6 +281,7 @@ export const IngredientsManifest = ({
                 <th>Ingredient</th>
                 <th>Type</th>
                 <th>Per Unit</th>
+                <th>$/Unit</th>
                 <th>Total Weight</th>
                 <th>Volume</th>
                 <th>Cost</th>
@@ -287,6 +293,7 @@ export const IngredientsManifest = ({
                     <td><strong>${item.name}</strong></td>
                     <td><span class="type-badge type-${item.type}">${item.type}</span></td>
                     <td>${item.amountPerUnit.toFixed(2)}g</td>
+                    <td>$${item.costPerUnit.toFixed(4)}</td>
                     <td>${item.scaledAmount.toFixed(1)}g</td>
                     <td>${(item.scaledAmount / recipeConfig.density).toFixed(1)}ml</td>
                     <td>$${item.totalCost.toFixed(2)}</td>
@@ -294,6 +301,7 @@ export const IngredientsManifest = ({
             `).join('')}
             <tr class="totals-row">
                 <td colspan="3"><strong>TOTAL</strong></td>
+                <td><strong>$${totalCostPerUnit.toFixed(4)}</strong></td>
                 <td><strong>${totalWeight.toFixed(1)}g</strong></td>
                 <td><strong>${totalVolumeMl.toFixed(0)}ml</strong></td>
                 <td><strong>$${totalCost.toFixed(2)}</strong></td>
@@ -397,6 +405,7 @@ export const IngredientsManifest = ({
                                 <th className="text-left py-2 font-bold">Ingredient</th>
                                 <th className="text-left py-2 font-bold">Type</th>
                                 <th className="text-right py-2 font-bold">Per Unit</th>
+                                <th className="text-right py-2 font-bold">$/Unit</th>
                                 <th className="text-right py-2 font-bold">Total ({config.manifest.weightScale})</th>
                                 <th className="text-right py-2 font-bold">Volume ({config.manifest.volumeScale})</th>
                                 <th className="text-right py-2 font-bold">Cost</th>
@@ -413,6 +422,9 @@ export const IngredientsManifest = ({
                                     </td>
                                     <td className="py-2 text-right font-mono text-white/60">
                                         {item.amountPerUnit.toFixed(2)}g
+                                    </td>
+                                    <td className="py-2 text-right font-mono text-amber-400">
+                                        ${item.costPerUnit.toFixed(4)}
                                     </td>
                                     <td className="py-2 text-right font-mono font-bold text-white/90">
                                         {convertFromGrams(item.scaledAmount, config.manifest.weightScale).toLocaleString()}
@@ -433,6 +445,9 @@ export const IngredientsManifest = ({
                                 <td className="py-3 text-white/90">TOTAL</td>
                                 <td className="py-3"></td>
                                 <td className="py-3"></td>
+                                <td className="py-3 text-right font-mono text-amber-400">
+                                    ${totalCostPerUnit.toFixed(4)}
+                                </td>
                                 <td className="py-3 text-right font-mono text-white/90">
                                     {convertFromGrams(totalWeight, config.manifest.weightScale).toLocaleString()}{config.manifest.weightScale}
                                 </td>
