@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { FlaskConical, Truck, History, BookOpen, Cookie, Printer, Download, FileJson, HelpCircle, Settings2, Calculator, FileText, BarChart3 } from 'lucide-react';
+import { FlaskConical, Truck, History, BookOpen, Cookie, Printer, Download, FileJson, HelpCircle, Settings2, Calculator, FileText, BarChart3, Wrench, ArrowRightLeft, Target } from 'lucide-react';
 import { AnalyticsTab } from './components/analytics';
 import { TabButton } from './components/ui/TabButton';
 import { KPIGrid } from './components/dashboard/KPIGrid';
@@ -18,6 +18,7 @@ import { DraggableMathPanel } from './components/ui/DraggableMathPanel';
 import { NotesPanel } from './components/ui/NotesPanel';
 import { StickyNote } from './components/ui/StickyNote';
 import { ParticleField } from './components/ui/ParticleField';
+import { CalculatorModal, UnitConverterModal, DosageCalculatorModal } from './components/tools';
 
 function App() {
   const [activeTab, setActiveTab] = useState<'manufacturing' | 'logistics' | 'analytics' | 'snapshots' | 'recipes' | 'edibles' | 'config'>('manufacturing');
@@ -25,6 +26,10 @@ function App() {
   const [showHelp, setShowHelp] = useState(false);
   const [showMath, setShowMath] = useState(false);
   const [showNotes, setShowNotes] = useState(false);
+  const [showTools, setShowTools] = useState(false);
+  const [showCalculator, setShowCalculator] = useState(false);
+  const [showUnitConverter, setShowUnitConverter] = useState(false);
+  const [showDosageCalc, setShowDosageCalc] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(() => {
     // Check for existing session on mount
     const session = localStorage.getItem('rolos-auth-session');
@@ -259,6 +264,31 @@ function App() {
                     <FileText size={18} />
                     <span className="hidden md:inline">Notes</span>
                   </button>
+
+                  {/* Tools Dropdown */}
+                  <div className="relative">
+                    <button
+                      onClick={() => setShowTools(!showTools)}
+                      className="bg-white border border-neutral-200 text-neutral-600 rounded-xl px-4 py-3 font-medium hover:bg-neutral-50 transition-colors shadow-sm h-full flex items-center gap-2"
+                    >
+                      <Wrench size={18} />
+                      <span className="hidden md:inline">Tools</span>
+                    </button>
+
+                    {showTools && (
+                      <div className="absolute right-0 top-full mt-2 w-48 bg-white rounded-xl shadow-xl border border-neutral-200 overflow-hidden z-50 animate-in fade-in slide-in-from-top-2">
+                        <button onClick={() => { setShowCalculator(true); setShowTools(false); }} className="w-full text-left px-4 py-3 hover:bg-neutral-50 text-sm flex items-center gap-2">
+                          <Calculator size={16} /> Calculator
+                        </button>
+                        <button onClick={() => { setShowUnitConverter(true); setShowTools(false); }} className="w-full text-left px-4 py-3 hover:bg-neutral-50 text-sm flex items-center gap-2">
+                          <ArrowRightLeft size={16} /> Unit Converter
+                        </button>
+                        <button onClick={() => { setShowDosageCalc(true); setShowTools(false); }} className="w-full text-left px-4 py-3 hover:bg-neutral-50 text-sm flex items-center gap-2 border-t border-neutral-100">
+                          <Target size={16} /> Dosage Calculator
+                        </button>
+                      </div>
+                    )}
+                  </div>
 
                   <div className="relative">
                     <button
@@ -504,6 +534,11 @@ function App() {
             onDelete={notesData.deleteSticky}
           />
         ))}
+
+        {/* Tools Modals */}
+        <CalculatorModal isOpen={showCalculator} onClose={() => setShowCalculator(false)} />
+        <UnitConverterModal isOpen={showUnitConverter} onClose={() => setShowUnitConverter(false)} />
+        <DosageCalculatorModal isOpen={showDosageCalc} onClose={() => setShowDosageCalc(false)} />
       </div>
     </ConfigProvider>
   );
