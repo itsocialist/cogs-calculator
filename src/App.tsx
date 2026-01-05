@@ -261,49 +261,51 @@ function App() {
                     </button>
 
                     {showTools && (
-                      <div className="absolute right-0 top-full mt-2 w-56 bg-white rounded-xl shadow-xl border border-neutral-200 overflow-hidden z-50 animate-in fade-in slide-in-from-top-2">
-                        <div className="p-1">
-                          <button onClick={() => { setShowMath(!showMath); setShowTools(false); }} className="w-full text-left px-3 py-2 hover:bg-neutral-50 rounded-lg text-sm flex items-center gap-2 group">
-                            <div className={`p-1.5 rounded-md ${showMath ? 'bg-amber-100 text-amber-700' : 'bg-neutral-100 text-neutral-500 group-hover:bg-neutral-200'}`}>
-                              <Calculator size={16} />
-                            </div>
-                            <span className={showMath ? 'font-medium text-amber-900' : 'text-neutral-700'}>Math Tape</span>
-                          </button>
+                      <div className="absolute right-0 top-full pt-2 w-56 z-50 animate-in fade-in slide-in-from-top-2">
+                        <div className="bg-white rounded-xl shadow-xl border border-neutral-200 overflow-hidden">
+                          <div className="p-1">
+                            <button onClick={() => { setShowMath(!showMath); setShowTools(false); }} className="w-full text-left px-3 py-2 hover:bg-neutral-50 rounded-lg text-sm flex items-center gap-2 group">
+                              <div className={`p-1.5 rounded-md ${showMath ? 'bg-amber-100 text-amber-700' : 'bg-neutral-100 text-neutral-500 group-hover:bg-neutral-200'}`}>
+                                <Calculator size={16} />
+                              </div>
+                              <span className={showMath ? 'font-medium text-amber-900' : 'text-neutral-700'}>Math Tape</span>
+                            </button>
 
-                          <button onClick={() => { setShowNotes(!showNotes); setShowTools(false); }} className="w-full text-left px-3 py-2 hover:bg-neutral-50 rounded-lg text-sm flex items-center gap-2 group">
-                            <div className={`p-1.5 rounded-md ${showNotes ? 'bg-yellow-100 text-yellow-700' : 'bg-neutral-100 text-neutral-500 group-hover:bg-neutral-200'}`}>
-                              <FileText size={16} />
-                            </div>
-                            <span className={showNotes ? 'font-medium text-yellow-900' : 'text-neutral-700'}>Notepad</span>
-                          </button>
+                            <button onClick={() => { setShowNotes(!showNotes); setShowTools(false); }} className="w-full text-left px-3 py-2 hover:bg-neutral-50 rounded-lg text-sm flex items-center gap-2 group">
+                              <div className={`p-1.5 rounded-md ${showNotes ? 'bg-yellow-100 text-yellow-700' : 'bg-neutral-100 text-neutral-500 group-hover:bg-neutral-200'}`}>
+                                <FileText size={16} />
+                              </div>
+                              <span className={showNotes ? 'font-medium text-yellow-900' : 'text-neutral-700'}>Notepad</span>
+                            </button>
 
-                          <button onClick={() => { notesData.createSticky(); setShowTools(false); }} className="w-full text-left px-3 py-2 hover:bg-neutral-50 rounded-lg text-sm flex items-center gap-2 group">
-                            <div className="p-1.5 rounded-md bg-neutral-100 text-neutral-500 group-hover:bg-neutral-200">
-                              <StickyNoteIcon size={16} />
-                            </div>
-                            <span className="text-neutral-700">New Sticky</span>
-                          </button>
-                        </div>
+                            <button onClick={() => { notesData.createSticky(); setShowTools(false); }} className="w-full text-left px-3 py-2 hover:bg-neutral-50 rounded-lg text-sm flex items-center gap-2 group">
+                              <div className="p-1.5 rounded-md bg-neutral-100 text-neutral-500 group-hover:bg-neutral-200">
+                                <StickyNoteIcon size={16} />
+                              </div>
+                              <span className="text-neutral-700">New Sticky</span>
+                            </button>
+                          </div>
 
-                        <div className="border-t border-neutral-100 p-1">
-                          <button onClick={() => { setShowCalculator(true); setShowTools(false); }} className="w-full text-left px-3 py-2 hover:bg-neutral-50 rounded-lg text-sm flex items-center gap-2 group">
-                            <div className="p-1.5 rounded-md bg-stone-100 text-stone-500 group-hover:bg-stone-200">
-                              <Calculator size={16} />
-                            </div>
-                            <span className="text-neutral-700">Calculator</span>
-                          </button>
-                          <button onClick={() => { setShowUnitConverter(true); setShowTools(false); }} className="w-full text-left px-3 py-2 hover:bg-neutral-50 rounded-lg text-sm flex items-center gap-2 group">
-                            <div className="p-1.5 rounded-md bg-stone-100 text-stone-500 group-hover:bg-stone-200">
-                              <ArrowRightLeft size={16} />
-                            </div>
-                            <span className="text-neutral-700">Unit Converter</span>
-                          </button>
-                          <button onClick={() => { setShowDosageCalc(true); setShowTools(false); }} className="w-full text-left px-3 py-2 hover:bg-neutral-50 rounded-lg text-sm flex items-center gap-2 group">
-                            <div className="p-1.5 rounded-md bg-stone-100 text-stone-500 group-hover:bg-stone-200">
-                              <Target size={16} />
-                            </div>
-                            <span className="text-neutral-700">Dosage Calc</span>
-                          </button>
+                          <div className="border-t border-neutral-100 p-1">
+                            <button onClick={() => { setShowCalculator(true); setShowTools(false); }} className="w-full text-left px-3 py-2 hover:bg-neutral-50 rounded-lg text-sm flex items-center gap-2 group">
+                              <div className="p-1.5 rounded-md bg-stone-100 text-stone-500 group-hover:bg-stone-200">
+                                <Calculator size={16} />
+                              </div>
+                              <span className="text-neutral-700">Calculator</span>
+                            </button>
+                            <button onClick={() => { setShowUnitConverter(true); setShowTools(false); }} className="w-full text-left px-3 py-2 hover:bg-neutral-50 rounded-lg text-sm flex items-center gap-2 group">
+                              <div className="p-1.5 rounded-md bg-stone-100 text-stone-500 group-hover:bg-stone-200">
+                                <ArrowRightLeft size={16} />
+                              </div>
+                              <span className="text-neutral-700">Unit Converter</span>
+                            </button>
+                            <button onClick={() => { setShowDosageCalc(true); setShowTools(false); }} className="w-full text-left px-3 py-2 hover:bg-neutral-50 rounded-lg text-sm flex items-center gap-2 group">
+                              <div className="p-1.5 rounded-md bg-stone-100 text-stone-500 group-hover:bg-stone-200">
+                                <Target size={16} />
+                              </div>
+                              <span className="text-neutral-700">Dosage Calc</span>
+                            </button>
+                          </div>
                         </div>
                       </div>
                     )}
@@ -321,22 +323,24 @@ function App() {
                     </button>
 
                     {showActions && (
-                      <div className="absolute right-0 top-full mt-2 w-48 bg-white rounded-xl shadow-xl border border-neutral-200 overflow-hidden z-50 animate-in fade-in slide-in-from-top-2">
-                        <button onClick={() => window.print()} className="w-full text-left px-4 py-3 hover:bg-neutral-50 text-sm flex items-center gap-2">
-                          <Printer size={16} /> Print Report
-                        </button>
-                        <button onClick={handleExportCSV} className="w-full text-left px-4 py-3 hover:bg-neutral-50 text-sm flex items-center gap-2">
-                          <Download size={16} /> Export CSV
-                        </button>
-                        <button onClick={handleSaveToDrive} className="w-full text-left px-4 py-3 hover:bg-neutral-50 text-sm flex items-center gap-2 text-green-600">
-                          <FileJson size={16} /> Save Config (JSON)
-                        </button>
-                        <button onClick={() => { setShowHelp(true); setShowActions(false); }} className="w-full text-left px-4 py-3 hover:bg-neutral-50 text-sm flex items-center gap-2 border-t border-neutral-100">
-                          <HelpCircle size={16} /> Help & Guide
-                        </button>
-                        <button onClick={() => { setActiveTab('config'); setShowActions(false); }} className="w-full text-left px-4 py-3 hover:bg-neutral-50 text-sm flex items-center gap-2">
-                          <Settings2 size={16} /> Config
-                        </button>
+                      <div className="absolute right-0 top-full pt-2 w-48 z-50 animate-in fade-in slide-in-from-top-2">
+                        <div className="bg-white rounded-xl shadow-xl border border-neutral-200 overflow-hidden">
+                          <button onClick={() => window.print()} className="w-full text-left px-4 py-3 hover:bg-neutral-50 text-sm flex items-center gap-2">
+                            <Printer size={16} /> Print Report
+                          </button>
+                          <button onClick={handleExportCSV} className="w-full text-left px-4 py-3 hover:bg-neutral-50 text-sm flex items-center gap-2">
+                            <Download size={16} /> Export CSV
+                          </button>
+                          <button onClick={handleSaveToDrive} className="w-full text-left px-4 py-3 hover:bg-neutral-50 text-sm flex items-center gap-2 text-green-600">
+                            <FileJson size={16} /> Save Config (JSON)
+                          </button>
+                          <button onClick={() => { setShowHelp(true); setShowActions(false); }} className="w-full text-left px-4 py-3 hover:bg-neutral-50 text-sm flex items-center gap-2 border-t border-neutral-100">
+                            <HelpCircle size={16} /> Help & Guide
+                          </button>
+                          <button onClick={() => { setActiveTab('config'); setShowActions(false); }} className="w-full text-left px-4 py-3 hover:bg-neutral-50 text-sm flex items-center gap-2">
+                            <Settings2 size={16} /> Config
+                          </button>
+                        </div>
                       </div>
                     )}
                   </div>

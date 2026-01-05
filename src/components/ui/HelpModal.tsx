@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { X, ChevronDown, ChevronRight, HelpCircle, Zap, Calculator, Bug, Lightbulb, Settings } from 'lucide-react';
+import { X, ChevronDown, ChevronRight, HelpCircle, Zap, Calculator, Bug, Lightbulb, Settings, BarChart3 } from 'lucide-react';
 import { useCalculator } from '../../hooks/useCalculator';
 
 interface HelpSectionProps {
@@ -107,6 +107,58 @@ export function HelpModal({ isOpen, onClose, calculatorData }: HelpModalProps) {
                         </ol>
                         <div className="mt-3 p-2 bg-yellow-50 rounded text-xs">
                             💡 <strong>Tip:</strong> All calculations work directly in the UI - no JSON required! Ingredients default to grams (g) for easy entry. Use sticky notes for quick reminders, or the notepad for detailed notes.
+                        </div>
+                    </HelpSection>
+
+                    {/* Level 1.5: Analytics Dashboard */}
+                    <HelpSection
+                        title="Analytics Dashboard"
+                        icon={<BarChart3 size={18} className="text-purple-600" />}
+                        level="intermediate"
+                    >
+                        <div className="space-y-4">
+                            <p className="text-xs text-neutral-600">
+                                The Analytics tab helps you visualize costs and margins. Here's what each chart shows:
+                            </p>
+
+                            <div className="grid gap-3">
+                                <div className="p-2 border rounded-lg bg-neutral-50/50">
+                                    <strong className="text-neutral-800 text-xs block mb-1">💰 Cost Breakdown (Donut)</strong>
+                                    <p className="text-xs text-neutral-500">
+                                        Shows where your money goes. Split into Ingredients, Labor, Packaging, and Logistics.
+                                        Use this to spot your biggest expense categories.
+                                    </p>
+                                </div>
+
+                                <div className="p-2 border rounded-lg bg-neutral-50/50">
+                                    <strong className="text-neutral-800 text-xs block mb-1">📉 Cost Waterfall (Bar)</strong>
+                                    <p className="text-xs text-neutral-500">
+                                        Visualizes the journey from Manufacturing Cost → Landed Cost → Wholesale Price → MSRP.
+                                        The steps connecting the bars show your margins.
+                                    </p>
+                                </div>
+
+                                <div className="p-2 border rounded-lg bg-neutral-50/50">
+                                    <strong className="text-neutral-800 text-xs block mb-1">🎯 Margin Gauges</strong>
+                                    <p className="text-xs text-neutral-500">
+                                        Color-coded health check for your margins.
+                                        <br />
+                                        <span className="text-green-600 font-bold">Green:</span> Healthy (&gt;50%)
+                                        <br />
+                                        <span className="text-yellow-600 font-bold">Yellow:</span> Caution (30-50%)
+                                        <br />
+                                        <span className="text-red-600 font-bold">Red:</span> Low (&lt;30%)
+                                    </p>
+                                </div>
+
+                                <div className="p-2 border rounded-lg bg-neutral-50/50">
+                                    <strong className="text-neutral-800 text-xs block mb-1">🧪 Cannabinoid Potency (Bar)</strong>
+                                    <p className="text-xs text-neutral-500">
+                                        Compares target vs. actual potency for each cannabinoid.
+                                        Only active ingredients (cannabinoids) appear here.
+                                    </p>
+                                </div>
+                            </div>
                         </div>
                     </HelpSection>
 
