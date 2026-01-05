@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { FlaskConical, Truck, History, BookOpen, Cookie, Printer, Save, Download, FileJson, HelpCircle, Settings2, Calculator, FileText } from 'lucide-react';
+import { FlaskConical, Truck, History, BookOpen, Cookie, Printer, Save, Download, FileJson, HelpCircle, Settings2, Calculator, FileText, BarChart3 } from 'lucide-react';
+import { AnalyticsTab } from './components/analytics';
 import { TabButton } from './components/ui/TabButton';
 import { KPIGrid } from './components/dashboard/KPIGrid';
 import { ManufacturingView } from './components/views/ManufacturingView';
@@ -19,7 +20,7 @@ import { StickyNote } from './components/ui/StickyNote';
 import { ParticleField } from './components/ui/ParticleField';
 
 function App() {
-  const [activeTab, setActiveTab] = useState<'manufacturing' | 'logistics' | 'snapshots' | 'recipes' | 'edibles' | 'config'>('manufacturing');
+  const [activeTab, setActiveTab] = useState<'manufacturing' | 'logistics' | 'analytics' | 'snapshots' | 'recipes' | 'edibles' | 'config'>('manufacturing');
   const [showActions, setShowActions] = useState(false);
   const [showHelp, setShowHelp] = useState(false);
   const [showMath, setShowMath] = useState(false);
@@ -239,6 +240,7 @@ function App() {
                 <div className="flex bg-stone-700/75 backdrop-blur-sm border border-stone-500/40 rounded-xl p-1 shadow-lg overflow-x-auto max-w-[calc(100vw-2rem)] md:max-w-none no-scrollbar">
                   <TabButton active={activeTab === 'manufacturing'} onClick={() => setActiveTab('manufacturing')} icon={FlaskConical} label="Manufacturing" />
                   <TabButton active={activeTab === 'logistics'} onClick={() => setActiveTab('logistics')} icon={Truck} label="Logistics" />
+                  <TabButton active={activeTab === 'analytics'} onClick={() => setActiveTab('analytics')} icon={BarChart3} label="Analytics" />
                   <TabButton active={activeTab === 'snapshots'} onClick={() => setActiveTab('snapshots')} icon={History} label="Snapshots" />
                   <TabButton active={activeTab === 'recipes'} onClick={() => setActiveTab('recipes')} icon={BookOpen} label="Recipes" />
                   <TabButton active={activeTab === 'edibles'} onClick={() => setActiveTab('edibles')} icon={Cookie} label="Edibles" />
@@ -373,6 +375,10 @@ function App() {
                   removeDistroFee={calc.removeDistroFee}
                   updateDistroFee={calc.updateDistroFee}
                 />
+              )}
+
+              {activeTab === 'analytics' && (
+                <AnalyticsTab data={calc} />
               )}
 
 

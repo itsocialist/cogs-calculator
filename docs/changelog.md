@@ -19,6 +19,19 @@ Format based on [Keep a Changelog](https://keepachangelog.com/).
 
 ---
 
+## [v0.1.3] - 2026-01-04
+
+### Added
+- **Analytics Dashboard (#20)** — New tab with interactive Recharts visualizations:
+  - Margin gauges with red/yellow/green viability zones
+  - Cost waterfall showing cost buildup from material to fully loaded
+  - Cost breakdown donut chart
+  - Ingredient cost and weight pie charts
+  - Cannabinoid profile bar chart with target reference line
+  - Top ingredients table sorted by cost
+
+---
+
 ## [v0.1.2] - 2026-01-04
 
 ### Added

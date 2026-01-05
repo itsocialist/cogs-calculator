@@ -425,7 +425,7 @@ export function useCalculator() {
         const snap: Snapshot = {
             id: Date.now(),
             name: `${batchConfig.productName} (${new Date().toLocaleTimeString()})`,
-            version: '0.1.2',  // Auto-bumped with package.json
+            version: '0.1.3',  // Analytics dashboard release
             // Use derived ingredients (with computed gramsInBatch) for accurate snapshot
             config: { recipeConfig, batchConfig, activeIngredients: derivedActiveIngredients, inactiveIngredients: derivedInactiveIngredients, skus, logistics, pricing },
             cost: calculations.fullyLoadedCost

@@ -222,10 +222,28 @@ export function HelpModal({ isOpen, onClose, calculatorData }: HelpModalProps) {
                     </HelpSection>
 
                     <HelpSection
-                        title="Updates (v0.1.2)"
+                        title="Updates (v0.1.3)"
                         icon={<Zap size={18} className="text-orange-500" />}
                         level="basic"
                         defaultOpen={true}
+                    >
+                        <div className="space-y-3">
+                            <div className="p-3 bg-purple-50 border border-purple-200 rounded-lg">
+                                <h4 className="font-bold text-purple-800 mb-1">📊 New Feature: Analytics Dashboard (#20)</h4>
+                                <p className="text-xs text-purple-700">
+                                    <strong>Visual Insights:</strong> New Analytics tab with interactive charts showing cost breakdown, business viability, recipe composition, and cannabinoid profile.
+                                </p>
+                                <p className="text-xs text-purple-700 mt-2">
+                                    <strong>Key Charts:</strong> Margin gauges (red/yellow/green zones), cost waterfall, ingredient pies (cost & weight), and cannabinoid bars with target reference.
+                                </p>
+                            </div>
+                        </div>
+                    </HelpSection>
+
+                    <HelpSection
+                        title="Previous Updates (v0.1.2)"
+                        icon={<Zap size={18} className="text-gray-500" />}
+                        level="basic"
                     >
                         <div className="space-y-3">
                             <div className="p-3 bg-green-50 border border-green-200 rounded-lg">
