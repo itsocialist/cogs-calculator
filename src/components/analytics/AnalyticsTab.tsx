@@ -9,6 +9,10 @@ import { CostWaterfall } from './CostWaterfall';
 import { CostBreakdownPie } from './CostBreakdownPie';
 import { CannabinoidBar } from './CannabinoidBar';
 import { IngredientCostPie } from './IngredientCostPie';
+import { BreakEvenChart } from './BreakEvenChart';
+import { ScenarioSliders } from './ScenarioSliders';
+import { SensitivityChart } from './SensitivityChart';
+import { LogisticsPie } from './LogisticsPie';
 
 type CalculatorResult = ReturnType<typeof useCalculator>;
 
@@ -92,7 +96,21 @@ export const AnalyticsTab = ({ data }: Props) => {
                 />
             </div>
 
-            {/* TIER 2: Cost Breakdown */}
+            {/* TIER 2: Advanced Financial Analytics */}
+            <h3 className="text-sm font-bold text-white/50 uppercase tracking-wider mt-4">Advanced Financials</h3>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                <BreakEvenChart data={data} />
+                <ScenarioSliders data={data} />
+            </div>
+
+            {/* TIER 3: Cost Sensitivity & Logistics */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                <SensitivityChart data={data} />
+                <LogisticsPie data={data} />
+            </div>
+
+            {/* TIER 4: Composition Analysis */}
+            <h3 className="text-sm font-bold text-white/50 uppercase tracking-wider mt-4">Composition Analysis</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 <CostBreakdownPie
                     material={costBreakdown.material}
@@ -114,7 +132,7 @@ export const AnalyticsTab = ({ data }: Props) => {
                 />
             </div>
 
-            {/* TIER 3: Potency Analysis */}
+            {/* TIER 5: Potency Analysis */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                 <CannabinoidBar
                     cannabinoids={cannabinoidData}
