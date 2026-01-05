@@ -13,20 +13,24 @@ export const ScenarioSliders: React.FC<ScenarioSlidersProps> = ({ data }) => {
 
     // Initial Base Values
     const baseRevenue = useMemo(() => {
-        return data.skuCalculations.reduce((sum: number, sku: any) => sum + (sku.wholesalePrice * sku.quantity), 0);
+        return (data.skuCalculations || []).reduce((sum: number, sku: any) => sum + ((sku.wholesalePrice || 0) * (sku.quantity || 0)), 0);
     }, [data]);
 
     const baseMaterialCost = useMemo(() => {
-        const packaging = data.skuCalculations.reduce((sum: number, sku: any) => sum + (sku.packagingCostPerUnit * sku.quantity), 0);
-        return data.totalFormulaCost + packaging;
+        const packaging = (data.skuCalculations || []).reduce((sum: number, sku: any) => sum + ((sku.packagingCostPerUnit || 0) * (sku.quantity || 0)), 0);
+        return (data.totalFormulaCost || 0) + packaging;
     }, [data]);
 
-    const baseLaborCost = data.totalLaborCost;
+    const baseLaborCost = data.totalLaborCost || 0;
 
-    const baseLogisticsFixed = data.logistics.labTestingFee + data.logistics.shippingToDistro + (data.batchConfig.fulfillmentCost * data.totalUnitsAcrossSkus);
+    // Safety check for logistics objects
+    const logistics = data.logistics || { labTestingFee: 0, shippingToDistro: 0, distroFees: [] };
+    const batchConfig = data.batchConfig || { fulfillmentCost: 0 };
+
+    const baseLogisticsFixed = (logistics.labTestingFee || 0) + (logistics.shippingToDistro || 0) + ((batchConfig.fulfillmentCost || 0) * (data.totalUnitsAcrossSkus || 0));
 
     // Distro fees are % of revenue, so we calculate the effective rate
-    const baseDistroFees = data.skuCalculations.reduce((sum: number, sku: any) => sum + (sku.totalDistroFeesPerUnit * sku.quantity), 0);
+    const baseDistroFees = (data.skuCalculations || []).reduce((sum: number, sku: any) => sum + ((sku.totalDistroFeesPerUnit || 0) * (sku.quantity || 0)), 0);
     const distroFeeRate = baseRevenue > 0 ? baseDistroFees / baseRevenue : 0;
 
     const baseTotalCost = baseMaterialCost + baseLaborCost + baseLogisticsFixed + baseDistroFees;

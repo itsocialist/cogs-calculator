@@ -18,31 +18,35 @@ interface SensitivityChartProps {
 
 export const SensitivityChart: React.FC<SensitivityChartProps> = ({ data }) => {
     // 1. Calculate Total Costs by Category
-    const activeCost = data.activeCost;
-    const inactiveCost = data.inactiveCost;
-    const laborCost = data.totalLaborCost;
+    const activeCost = data.activeCost || 0;
+    const inactiveCost = data.inactiveCost || 0;
+    const laborCost = data.totalLaborCost || 0;
 
     // Packaging
-    const packagingCost = data.skuCalculations.reduce((sum: number, sku: any) =>
-        sum + (sku.packagingCostPerUnit * sku.quantity), 0);
+    const packagingCost = (data.skuCalculations || []).reduce((sum: number, sku: any) =>
+        sum + ((sku.packagingCostPerUnit || 0) * (sku.quantity || 0)), 0);
 
-    // Logistics (Total)
-    // Lab + Shipping + Distro Fees
-    const labShipping = data.logistics.labTestingFee + data.logistics.shippingToDistro;
-    const distroFees = data.skuCalculations.reduce((sum: number, sku: any) =>
-        sum + (sku.totalDistroFeesPerUnit * sku.quantity), 0);
-    const logisticsCost = labShipping + distroFees;
+    // Logistics Split
+    // Fixed Ops: Lab + Shipping
+    // Variable Sales: Distro Fees
+    const logistics = data.logistics || { labTestingFee: 0, shippingToDistro: 0, distroFees: [] };
+    const fixedLogisticsCost = (logistics.labTestingFee || 0) + (logistics.shippingToDistro || 0);
+
+    const distroFeesCost = (data.skuCalculations || []).reduce((sum: number, sku: any) =>
+        sum + ((sku.totalDistroFeesPerUnit || 0) * (sku.quantity || 0)), 0);
 
     // 2. Prepare Data for +/- 10% Variance
     // Impact = Cost * 0.10
     const variancePercent = 0.10;
 
+    // We split Logistics into "Logistics (Ops)" and "Distro Fees" for clarity
     const categories = [
         { name: 'Active Ingredients', cost: activeCost },
         { name: 'Inactive Ingredients', cost: inactiveCost },
         { name: 'Packaging', cost: packagingCost },
         { name: 'Labor', cost: laborCost },
-        { name: 'Logistics', cost: logisticsCost },
+        { name: 'Logistics (Ops)', cost: fixedLogisticsCost },
+        { name: 'Distro/Sales Fees', cost: distroFeesCost },
     ];
 
     const chartData = categories

@@ -35,40 +35,41 @@ export const BreakEvenChart: React.FC<BreakEvenChartProps> = ({ data }) => {
     // - Packaging (avg)
     // - Fulfillment
     // - Distro Fees (avg)
-    const totalUnits = data.totalUnitsAcrossSkus;
+    const totalUnits = data.totalUnitsAcrossSkus || 0;
 
     // Calculate averages if multiple SKUs exist
     const avgPackagingCost = totalUnits > 0
-        ? data.skuCalculations.reduce((sum: number, sku: any) => sum + (sku.packagingCostPerUnit * sku.quantity), 0) / totalUnits
+        ? data.skuCalculations.reduce((sum: number, sku: any) => sum + ((sku.packagingCostPerUnit || 0) * (sku.quantity || 0)), 0) / totalUnits
         : 0;
 
     const avgDistroFees = totalUnits > 0
-        ? data.skuCalculations.reduce((sum: number, sku: any) => sum + (sku.totalDistroFeesPerUnit * sku.quantity), 0) / totalUnits
+        ? data.skuCalculations.reduce((sum: number, sku: any) => sum + ((sku.totalDistroFeesPerUnit || 0) * (sku.quantity || 0)), 0) / totalUnits
         : 0;
 
-    const variableCostPerUnit = avgPackagingCost + data.batchConfig.fulfillmentCost + avgDistroFees;
+    const variableCostPerUnit = (avgPackagingCost || 0) + (data.batchConfig.fulfillmentCost || 0) + (avgDistroFees || 0);
 
     // Average Revenue per unit
     const avgRevenuePerUnit = totalUnits > 0
-        ? data.skuCalculations.reduce((sum: number, sku: any) => sum + (sku.wholesalePrice * sku.quantity), 0) / totalUnits
+        ? data.skuCalculations.reduce((sum: number, sku: any) => sum + ((sku.wholesalePrice || 0) * (sku.quantity || 0)), 0) / totalUnits
         : 0;
 
     // Contribution Margin = Revenue - Variable Cost
-    const contributionMargin = avgRevenuePerUnit - variableCostPerUnit;
+    const contributionMargin = (avgRevenuePerUnit || 0) - (variableCostPerUnit || 0);
 
     // Break Even Point (Units) = Fixed Costs / Contribution Margin
-    const breakEvenUnits = contributionMargin > 0 ? fixedCost / contributionMargin : Infinity;
+    // Prevent division by zero or negative infinity issues
+    const breakEvenUnits = contributionMargin > 0 ? fixedCost / contributionMargin : 0;
     const breakEvenPercent = totalUnits > 0 ? (breakEvenUnits / totalUnits) * 100 : 0;
 
     // Generate Chart Data (0% to 120% of batch)
     const chartData = [];
     const steps = 10;
-    const maxUnits = Math.ceil(totalUnits * 1.1); // Go slightly past 100%
+    const maxUnits = totalUnits > 0 ? Math.ceil(totalUnits * 1.1) : 100; // Go slightly past 100% or default to 100
 
     for (let i = 0; i <= steps; i++) {
         const units = (i / steps) * maxUnits;
-        const revenue = units * avgRevenuePerUnit;
-        const totalCost = fixedCost + (units * variableCostPerUnit);
+        const revenue = units * (avgRevenuePerUnit || 0);
+        const totalCost = (fixedCost || 0) + (units * (variableCostPerUnit || 0));
         const profit = revenue - totalCost;
 
         chartData.push({
@@ -76,18 +77,18 @@ export const BreakEvenChart: React.FC<BreakEvenChartProps> = ({ data }) => {
             revenue,
             totalCost,
             profit,
-            fixedCost
+            fixedCost: fixedCost || 0
         });
     }
 
     // Find the closest data point to break-even for the reference dot
     const breakEvenDataPoint = {
         units: Math.round(breakEvenUnits),
-        revenue: breakEvenUnits * avgRevenuePerUnit,
-        totalCost: fixedCost + (breakEvenUnits * variableCostPerUnit)
+        revenue: breakEvenUnits * (avgRevenuePerUnit || 0),
+        totalCost: (fixedCost || 0) + (breakEvenUnits * (variableCostPerUnit || 0))
     };
 
-    const isProfitable = totalUnits >= breakEvenUnits;
+    const isProfitable = totalUnits >= breakEvenUnits && contributionMargin > 0;
 
     const CustomTooltip = ({ active, payload, label }: any) => {
         if (active && payload && payload.length) {

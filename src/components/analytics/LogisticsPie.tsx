@@ -19,21 +19,23 @@ const COLORS = ['#6366f1', '#a855f7', '#ec4899', '#f43f5e', '#f97316'];
 export const LogisticsPie: React.FC<LogisticsPieProps> = ({ data }) => {
     // 1. Prepare Data
     // We want total annual/batch cost for each logistics component
+    const logistics = data.logistics || { labTestingFee: 0, shippingToDistro: 0, distroFees: [] };
+
     // Lab Fees (Fixed)
-    const labFees = data.logistics.labTestingFee;
+    const labFees = logistics.labTestingFee || 0;
 
     // Shipping to Distro (Fixed)
-    const shipping = data.logistics.shippingToDistro;
+    const shipping = logistics.shippingToDistro || 0;
 
     // Distro Fees (Variable - based on total SKU Revenue)
-    const distroFeesList = data.logistics.distroFees.map((fee: any) => {
+    const distroFeesList = (logistics.distroFees || []).map((fee: any) => {
         // Fee amount = Fee% * Total Revenue
         // Better: sum of sku revenue
-        const exactRevenue = data.skuCalculations.reduce((sum: number, sku: any) => sum + (sku.wholesalePrice * sku.quantity), 0);
+        const exactRevenue = (data.skuCalculations || []).reduce((sum: number, sku: any) => sum + ((sku.wholesalePrice || 0) * (sku.quantity || 0)), 0);
 
         return {
             name: fee.name,
-            value: (fee.percent / 100) * exactRevenue
+            value: ((fee.percent || 0) / 100) * exactRevenue
         };
     });
 
