@@ -133,9 +133,9 @@ export const KPIGrid = ({
             {/* PRIMARY ROW - Hero KPIs */}
             <details className="group relative" open>
                 <summary className="list-none cursor-pointer absolute -top-1 right-0 z-10">
-                    <span className="text-amber-400/50 hover:text-amber-300 text-[10px] transition-colors">
-                        <span className="group-open:hidden">▸ show</span>
-                        <span className="hidden group-open:inline">▾ hide</span>
+                    <span className="text-amber-400/50 hover:text-amber-300 text-sm px-1 transition-colors">
+                        <span className="group-open:hidden">▸</span>
+                        <span className="hidden group-open:inline">▾</span>
                     </span>
                 </summary>
                 <div className="grid grid-cols-2 lg:grid-cols-3 gap-3">
@@ -179,9 +179,9 @@ export const KPIGrid = ({
             {/* SECONDARY ROW */}
             <details className="group relative" open>
                 <summary className="list-none cursor-pointer absolute -top-1 right-0 z-10">
-                    <span className="text-amber-400/50 hover:text-amber-300 text-[10px] transition-colors">
-                        <span className="group-open:hidden">▸ show</span>
-                        <span className="hidden group-open:inline">▾ hide</span>
+                    <span className="text-amber-400/50 hover:text-amber-300 text-sm px-1 transition-colors">
+                        <span className="group-open:hidden">▸</span>
+                        <span className="hidden group-open:inline">▾</span>
                     </span>
                 </summary>
                 <div className={`grid ${gridClass} gap-2`}>
