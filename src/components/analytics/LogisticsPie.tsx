@@ -4,8 +4,7 @@ import {
     Pie,
     Cell,
     Tooltip,
-    ResponsiveContainer,
-    Legend
+    ResponsiveContainer
 } from 'recharts';
 import { Card } from '../ui/Card';
 import { Truck } from 'lucide-react';
@@ -14,7 +13,13 @@ interface LogisticsPieProps {
     data: any;
 }
 
-const COLORS = ['#6366f1', '#a855f7', '#ec4899', '#f43f5e', '#f97316'];
+const COLORS = [
+    '#3b82f6', // Blue (Lab)
+    '#8b5cf6', // Purple (Shipping)
+    '#f59e0b', // Amber
+    '#ef4444', // Red
+    '#10b981', // Emerald
+];
 
 export const LogisticsPie: React.FC<LogisticsPieProps> = ({ data }) => {
     // 1. Prepare Data
@@ -86,16 +91,24 @@ export const LogisticsPie: React.FC<LogisticsPieProps> = ({ data }) => {
                             ))}
                         </Pie>
                         <Tooltip content={<CustomTooltip />} />
-                        <Legend
-                            verticalAlign="bottom"
-                            height={36}
-                            formatter={(value) => <span className="text-white/60 text-xs ml-1">{value}</span>}
-                        />
                     </PieChart>
                 </ResponsiveContainer>
             </div>
 
-            <div className="text-center mt-2">
+            {/* Custom Legend */}
+            <div className="flex flex-wrap gap-2 mt-2 justify-center">
+                {chartData.map((item, idx) => (
+                    <div key={item.name} className="flex items-center gap-1.5 text-xs">
+                        <div
+                            className="w-2.5 h-2.5 rounded-full"
+                            style={{ backgroundColor: COLORS[idx % COLORS.length] }}
+                        />
+                        <span className="text-white/60">{item.name}</span>
+                    </div>
+                ))}
+            </div>
+
+            <div className="text-center mt-4 pt-4 border-t border-white/5">
                 <div className="text-xs text-white/40">Total Logistics Cost</div>
                 <div className="text-xl font-mono font-bold text-white">
                     ${totalLogistics.toLocaleString(undefined, { maximumFractionDigits: 0 })}

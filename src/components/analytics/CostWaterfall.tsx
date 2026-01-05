@@ -4,6 +4,8 @@
  */
 
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell, LabelList } from 'recharts';
+import { Card } from '../ui/Card';
+import { Layers } from 'lucide-react';
 
 interface Props {
     material: number;
@@ -33,15 +35,13 @@ export const CostWaterfall = ({ material, labor, packaging, fulfillment, logisti
     ];
 
     return (
-        <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-xl p-4">
-            <h3 className="text-sm font-bold text-white/70 uppercase tracking-wider mb-2">
-                Cost Buildup
-            </h3>
-            <div className="text-xs text-white/40 mb-4">
-                Total: <span className="text-green-400 font-mono">${total.toFixed(4)}</span> per unit
-            </div>
-
-            <div className="h-[200px]">
+        <Card
+            title="Cost Buildup"
+            icon={Layers}
+            summary={`$${total.toFixed(2)} / unit`}
+            className="h-full"
+        >
+            <div className="h-[200px] mt-4">
                 <ResponsiveContainer width="100%" height="100%">
                     <BarChart
                         layout="vertical"
@@ -101,6 +101,6 @@ export const CostWaterfall = ({ material, labor, packaging, fulfillment, logisti
                     </div>
                 ))}
             </div>
-        </div>
+        </Card>
     );
 };

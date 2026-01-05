@@ -27,7 +27,7 @@ const COLORS = [
     '#8b5cf6', // Purple
     '#ef4444', // Red
     '#06b6d4', // Cyan
-    '#ec4899', // Pink
+    '#a855f7', // Violet
     '#84cc16', // Lime
 ];
 
@@ -159,12 +159,13 @@ export const IngredientCostPie = ({ ingredients, title, dataKey }: Props) => {
                 {data.slice(0, 4).map((item, idx) => (
                     <div
                         key={item.name}
-                        className={`flex items-center gap-1 text-[10px] cursor-pointer transition-opacity ${hovered !== null && hovered !== idx ? 'opacity-40' : ''}`}
+                        className="flex items-center gap-1.5 text-[10px] cursor-pointer transition-opacity"
+                        style={{ opacity: hovered !== null && hovered !== idx ? 0.4 : 1 }}
                         onMouseEnter={() => setHovered(idx)}
                         onMouseLeave={() => setHovered(null)}
                     >
                         <div
-                            className="w-2 h-2 rounded-sm"
+                            className="w-2.5 h-2.5 rounded-full"
                             style={{ backgroundColor: item.color }}
                         />
                         <span className="text-white/50 truncate max-w-[70px]" title={item.name}>

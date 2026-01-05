@@ -1,7 +1,5 @@
-/**
- * MarginGauge - Semi-circle gauge showing wholesale/retail margins
- * Part of Tier 1 (Hero) analytics
- */
+import { Card } from '../ui/Card';
+import { Gauge } from 'lucide-react';
 
 interface Props {
     wholesaleMargin: number;
@@ -35,12 +33,13 @@ export const MarginGauge = ({
     const retailDollars = msrp - fullyLoadedCost;
 
     return (
-        <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-xl p-4">
-            <h3 className="text-sm font-bold text-white/70 uppercase tracking-wider mb-4">
-                Business Viability
-            </h3>
-
-            <div className="grid grid-cols-2 gap-4">
+        <Card
+            title="Business Viability"
+            icon={Gauge}
+            summary={`MSRP: $${msrp.toFixed(2)}`}
+            className="h-full"
+        >
+            <div className="grid grid-cols-2 gap-4 mt-4">
                 {/* Wholesale Margin */}
                 <div className={`rounded-xl p-4 ${getZoneBg(wholesaleMargin)}`}>
                     <div className="text-xs text-white/50 uppercase mb-1">Wholesale</div>
@@ -85,6 +84,6 @@ export const MarginGauge = ({
                     <span className="text-white/40">&lt;20%</span>
                 </div>
             </div>
-        </div>
+        </Card>
     );
 };

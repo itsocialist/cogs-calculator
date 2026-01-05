@@ -149,12 +149,13 @@ export const CostBreakdownPie = ({
                 {data.map((item, idx) => (
                     <div
                         key={item.name}
-                        className={`flex items-center gap-1 text-[10px] cursor-pointer transition-opacity ${hovered !== null && hovered !== idx ? 'opacity-40' : ''}`}
+                        className="flex items-center gap-1.5 text-[10px] cursor-pointer transition-opacity"
+                        style={{ opacity: hovered !== null && hovered !== idx ? 0.4 : 1 }}
                         onMouseEnter={() => setHovered(idx)}
                         onMouseLeave={() => setHovered(null)}
                     >
                         <div
-                            className="w-2 h-2 rounded-sm"
+                            className="w-2.5 h-2.5 rounded-full"
                             style={{ backgroundColor: item.color }}
                         />
                         <span className="text-white/50">
