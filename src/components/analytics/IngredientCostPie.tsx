@@ -18,15 +18,57 @@ interface Props {
     dataKey: 'cost' | 'weight';
 }
 
-// Gradient colors from dark to light
+// More varied color palette - distinct colors for each segment
 const COLORS = [
-    '#10b981', // Green - most expensive
-    '#22c55e',
-    '#4ade80',
-    '#86efac',
-    '#bbf7d0',
-    '#d1fae5', // Light green - least
+    '#10b981', // Emerald
+    '#3b82f6', // Blue
+    '#f59e0b', // Amber
+    '#8b5cf6', // Purple
+    '#ef4444', // Red
+    '#06b6d4', // Cyan
+    '#ec4899', // Pink
+    '#84cc16', // Lime
 ];
+
+// Custom label renderer for callouts
+const renderCustomLabel = (props: {
+    cx?: number;
+    cy?: number;
+    midAngle?: number;
+    outerRadius?: number;
+    percent?: number;
+    name?: string;
+    value?: number;
+}, dataKey: string) => {
+    const { cx = 0, cy = 0, midAngle = 0, outerRadius = 0, percent = 0, name = '', value = 0 } = props;
+
+    if (percent < 0.05) return null; // Don't show label for tiny slices
+
+    const RADIAN = Math.PI / 180;
+    const radius = outerRadius * 1.25;
+    const x = cx + radius * Math.cos(-midAngle * RADIAN);
+    const y = cy + radius * Math.sin(-midAngle * RADIAN);
+
+    const formattedValue = dataKey === 'cost'
+        ? `$${value.toFixed(2)}`
+        : `${value.toFixed(1)}g`;
+
+    return (
+        <text
+            x={x}
+            y={y}
+            fill="rgba(255,255,255,0.8)"
+            textAnchor={x > cx ? 'start' : 'end'}
+            dominantBaseline="central"
+            fontSize={10}
+        >
+            {name.length > 12 ? name.slice(0, 10) + '...' : name}
+            <tspan x={x} dy={12} fill="rgba(255,255,255,0.6)" fontSize={9}>
+                {formattedValue} ({(percent * 100).toFixed(0)}%)
+            </tspan>
+        </text>
+    );
+};
 
 export const IngredientCostPie = ({ ingredients, title, dataKey }: Props) => {
     // Take top 5 and group rest as "Other"
@@ -67,16 +109,18 @@ export const IngredientCostPie = ({ ingredients, title, dataKey }: Props) => {
                 </span>
             </div>
 
-            <div className="h-[180px]">
+            <div className="h-[220px]">
                 <ResponsiveContainer width="100%" height="100%">
                     <PieChart>
                         <Pie
                             data={data}
                             cx="50%"
                             cy="50%"
-                            outerRadius={70}
-                            paddingAngle={1}
+                            outerRadius={60}
+                            paddingAngle={2}
                             dataKey="value"
+                            label={(props) => renderCustomLabel(props, dataKey)}
+                            labelLine={{ stroke: 'rgba(255,255,255,0.3)', strokeWidth: 1 }}
                         >
                             {data.map((entry, index) => (
                                 <Cell key={`cell-${index}`} fill={entry.color} />
@@ -84,11 +128,14 @@ export const IngredientCostPie = ({ ingredients, title, dataKey }: Props) => {
                         </Pie>
                         <Tooltip
                             contentStyle={{
-                                backgroundColor: 'rgba(0,0,0,0.8)',
-                                border: '1px solid rgba(255,255,255,0.1)',
+                                backgroundColor: 'rgba(30, 30, 30, 0.95)',
+                                border: '1px solid rgba(255, 255, 255, 0.2)',
                                 borderRadius: '8px',
                                 fontSize: '12px',
+                                color: '#fff',
                             }}
+                            labelStyle={{ color: '#fff' }}
+                            itemStyle={{ color: '#fff' }}
                             formatter={(value) => [
                                 `${formatValue(value as number)} (${(((value as number) / total) * 100).toFixed(1)}%)`,
                                 dataKey === 'cost' ? 'Cost' : 'Weight'
@@ -98,9 +145,9 @@ export const IngredientCostPie = ({ ingredients, title, dataKey }: Props) => {
                 </ResponsiveContainer>
             </div>
 
-            {/* Legend - show top 3 + count of others */}
+            {/* Legend */}
             <div className="flex flex-wrap gap-2 mt-2 justify-center">
-                {data.slice(0, 3).map(item => (
+                {data.slice(0, 4).map(item => (
                     <div key={item.name} className="flex items-center gap-1 text-[10px]">
                         <div
                             className="w-2 h-2 rounded-sm"
@@ -111,9 +158,9 @@ export const IngredientCostPie = ({ ingredients, title, dataKey }: Props) => {
                         </span>
                     </div>
                 ))}
-                {data.length > 3 && (
+                {data.length > 4 && (
                     <span className="text-[10px] text-white/30">
-                        +{data.length - 3} more
+                        +{data.length - 4} more
                     </span>
                 )}
             </div>

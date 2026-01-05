@@ -82,12 +82,16 @@ export const CannabinoidBar = ({ cannabinoids, targetPotency }: Props) => {
                         />
                         <Tooltip
                             contentStyle={{
-                                backgroundColor: 'rgba(0,0,0,0.8)',
-                                border: '1px solid rgba(255,255,255,0.1)',
+                                backgroundColor: 'rgba(30, 30, 30, 0.95)',
+                                border: '1px solid rgba(255, 255, 255, 0.2)',
                                 borderRadius: '8px',
                                 fontSize: '12px',
+                                color: '#fff',
                             }}
+                            labelStyle={{ color: '#fff' }}
+                            itemStyle={{ color: '#fff' }}
                             formatter={(value) => [`${(value as number).toFixed(1)}mg`, 'Per Unit']}
+                            cursor={{ fill: 'rgba(255, 255, 255, 0.1)' }}
                         />
                         {targetPotency > 0 && (
                             <ReferenceLine

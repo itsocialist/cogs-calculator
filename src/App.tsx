@@ -244,7 +244,6 @@ function App() {
                   <TabButton active={activeTab === 'snapshots'} onClick={() => setActiveTab('snapshots')} icon={History} label="Snapshots" />
                   <TabButton active={activeTab === 'recipes'} onClick={() => setActiveTab('recipes')} icon={BookOpen} label="Recipes" />
                   <TabButton active={activeTab === 'edibles'} onClick={() => setActiveTab('edibles')} icon={Cookie} label="Edibles" />
-                  <TabButton active={activeTab === 'config'} onClick={() => setActiveTab('config')} icon={Settings2} label="Config" />
                 </div>
 
                 <div className="flex gap-2 h-full">
@@ -290,6 +289,9 @@ function App() {
                         </button>
                         <button onClick={() => { setShowHelp(true); setShowActions(false); }} className="w-full text-left px-4 py-3 hover:bg-neutral-50 text-sm flex items-center gap-2 border-t border-neutral-100">
                           <HelpCircle size={16} /> Help & Guide
+                        </button>
+                        <button onClick={() => { setActiveTab('config'); setShowActions(false); }} className="w-full text-left px-4 py-3 hover:bg-neutral-50 text-sm flex items-center gap-2">
+                          <Settings2 size={16} /> Config
                         </button>
                       </div>
                     )}
