@@ -7,6 +7,8 @@ interface CardProps {
     children: React.ReactNode;
     title: string;
     subtitle?: string;
+    /** Summary text displayed in header (right-aligned, smaller) */
+    summary?: string;
     icon?: LucideIcon;
     className?: string;
     action?: React.ReactNode;
@@ -25,6 +27,7 @@ export const Card = ({
     children,
     title,
     subtitle,
+    summary,
     icon: Icon,
     className = "",
     action,
@@ -94,6 +97,7 @@ export const Card = ({
                             </span>
                         )}
                     </div>
+                    {summary && <span className="relative z-10 text-xs text-white/50 font-mono">{summary}</span>}
                     {action && <div className="relative z-30 print:hidden" onClick={(e) => e.stopPropagation()}>{action}</div>}
                 </div>
 
