@@ -141,24 +141,20 @@ export const ActiveIngredientsList = ({ ingredients, onAdd, onRemove, onUpdate, 
                                 ))}
                             </select>
                         </div>
-                        <div className="col-span-4 flex items-center gap-2">
-                            <div className="flex items-center gap-1">
-                                <input
-                                    type="number"
-                                    value={item.purityPercent}
-                                    onChange={(e) => updateItem(item.id, { purityPercent: parseFloat(e.target.value) || 0 })}
-                                    className="w-12 bg-white/15 backdrop-blur-sm border-0 rounded px-1 py-1 text-xs text-right text-white/90 focus:outline-none focus:ring-1 focus:ring-white/30"
-                                    step={0.5}
-                                />
-                                <span className="text-xs text-white/50">%</span>
-                            </div>
-                            <span className="text-xs text-white/50 text-right w-12 truncate">
-                                ({item.gramsPerRecipeUnit.toFixed(2)}g)
-                            </span>
-                            <span className="text-xs font-mono text-green-600 font-bold ml-1">
+                        <div className="col-span-4 flex items-center gap-1">
+                            <input
+                                type="number"
+                                value={item.purityPercent}
+                                onChange={(e) => updateItem(item.id, { purityPercent: parseFloat(e.target.value) || 0 })}
+                                className="w-10 bg-white/15 backdrop-blur-sm border-0 rounded px-1 py-1 text-xs text-right text-white/90 focus:outline-none focus:ring-1 focus:ring-white/30"
+                                step={0.5}
+                            />
+                            <span className="text-[10px] text-white/40">%</span>
+                            <span className="text-[10px] text-white/40 font-mono">({item.gramsPerRecipeUnit.toFixed(2)}g)</span>
+                            <span className="text-xs font-mono font-bold px-2 py-0.5 bg-green-500/20 text-green-400 rounded-full border border-green-500/30 ml-auto">
                                 ~{(item.gramsPerRecipeUnit * item.purityPercent / 100 * 1000).toFixed(0)}mg
                             </span>
-                            <button onClick={() => onRemove(item.id)} className="text-white/40 hover:text-red-500 print:hidden ml-auto">
+                            <button onClick={() => onRemove(item.id)} className="text-white/40 hover:text-red-500 print:hidden ml-1">
                                 <Trash2 size={14} />
                             </button>
                         </div>
