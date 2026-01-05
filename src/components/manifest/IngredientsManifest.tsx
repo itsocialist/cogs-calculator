@@ -442,14 +442,14 @@ export const IngredientsManifest = ({
                             ))}
                         </tbody>
                         <tfoot>
-                            <tr className="border-t-2 border-amber-500/50 bg-amber-500/10 font-bold">
-                                <td className="py-3 text-amber-300 text-sm uppercase">TOTAL</td>
+                            <tr className="border-t border-white/20 bg-white/5 font-bold">
+                                <td className="py-3 text-white/80 text-sm uppercase">TOTAL</td>
                                 <td className="py-3"></td>
-                                <td className="py-3 text-right font-mono text-amber-300">
-                                    {totalWeightPerUnit.toFixed(2)}g
+                                <td className="py-3 text-right">
+                                    <span className="badge-blue">{totalWeightPerUnit.toFixed(2)}g</span>
                                 </td>
-                                <td className="py-3 text-right font-mono text-amber-400 text-lg">
-                                    ${totalCostPerUnit.toFixed(4)}
+                                <td className="py-3 text-right">
+                                    <span className="badge-amber">${totalCostPerUnit.toFixed(4)}</span>
                                 </td>
                                 <td className="py-3 text-right font-mono text-white/90">
                                     {convertFromGrams(totalWeight, config.manifest.weightScale).toLocaleString()}{config.manifest.weightScale}
@@ -457,7 +457,9 @@ export const IngredientsManifest = ({
                                 <td className="py-3 text-right font-mono text-white/60">
                                     {convertFromMl(totalVolumeMl, config.manifest.volumeScale).toLocaleString()}{config.manifest.volumeScale}
                                 </td>
-                                <td className="py-3 text-right font-mono text-emerald-400 text-lg">${totalCost.toFixed(2)}</td>
+                                <td className="py-3 text-right">
+                                    <span className="badge-green">${totalCost.toFixed(2)}</span>
+                                </td>
                             </tr>
                         </tfoot>
                     </table>

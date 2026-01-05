@@ -110,6 +110,7 @@ export const ManufacturingView = ({
             <Card
                 title="Batch Scaling"
                 icon={Scale}
+                summary={`${getBatchDisplayValue().toLocaleString()} ${getBatchSuffix()} → ${calculatedUnits.toLocaleString()} units`}
                 tooltip="Set your batch volume (L, ml, or fl oz). The calculator converts volume to weight using density and determines how many base units you can produce."
                 collapsible
             >
