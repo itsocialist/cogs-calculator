@@ -25,3 +25,26 @@ Always follow this order when testing and deploying changes:
 - **Never skip dev testing** - Always verify changes locally first
 - **Never deploy directly to production** - Always go through staging
 - The dev server is started with `npm run dev`
+
+## Branch Sync Requirement ⚠️
+
+**CRITICAL:** The `dev` and `staging` branches must stay in sync!
+
+When pushing to staging, always sync to dev:
+```bash
+# After pushing to staging, sync dev:
+git checkout dev
+git merge staging --no-edit
+git push origin dev
+git checkout staging
+```
+
+Or as a one-liner:
+```bash
+git push origin staging && git checkout dev && git merge staging --no-edit && git push origin dev && git checkout staging
+```
+
+**Branch purpose:**
+- `dev` - GitHub Pages dev environment (auto-deploys)
+- `staging` - GitHub Pages staging environment (auto-deploys)
+- `main` - Production (only merge after staging validation)
