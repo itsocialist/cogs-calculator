@@ -139,19 +139,19 @@ export const ManufacturingView = ({
                 <div className="mt-4 pt-4 border-t border-white/10 grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
                     <div>
                         <span className="text-white/50">Weight: </span>
-                        <span className="font-bold text-white/90">
+                        <span className="badge-blue">
                             {convertFromGrams(batchWeightGrams, config.manifest.weightScale).toLocaleString()}{config.manifest.weightScale}
                         </span>
                     </div>
                     <div>
                         <span className="text-white/50">Volume: </span>
-                        <span className="font-bold text-white/90">
+                        <span className="badge-blue">
                             {convertFromMl(batchVolumeMl, config.manifest.volumeScale).toLocaleString()}{config.manifest.volumeScale === 'floz' ? ' fl oz' : config.manifest.volumeScale}
                         </span>
                     </div>
                     <div>
                         <span className="text-white/50">Base Units: </span>
-                        <span className="font-bold text-white/90">{calculatedUnits.toLocaleString()}</span>
+                        <span className="badge-amber">{calculatedUnits.toLocaleString()}</span>
                         <span className="text-white/40 text-xs ml-1">({recipeConfig.baseUnitLabel})</span>
                     </div>
                     <div>

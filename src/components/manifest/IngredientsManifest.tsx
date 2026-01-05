@@ -445,8 +445,8 @@ export const IngredientsManifest = ({
                             <tr className="border-t border-white/20 bg-white/5 font-bold">
                                 <td className="py-3 text-white/80 text-sm uppercase">TOTAL</td>
                                 <td className="py-3"></td>
-                                <td className="py-3 text-right">
-                                    <span className="badge-blue">{totalWeightPerUnit.toFixed(2)}g</span>
+                                <td className="py-3 text-right font-mono text-white/60">
+                                    {totalWeightPerUnit.toFixed(2)}g
                                 </td>
                                 <td className="py-3 text-right">
                                     <span className="badge-amber">${totalCostPerUnit.toFixed(4)}</span>
