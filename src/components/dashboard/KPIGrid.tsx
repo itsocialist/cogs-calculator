@@ -130,9 +130,9 @@ export const KPIGrid = ({
 
     return (
         <div className="space-y-3 print:space-y-2">
-            {/* PRIMARY ROW - Hero KPIs - Collapsible on mobile */}
+            {/* PRIMARY ROW - Hero KPIs - Collapsible */}
             <details className="group" open>
-                <summary className="md:hidden flex items-center justify-between cursor-pointer bg-stone-800/50 backdrop-blur px-3 py-2 rounded-lg mb-2 text-white/80 text-sm font-bold uppercase tracking-wide">
+                <summary className="flex items-center justify-between cursor-pointer bg-stone-800/50 backdrop-blur px-3 py-2 rounded-lg mb-2 text-white/80 text-sm font-bold uppercase tracking-wide hover:bg-stone-700/50 transition-colors">
                     <span>📊 Primary Metrics</span>
                     <span className="group-open:rotate-180 transition-transform">▼</span>
                 </summary>
@@ -174,9 +174,9 @@ export const KPIGrid = ({
                 </div>
             </details>
 
-            {/* SECONDARY ROW - Collapsed by default on mobile */}
-            <details className="group md:open" open={typeof window !== 'undefined' && window.innerWidth >= 768}>
-                <summary className="md:hidden flex items-center justify-between cursor-pointer bg-stone-800/30 backdrop-blur px-3 py-2 rounded-lg mb-2 text-white/60 text-xs font-bold uppercase tracking-wide">
+            {/* SECONDARY ROW - Collapsible */}
+            <details className="group" open>
+                <summary className="flex items-center justify-between cursor-pointer bg-stone-800/30 backdrop-blur px-3 py-2 rounded-lg mb-2 text-white/60 text-xs font-bold uppercase tracking-wide hover:bg-stone-700/30 transition-colors">
                     <span>📈 Secondary Metrics</span>
                     <span className="group-open:rotate-180 transition-transform">▼</span>
                 </summary>
