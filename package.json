@@ -6,10 +6,12 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
+    "build:ghpages": "tsc -b && vite build --base=/cogs-calculator/",
     "lint": "eslint .",
     "preview": "vite preview",
-    "predeploy": "npm run build",
-    "deploy": "gh-pages -d dist"
+    "predeploy": "npm run build:ghpages",
+    "deploy": "gh-pages -d dist",
+    "deploy:staging": "git push origin staging"
   },
   "dependencies": {
     "clsx": "^2.1.1",
