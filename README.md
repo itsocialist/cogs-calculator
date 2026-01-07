@@ -1,73 +1,88 @@
-# React + TypeScript + Vite
+# COGS Calculator
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A comprehensive Cost of Goods Sold (COGS) calculator for cannabis product manufacturing. Built with React, TypeScript, and Vite.
 
-Currently, two official plugins are available:
+**Live Demo**: [https://itsocialist.github.io/cogs-calculator/](https://itsocialist.github.io/cogs-calculator/)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Features
 
-## React Compiler
+- 📊 **Recipe Management** — Define base units, ingredients (active cannabinoids & inactive base ingredients)
+- 🧪 **Potency Calculations** — Calculate mg/g concentration and per-SKU potency
+- 💰 **Cost Analysis** — Track ingredient costs, labor, packaging, and margins
+- 📦 **SKU Configuration** — Define multiple product sizes with unit-level cost breakdowns
+- 🏭 **Manufacturing Manifest** — Generate batch-scaled ingredient quantities
+- 💾 **Snapshots** — Save and compare different formulations
+- 📤 **Export** — Download data as CSV, JSON, or PDF
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Quick Start
 
-## Expanding the ESLint configuration
+```bash
+# Clone the repository
+git clone https://github.com/itsocialist/cogs-calculator.git
+cd cogs-calculator
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+# Install dependencies
+npm install
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+# Run development server
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Current Version
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+**v0.1.5** (January 2026)
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+### Recent Updates
+
+- 🛠️ **Tools Menu**: Refactored Tools menu for better accessibility. "Math" and "Notes" are now integrated into the Tools dropdown.
+- 🪟 **Non-Blocking Modals**: Calculator, Unit Converter, and Dosage Calculator are now draggable, non-blocking panels that can be used alongside other features.
+- 🐛 **Bug Fixes**: Improved menu closing behavior on desktop (close on mouse leave).
+
+## Environments
+
+| Environment | URL |
+|-------------|-----|
+| **Production** | https://itsocialist.github.io/cogs-calculator/ |
+| **Staging** | https://itsocialist.github.io/cogs-calculator/staging/ |
+
+## Development
+
+```bash
+# Development server with hot reload
+npm run dev
+
+# Type checking
+npm run type-check
+
+# Build for production
+npm run build
+
+# Preview production build
+npm run preview
 ```
+
+## Architecture
+
+The calculator uses a React context-based architecture for state management:
+
+- **ConfigContext** — User preferences (display units, themes)
+- **useCalculator** — Core calculation logic and recipe state
+- **recipeUtils** — Batch scaling and ingredient cost calculations
+
+## Documentation
+
+See the [GitHub Wiki](https://github.com/itsocialist/cogs-calculator/wiki) for detailed documentation:
+
+- [Getting Started](https://github.com/itsocialist/cogs-calculator/wiki/Getting-Started)
+- [Architecture](https://github.com/itsocialist/cogs-calculator/wiki/Architecture)
+- [Calculation Methods](https://github.com/itsocialist/cogs-calculator/wiki/Calculation-Methods)
+
+## Contributing
+
+1. Create an issue for the feature/bug
+2. Branch from `main` using conventional naming (`feat/description`, `fix/description`)
+3. Submit PR with issue reference (`Fixes #123`)
+
+## License
+
+Private — All rights reserved.

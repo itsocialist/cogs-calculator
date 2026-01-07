@@ -135,7 +135,25 @@ export function useCalculator() {
     const [skus, setSkus] = useState<SKU[]>(DEFAULT_SKUS);
     const [logistics, setLogistics] = useState<LogisticsConfig>(DEFAULT_LOGISTICS);
     const [pricing, setPricing] = useState({ wholesale: 25, msrp: 55 });
-    const [snapshots, setSnapshots] = useState<Snapshot[]>([]);
+
+    // Snapshots with localStorage persistence
+    const [snapshots, setSnapshots] = useState<Snapshot[]>(() => {
+        try {
+            const saved = localStorage.getItem('rolos-cogs-snapshots');
+            return saved ? JSON.parse(saved) : [];
+        } catch {
+            return [];
+        }
+    });
+
+    // Persist snapshots to localStorage
+    useEffect(() => {
+        try {
+            localStorage.setItem('rolos-cogs-snapshots', JSON.stringify(snapshots));
+        } catch (e) {
+            console.error('Failed to save snapshots:', e);
+        }
+    }, [snapshots]);
 
     // -------------------------------------------------------------------------
     // CORE CALCULATION LOOP
@@ -407,7 +425,9 @@ export function useCalculator() {
         const snap: Snapshot = {
             id: Date.now(),
             name: `${batchConfig.productName} (${new Date().toLocaleTimeString()})`,
-            config: { recipeConfig, batchConfig, activeIngredients, inactiveIngredients, skus, logistics, pricing },
+            version: '0.1.3',  // Analytics dashboard release
+            // Use derived ingredients (with computed gramsInBatch) for accurate snapshot
+            config: { recipeConfig, batchConfig, activeIngredients: derivedActiveIngredients, inactiveIngredients: derivedInactiveIngredients, skus, logistics, pricing },
             cost: calculations.fullyLoadedCost
         };
         setSnapshots([snap, ...snapshots]);
@@ -415,11 +435,20 @@ export function useCalculator() {
     };
 
     const loadSnapshot = (snap: Snapshot) => {
-        // Migration logic would go here if needed
+        // Migration logic: reset gramsInBatch to force recalculation from amount/unit
         if (snap.config.recipeConfig) setRecipeConfig(snap.config.recipeConfig);
         setBatchConfig(snap.config.batchConfig);
-        setActiveIngredients(snap.config.activeIngredients); // Ideally migrate old gramsInBatch to amount
-        setInactiveIngredients(snap.config.inactiveIngredients);
+        // Force recalculation by resetting gramsInBatch to 0 (derived values will recompute)
+        setActiveIngredients(snap.config.activeIngredients.map(i => ({
+            ...i,
+            gramsInBatch: 0,
+            gramsPerRecipeUnit: 0
+        })));
+        setInactiveIngredients(snap.config.inactiveIngredients.map(i => ({
+            ...i,
+            gramsInBatch: 0,
+            gramsPerRecipeUnit: 0
+        })));
         setSkus(snap.config.skus);
         setLogistics(snap.config.logistics);
         setPricing(snap.config.pricing);

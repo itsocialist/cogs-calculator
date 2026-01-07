@@ -1,22 +1,26 @@
 {
   "name": "cogs-calculator",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.1.5",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
+    "build:ghpages": "tsc -b && vite build --base=/cogs-calculator/",
     "lint": "eslint .",
     "preview": "vite preview",
-    "predeploy": "npm run build",
-    "deploy": "gh-pages -d dist"
+    "predeploy": "npm run build:ghpages",
+    "deploy": "gh-pages -d dist",
+    "deploy:staging": "git push origin staging"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.89.0",
     "clsx": "^2.1.1",
     "exceljs": "^4.4.0",
     "lucide-react": "^0.562.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
+    "recharts": "^3.6.0",
     "tailwind-merge": "^3.4.0"
   },
   "devDependencies": {

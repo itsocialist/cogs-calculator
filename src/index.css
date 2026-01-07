@@ -8,6 +8,25 @@
   }
 }
 
+/* Badge Components - Consistent pill-style value indicators */
+@layer components {
+  .badge-green {
+    @apply text-xs font-mono font-bold px-2 py-0.5 rounded border bg-green-500/20 text-green-400 border-green-500/30;
+  }
+
+  .badge-blue {
+    @apply text-xs font-mono font-bold px-2 py-0.5 rounded border bg-blue-500/20 text-blue-400 border-blue-500/30;
+  }
+
+  .badge-amber {
+    @apply text-xs font-mono font-bold px-2 py-0.5 rounded border bg-amber-500/20 text-amber-400 border-amber-500/30;
+  }
+
+  .badge-neutral {
+    @apply text-xs font-mono font-bold px-2 py-0.5 rounded border bg-white/10 text-white/80 border-white/25;
+  }
+}
+
 @media print {
   body {
     print-color-adjust: exact;

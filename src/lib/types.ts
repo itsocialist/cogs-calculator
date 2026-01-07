@@ -130,6 +130,7 @@ export interface PricingConfig {
 export interface Snapshot {
     id: number;
     name: string;
+    version?: string;  // Calculator version (e.g., "0.1.0")
     config: {
         recipeConfig: RecipeConfig;
         batchConfig: BatchConfig;

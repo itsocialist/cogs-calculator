@@ -50,12 +50,12 @@ export const LogisticsView = ({
                         </div>
 
                         {/* Distribution Fees */}
-                        <div className="pt-4 border-t border-neutral-100">
+                        <div className="pt-4 border-t border-white/10">
                             <div className="flex justify-between items-center mb-3">
-                                <label className="text-xs font-bold text-neutral-400 uppercase">Distribution Fees</label>
+                                <label className="text-xs font-bold text-white/50 uppercase">Distribution Fees</label>
                                 <button
                                     onClick={() => setIsAddingFee(!isAddingFee)}
-                                    className="text-xs bg-neutral-100 text-neutral-600 px-2 py-1 rounded hover:bg-neutral-200 flex items-center gap-1"
+                                    className="text-xs bg-white/10 text-white/70 px-2 py-1 rounded hover:bg-white/20 flex items-center gap-1 transition-colors"
                                 >
                                     <Plus size={12} /> Add Fee
                                 </button>
@@ -63,12 +63,12 @@ export const LogisticsView = ({
 
                             <div className="space-y-2">
                                 {logistics.distroFees.map((fee) => (
-                                    <div key={fee.id} className="flex items-center gap-2 bg-neutral-50 p-2 rounded">
+                                    <div key={fee.id} className="flex items-center gap-2 bg-white/5 p-2 rounded border border-white/10">
                                         <input
                                             type="text"
                                             value={fee.name}
                                             onChange={(e) => updateDistroFee(fee.id, { name: e.target.value })}
-                                            className="flex-1 text-sm bg-transparent focus:outline-none font-medium"
+                                            className="flex-1 text-sm bg-transparent focus:outline-none font-medium text-white/90"
                                         />
                                         <NumberInput
                                             value={fee.percent}
@@ -78,7 +78,7 @@ export const LogisticsView = ({
                                         />
                                         <button
                                             onClick={() => removeDistroFee(fee.id)}
-                                            className="text-neutral-300 hover:text-red-500 p-1"
+                                            className="text-white/30 hover:text-red-400 p-1 transition-colors"
                                         >
                                             <Trash2 size={14} />
                                         </button>
@@ -86,14 +86,14 @@ export const LogisticsView = ({
                                 ))}
 
                                 {isAddingFee && (
-                                    <div className="flex items-center gap-2 bg-yellow-50 border border-yellow-200 p-2 rounded animate-in fade-in">
+                                    <div className="flex items-center gap-2 bg-amber-500/10 border border-amber-500/30 p-2 rounded animate-in fade-in">
                                         <input
                                             autoFocus
                                             type="text"
                                             placeholder="Fee name"
                                             value={newFee.name}
                                             onChange={(e) => setNewFee({ ...newFee, name: e.target.value })}
-                                            className="flex-1 text-sm bg-white border border-neutral-300 rounded px-2 py-1"
+                                            className="flex-1 text-sm bg-white/10 border border-white/20 rounded px-2 py-1 text-white placeholder-white/40 focus:outline-none focus:border-amber-400/50"
                                         />
                                         <NumberInput
                                             value={newFee.percent}
@@ -102,7 +102,7 @@ export const LogisticsView = ({
                                         />
                                         <button
                                             onClick={handleAddFee}
-                                            className="text-xs bg-black text-white px-3 py-1.5 rounded hover:bg-neutral-800"
+                                            className="text-xs bg-white/20 text-white px-3 py-1.5 rounded hover:bg-white/30 transition-colors"
                                         >
                                             Add
                                         </button>
@@ -110,7 +110,7 @@ export const LogisticsView = ({
                                 )}
                             </div>
 
-                            <div className="mt-2 text-xs text-neutral-400 text-right">
+                            <div className="mt-2 text-xs text-white/40 text-right">
                                 Total: {logistics.distroFees.reduce((sum, f) => sum + f.percent, 0).toFixed(1)}% of wholesale
                             </div>
                         </div>
@@ -126,37 +126,37 @@ export const LogisticsView = ({
                         <div className="flex justify-between items-center text-sm">
                             <div className="flex items-center gap-2">
                                 <div className="w-3 h-3 rounded-full bg-blue-500"></div>
-                                <span>Manufacturing (COGS)</span>
+                                <span className="text-white/80">Manufacturing (COGS)</span>
                             </div>
-                            <span className="font-mono">${manufCostPerUnit.toFixed(2)}</span>
+                            <span className="font-mono text-white/90">${manufCostPerUnit.toFixed(2)}</span>
                         </div>
 
                         {/* Distro Fees */}
                         <div className="flex justify-between items-center text-sm">
                             <div className="flex items-center gap-2">
                                 <div className="w-3 h-3 rounded-full bg-orange-500"></div>
-                                <span>Distribution Fees ({logistics.distroFees.length})</span>
+                                <span className="text-white/80">Distribution Fees ({logistics.distroFees.length})</span>
                             </div>
-                            <span className="font-mono">${totalDistroFeesPerUnit.toFixed(2)}</span>
+                            <span className="font-mono text-white/90">${totalDistroFeesPerUnit.toFixed(2)}</span>
                         </div>
 
                         {/* Logistics */}
                         <div className="flex justify-between items-center text-sm">
                             <div className="flex items-center gap-2">
                                 <div className="w-3 h-3 rounded-full bg-neutral-400"></div>
-                                <span>Testing & Shipping</span>
+                                <span className="text-white/80">Testing & Shipping</span>
                             </div>
-                            <span className="font-mono">${(labTestPerUnit + shippingPerUnit).toFixed(2)}</span>
+                            <span className="font-mono text-white/90">${(labTestPerUnit + shippingPerUnit).toFixed(2)}</span>
                         </div>
 
-                        <div className="pt-4 border-t border-neutral-100 flex justify-between items-center font-bold">
-                            <span>LANDED COST</span>
-                            <span>${fullyLoadedCost.toFixed(2)}</span>
+                        <div className="pt-4 border-t border-white/10 flex justify-between items-center font-bold">
+                            <span className="text-white/90">LANDED COST</span>
+                            <span className="text-white">${fullyLoadedCost.toFixed(2)}</span>
                         </div>
                     </div>
 
                     <div className="mt-6 print:hidden">
-                        <div className="flex h-4 w-full rounded-full overflow-hidden">
+                        <div className="flex h-4 w-full rounded-full overflow-hidden bg-white/10">
                             <div className="bg-blue-500" style={{ width: `${(manufCostPerUnit / fullyLoadedCost) * 100}%` }}></div>
                             <div className="bg-orange-500" style={{ width: `${(totalDistroFeesPerUnit / fullyLoadedCost) * 100}%` }}></div>
                             <div className="bg-neutral-400" style={{ width: `${((labTestPerUnit + shippingPerUnit) / fullyLoadedCost) * 100}%` }}></div>

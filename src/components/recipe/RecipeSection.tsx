@@ -1,4 +1,4 @@
-import { Beaker } from 'lucide-react';
+import { Beaker, AlertTriangle, CheckCircle } from 'lucide-react';
 import { Card } from '../ui/Card';
 import { NumberInput } from '../ui/NumberInput';
 import { ActiveIngredientsList } from '../ingredients/ActiveIngredientsList';
@@ -35,26 +35,34 @@ export const RecipeSection = ({
         return sum + pureMg;
     }, 0);
 
+    // Coverage calculation
+    const coveragePercent = recipeConfig.baseUnitSize > 0
+        ? (totalRecipeGrams / recipeConfig.baseUnitSize) * 100
+        : 0;
+    const isUnderDefined = coveragePercent < 90;
+    const isOverDefined = coveragePercent > 110;
+
     return (
         <Card
             title="Recipe Configuration"
             icon={Beaker}
             collapsible
-            headerClassName="bg-blue-100 border-b border-blue-200"
+            defaultCollapsed={true}
             subtitle={`${recipeConfig.baseUnitLabel} = ${totalRecipeGrams.toFixed(1)}g (${totalRecipeMl.toFixed(1)}ml)`}
+            tooltip="Define your base unit (e.g., 1 oz jar) and target potency. The formula weight shows total ingredient mass per base unit. Coverage indicates if ingredients match your base unit size."
         >
             <div className="space-y-6">
                 {/* Base Unit Configuration */}
-                <div className="bg-gradient-to-r from-blue-50 to-indigo-50 p-4 rounded-lg border border-blue-100">
-                    <div className="text-xs font-bold text-blue-700 uppercase mb-3">Base Unit Definition</div>
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div className="bg-white/10 backdrop-blur-sm p-4 rounded-lg border border-white/15">
+                    <div className="text-xs font-bold text-amber-300/80 uppercase mb-3">Base Unit Definition</div>
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 items-end">
                         <div>
-                            <label className="text-xs font-bold text-neutral-500 uppercase">Unit Label</label>
+                            <label className="text-[10px] font-bold text-white/50 uppercase block">Unit Label</label>
                             <input
                                 type="text"
                                 value={recipeConfig.baseUnitLabel}
                                 onChange={(e) => setRecipeConfig({ ...recipeConfig, baseUnitLabel: e.target.value })}
-                                className="w-full bg-white border border-neutral-300 rounded px-2 py-1.5 text-sm font-bold mt-1"
+                                className="w-full bg-white/15 backdrop-blur-sm border-0 rounded-lg px-2 py-1.5 text-sm font-bold text-white/90 mt-1 focus:outline-none focus:ring-1 focus:ring-white/30"
                                 placeholder="e.g., 1 oz jar"
                             />
                         </div>
@@ -79,21 +87,46 @@ export const RecipeSection = ({
                     </div>
 
                     {/* Recipe Summary */}
-                    <div className="mt-4 pt-3 border-t border-blue-200 flex flex-wrap gap-6 text-sm">
-                        <div>
-                            <span className="text-neutral-500">Formula Weight: </span>
-                            <span className="font-bold text-neutral-800">{totalRecipeGrams.toFixed(1)}g</span>
-                            <span className="text-neutral-400"> ({totalRecipeMl.toFixed(1)}ml)</span>
+                    <div className="mt-4 pt-3 border-t border-white/15 flex flex-wrap gap-6 text-sm">
+                        <div className="flex items-center gap-1">
+                            <span className="text-white/50">Formula Weight: </span>
+                            <span className="badge-neutral">{totalRecipeGrams.toFixed(1)}g</span>
+                            <span className="text-white/40 text-xs">({totalRecipeMl.toFixed(1)}ml)</span>
                         </div>
-                        <div>
-                            <span className="text-neutral-500">Actual Potency: </span>
-                            <span className={`font-bold ${Math.abs(totalActiveMg - recipeConfig.targetPotencyMg) < recipeConfig.targetPotencyMg * 0.1 ? 'text-green-600' : 'text-orange-500'}`}>
+                        <div className="flex items-center gap-1">
+                            <span className="text-white/50">Actual Potency: </span>
+                            <span className={Math.abs(totalActiveMg - recipeConfig.targetPotencyMg) < recipeConfig.targetPotencyMg * 0.1 ? 'badge-green' : 'badge-amber'}>
                                 {totalActiveMg.toFixed(0)}mg
                             </span>
-                            <span className="text-neutral-400"> (target: {recipeConfig.targetPotencyMg}mg)</span>
+                            <span className="text-white/40 text-xs">(target: {recipeConfig.targetPotencyMg}mg)</span>
                         </div>
                     </div>
                 </div>
+
+                {/* Recipe Coverage Warning */}
+                {(isUnderDefined || isOverDefined) && (
+                    <div className={`p-3 rounded-lg border flex items-start gap-3 ${isUnderDefined ? 'bg-amber-500/10 border-amber-500/30' : 'bg-red-500/10 border-red-500/30'}`}>
+                        <AlertTriangle size={18} className={isUnderDefined ? 'text-amber-400 mt-0.5' : 'text-red-400 mt-0.5'} />
+                        <div>
+                            <div className={`font-bold text-sm ${isUnderDefined ? 'text-amber-300' : 'text-red-300'}`}>
+                                Recipe {isUnderDefined ? 'Under-Defined' : 'Over-Defined'}: {coveragePercent.toFixed(1)}% coverage
+                            </div>
+                            <div className="text-xs text-white/60 mt-1">
+                                Ingredients sum to <span className="font-mono font-bold">{totalRecipeGrams.toFixed(1)}g</span> but base unit is <span className="font-mono font-bold">{recipeConfig.baseUnitSize.toFixed(1)}g</span>.
+                                {isUnderDefined && ' Add ingredients or reduce base unit size.'}
+                                {isOverDefined && ' Remove ingredients or increase base unit size.'}
+                            </div>
+                        </div>
+                    </div>
+                )}
+                {!isUnderDefined && !isOverDefined && totalRecipeGrams > 0 && (
+                    <div className="p-3 rounded-lg border bg-green-500/10 border-green-500/30 flex items-center gap-3">
+                        <CheckCircle size={18} className="text-green-400" />
+                        <div className="text-sm text-green-300 font-medium">
+                            Recipe Complete: {coveragePercent.toFixed(1)}% coverage ({totalRecipeGrams.toFixed(1)}g / {recipeConfig.baseUnitSize.toFixed(1)}g)
+                        </div>
+                    </div>
+                )}
 
                 {/* Active Ingredients - Collapsible */}
                 <ActiveIngredientsList
@@ -101,6 +134,7 @@ export const RecipeSection = ({
                     onAdd={addActive}
                     onRemove={removeActive}
                     onUpdate={setActiveIngredients}
+                    baseUnitSize={recipeConfig.baseUnitSize}
                 />
 
                 {/* Inactive Ingredients - Collapsible */}
@@ -109,6 +143,7 @@ export const RecipeSection = ({
                     onAdd={addInactive}
                     onRemove={removeInactive}
                     onUpdate={setInactiveIngredients}
+                    baseUnitSize={recipeConfig.baseUnitSize}
                 />
             </div>
         </Card>

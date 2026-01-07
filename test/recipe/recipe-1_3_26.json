@@ -1,0 +1,99 @@
+
+stPerKg": 14.79,
+      "unit": "g",
+      "amount": 0.17,
+      "densityGPerMl": 1,
+      "type": "base"
+    },
+    {
+      "name": "Beeswax",
+      "costPerKg": 22,
+      "unit": "g",
+      "amount": 0.5,
+      "densityGPerMl": 1,
+      "type": "base"
+    },
+    {
+      "name": "Oil",
+      "costPerKg": 9.92,
+      "unit": "g",
+      "amount": 2,
+      "densityGPerMl": 1,
+      "type": "base"
+    },
+    {
+      "name": "Olive",
+      "costPerKg": 15.37,
+      "unit": "g",
+      "amount": 0.17,
+      "densityGPerMl": 1,
+      "type": "base"
+    },
+    {
+      "name": "Avo",
+      "costPerKg": 6.83,
+      "unit": "g",
+      "amount": 0.17,
+      "densityGPerMl": 1,
+      "type": "base"
+    },
+    {
+      "name": "Coco",
+      "costPerKg"{
+  "id": "recipe_1767497225040_uxrnioxua",
+  "name": "1000v5",
+  "createdAt": "2026-01-04T03:27:05.039Z",
+  "updatedAt": "2026-01-04T03:27:05.039Z",
+  "mode": "topical",
+  "recipeConfig": {
+    "baseUnitSize": 28,
+    "baseUnitLabel": "1 oz",
+    "targetPotencyMg": 1000,
+    "density": 0.95
+  },
+  "activeIngredients": [
+    {
+      "name": "CBD Isolate",
+      "costPerKg": 600,
+      "unit": "g",
+      "amount": 0.51,
+      "densityGPerMl": 1,
+      "purityPercent": 99.5,
+      "cannabinoid": "CBD"
+    },
+    {
+      "name": "THC FSO",
+      "costPerKg": 1500,
+      "unit": "g",
+      "amount": 0.9,
+      "densityGPerMl": 1,
+      "purityPercent": 60,
+      "cannabinoid": "THC"
+    }
+  ],
+  "inactiveIngredients": [
+    {
+      "name": " Butte: 8.99,
+      "unit": "g",
+      "amount": 0.17,
+      "densityGPerMl": 1,
+      "type": "base"
+    },
+    {
+      "name": "E",
+      "costPerKg": 79,
+      "unit": "g",
+      "amount": 1,
+      "densityGPerMl": 1,
+      "type": "base"
+    },
+    {
+      "name": "Essence",
+      "costPerKg": 79,
+      "unit": "g",
+      "amount": 1,
+      "densityGPerMl": 1,
+      "type": "base"
+    }
+  ]
+}

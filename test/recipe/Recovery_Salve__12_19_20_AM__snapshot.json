@@ -1,0 +1,227 @@
+{
+  "name": "Recovery Salve (12:19:20 AM)",
+  "exportedAt": "2026-01-04T08:19:32.063Z",
+  "version": "1.0",
+  "recipeConfig": {
+    "baseUnitSize": 28.5,
+    "baseUnitLabel": "1 oz",
+    "targetPotencyMg": 1000,
+    "density": 0.95
+  },
+  "batchConfig": {
+    "productName": "Recovery Salve",
+    "targetVolumeMl": 15615.072,
+    "batchSizeKg": 14.8343184,
+    "laborRate": 0,
+    "laborHours": 0,
+    "fulfillmentCost": 0
+  },
+  "activeIngredients": [
+    {
+      "name": "CBD Isolate",
+      "costPerKg": 500,
+      "unit": "g",
+      "amount": 0.52,
+      "densityGPerMl": 1,
+      "purityPercent": 99,
+      "cannabinoid": "CBD",
+      "id": 1,
+      "type": "active",
+      "gramsPerRecipeUnit": 0.52,
+      "gramsInBatch": 270.661248
+    },
+    {
+      "name": "THC FSO",
+      "costPerKg": 1500,
+      "unit": "g",
+      "amount": 0.7,
+      "densityGPerMl": 1,
+      "purityPercent": 70,
+      "cannabinoid": "THC",
+      "id": 2,
+      "type": "active",
+      "gramsPerRecipeUnit": 0.71,
+      "gramsInBatch": 369.55670399999997
+    }
+  ],
+  "inactiveIngredients": [
+    {
+      "name": " Butter",
+      "costPerKg": 14.79,
+      "unit": "g",
+      "amount": 0.17,
+      "densityGPerMl": 1,
+      "type": "base",
+      "id": 101,
+      "gramsPerRecipeUnit": 0.17,
+      "gramsInBatch": 0
+    },
+    {
+      "name": "Beeswax",
+      "costPerKg": 22,
+      "unit": "g",
+      "amount": 0.5,
+      "densityGPerMl": 1,
+      "type": "base",
+      "id": 102,
+      "gramsPerRecipeUnit": 0.5,
+      "gramsInBatch": 0
+    },
+    {
+      "name": "Oil",
+      "costPerKg": 9.92,
+      "unit": "g",
+      "amount": 2,
+      "densityGPerMl": 1,
+      "type": "base",
+      "id": 103,
+      "gramsPerRecipeUnit": 2,
+      "gramsInBatch": 0
+    },
+    {
+      "name": "Olive",
+      "costPerKg": 15.37,
+      "unit": "g",
+      "amount": 0.17,
+      "densityGPerMl": 1,
+      "type": "base",
+      "id": 104,
+      "gramsPerRecipeUnit": 0.17,
+      "gramsInBatch": 0
+    },
+    {
+      "name": "Avo",
+      "costPerKg": 6.83,
+      "unit": "g",
+      "amount": 0.17,
+      "densityGPerMl": 1,
+      "type": "base",
+      "id": 105,
+      "gramsPerRecipeUnit": 0.17,
+      "gramsInBatch": 0
+    },
+    {
+      "name": "Coco",
+      "costPerKg": 8.99,
+      "unit": "g",
+      "amount": 0.17,
+      "densityGPerMl": 1,
+      "type": "base",
+      "id": 106,
+      "gramsPerRecipeUnit": 0.17,
+      "gramsInBatch": 0
+    },
+    {
+      "name": "E",
+      "costPerKg": 79,
+      "unit": "g",
+      "amount": 1,
+      "densityGPerMl": 1,
+      "type": "base",
+      "id": 107,
+      "gramsPerRecipeUnit": 1,
+      "gramsInBatch": 0
+    },
+    {
+      "name": "Essence",
+      "costPerKg": 79,
+      "unit": "g",
+      "amount": 1,
+      "densityGPerMl": 1,
+      "type": "base",
+      "id": 108,
+      "gramsPerRecipeUnit": 1,
+      "gramsInBatch": 0
+    }
+  ],
+  "skus": [
+    {
+      "id": 1,
+      "name": "2oz",
+      "unitSizeValue": 60,
+      "unitSizeUnit": "ml",
+      "quantity": 140,
+      "packaging": [
+        {
+          "id": 5,
+          "name": "jar",
+          "costPerUnit": 2
+        },
+        {
+          "name": "labels",
+          "costPerUnit": 1,
+          "id": 1767512486891
+        }
+      ],
+      "wholesalePrice": 34.99,
+      "msrp": 79.99
+    },
+    {
+      "name": "1oz",
+      "unitSizeValue": 30,
+      "unitSizeUnit": "ml",
+      "quantity": 194,
+      "wholesalePrice": 24.99,
+      "msrp": 49.99,
+      "packaging": [
+        {
+          "id": 1767510312808.4763,
+          "name": "jar",
+          "costPerUnit": 1
+        },
+        {
+          "id": 1767510312808.883,
+          "name": "labels",
+          "costPerUnit": 1
+        }
+      ],
+      "id": 1767510312808
+    },
+    {
+      "name": ".5oz",
+      "unitSizeValue": 15,
+      "unitSizeUnit": "ml",
+      "quantity": 194,
+      "wholesalePrice": 14.99,
+      "msrp": 29.99,
+      "packaging": [
+        {
+          "id": 1767510327142.5483,
+          "name": "jar",
+          "costPerUnit": 0.99
+        },
+        {
+          "id": 1767510327142.9622,
+          "name": "labels",
+          "costPerUnit": 1
+        }
+      ],
+      "id": 1767510327142
+    }
+  ],
+  "logistics": {
+    "labTestingFee": 920,
+    "shippingToDistro": 0,
+    "distroFees": [
+      {
+        "id": 1,
+        "name": "Distributor Fee",
+        "percent": 10
+      },
+      {
+        "id": 2,
+        "name": "Sales Commission",
+        "percent": 0
+      },
+      {
+        "id": 3,
+        "name": "Distro Transfer Fee",
+        "percent": 0
+      }
+    ]
+  },
+  "pricing": {
+    "wholesale": 25,
+    "msrp": 55
+  }
+}

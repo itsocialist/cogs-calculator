@@ -1,6 +1,7 @@
 import { ClipboardList, Download, FileText, FileSpreadsheet, ChevronDown } from 'lucide-react';
 import { useState, useRef, useEffect } from 'react';
 import { Card } from '../ui/Card';
+import { SpotlightCard } from '../ui/SpotlightCard';
 import { useConfig } from '../../context/configContext';
 import type { RecipeConfig, ActiveIngredient, InactiveIngredient } from '../../lib/types';
 
@@ -12,6 +13,7 @@ interface ManifestItem {
     scaledAmount: number;
     unit: string;
     costPerKg: number;
+    costPerUnit: number; // Cost per base recipe unit
     totalCost: number;
 }
 
@@ -62,6 +64,7 @@ export const IngredientsManifest = ({
             scaledAmount: ing.gramsInBatch,
             unit: ing.unit,
             costPerKg: ing.costPerKg,
+            costPerUnit: (ing.gramsPerRecipeUnit / 1000) * ing.costPerKg,
             totalCost: (ing.gramsInBatch / 1000) * ing.costPerKg
         })),
         ...inactiveIngredients.map(ing => ({
@@ -72,22 +75,26 @@ export const IngredientsManifest = ({
             scaledAmount: ing.gramsInBatch,
             unit: ing.unit,
             costPerKg: ing.costPerKg,
+            costPerUnit: (ing.gramsPerRecipeUnit / 1000) * ing.costPerKg,
             totalCost: (ing.gramsInBatch / 1000) * ing.costPerKg
         }))
     ];
 
     // Totals
     const totalWeight = manifestItems.reduce((sum, item) => sum + item.scaledAmount, 0);
+    const totalWeightPerUnit = manifestItems.reduce((sum, item) => sum + item.amountPerUnit, 0);
+    const totalCostPerUnit = manifestItems.reduce((sum, item) => sum + item.costPerUnit, 0);
     const totalCost = manifestItems.reduce((sum, item) => sum + item.totalCost, 0);
     const totalVolumeMl = totalWeight / recipeConfig.density;
 
     // Export as CSV
     const handleExportCSV = () => {
-        const headers = ['Ingredient', 'Type', 'Per Unit (g)', 'Unit', 'Total (g)', 'Volume (ml)', 'Cost'];
+        const headers = ['Ingredient', 'Type', 'Per Unit (g)', '$/Unit', 'Unit', 'Total (g)', 'Volume (ml)', 'Cost'];
         const rows = manifestItems.map(item => [
             item.name,
             item.type,
             item.amountPerUnit.toFixed(2),
+            item.costPerUnit.toFixed(4),
             item.unit,
             item.scaledAmount.toFixed(1),
             (item.scaledAmount / recipeConfig.density).toFixed(1),
@@ -95,7 +102,7 @@ export const IngredientsManifest = ({
         ]);
 
         // Add totals row
-        rows.push(['TOTAL', '', '', '', totalWeight.toFixed(1), totalVolumeMl.toFixed(0), totalCost.toFixed(2)]);
+        rows.push(['TOTAL', '', '', totalCostPerUnit.toFixed(4), '', totalWeight.toFixed(1), totalVolumeMl.toFixed(0), totalCost.toFixed(2)]);
 
         const csvContent = [
             headers.join(','),
@@ -275,6 +282,7 @@ export const IngredientsManifest = ({
                 <th>Ingredient</th>
                 <th>Type</th>
                 <th>Per Unit</th>
+                <th>$/Unit</th>
                 <th>Total Weight</th>
                 <th>Volume</th>
                 <th>Cost</th>
@@ -286,6 +294,7 @@ export const IngredientsManifest = ({
                     <td><strong>${item.name}</strong></td>
                     <td><span class="type-badge type-${item.type}">${item.type}</span></td>
                     <td>${item.amountPerUnit.toFixed(2)}g</td>
+                    <td>$${item.costPerUnit.toFixed(4)}</td>
                     <td>${item.scaledAmount.toFixed(1)}g</td>
                     <td>${(item.scaledAmount / recipeConfig.density).toFixed(1)}ml</td>
                     <td>$${item.totalCost.toFixed(2)}</td>
@@ -293,6 +302,7 @@ export const IngredientsManifest = ({
             `).join('')}
             <tr class="totals-row">
                 <td colspan="3"><strong>TOTAL</strong></td>
+                <td><strong>$${totalCostPerUnit.toFixed(4)}</strong></td>
                 <td><strong>${totalWeight.toFixed(1)}g</strong></td>
                 <td><strong>${totalVolumeMl.toFixed(0)}ml</strong></td>
                 <td><strong>$${totalCost.toFixed(2)}</strong></td>
@@ -333,12 +343,12 @@ export const IngredientsManifest = ({
         setShowExportMenu(false);
     };
 
-    // Type color mapping - monochrome with subtle accent
+    // Type color mapping - glass with subtle accent
     const typeColors: Record<string, string> = {
-        active: 'bg-slate-700 text-white',
-        base: 'bg-slate-500 text-white',
-        carrier: 'bg-slate-400 text-white',
-        terpene: 'bg-slate-600 text-white'
+        active: 'bg-blue-500/30 text-blue-200',
+        base: 'bg-amber-500/30 text-amber-200',
+        carrier: 'bg-emerald-500/30 text-emerald-200',
+        terpene: 'bg-purple-500/30 text-purple-200'
     };
 
     return (
@@ -347,14 +357,14 @@ export const IngredientsManifest = ({
             icon={ClipboardList}
             subtitle={`${baseUnits.toFixed(0)} units × ${recipeConfig.baseUnitLabel}`}
             collapsible
+            tooltip="Production shopping list showing scaled ingredient quantities for your batch size. Export as CSV or PDF for manufacturing."
             action={
                 <div className="flex items-center gap-2">
                     {/* Export Dropdown */}
                     <div className="relative" ref={exportMenuRef}>
                         <button
                             onClick={() => setShowExportMenu(!showExportMenu)}
-                            className="flex items-center gap-1 px-2 py-1.5 rounded bg-neutral-100 text-neutral-600 hover:bg-neutral-200 text-xs font-medium"
-                            title="Export manifest"
+                            className="flex items-center gap-1 px-2 py-1.5 rounded bg-white/15 backdrop-blur-sm text-white/80 hover:bg-white/25 text-xs font-medium transition-colors"
                         >
                             <Download size={14} />
                             Export
@@ -362,20 +372,23 @@ export const IngredientsManifest = ({
                         </button>
 
                         {showExportMenu && (
-                            <div className="absolute right-0 top-full mt-1 w-44 bg-white rounded-lg shadow-xl border border-neutral-200 overflow-hidden z-50 animate-in fade-in slide-in-from-top-2">
+                            <div
+                                className="absolute right-0 top-full mt-1 w-36 bg-neutral-900 rounded-lg shadow-2xl border border-neutral-700 z-[100]"
+                                style={{ pointerEvents: 'auto' }}
+                            >
                                 <button
-                                    onClick={handleExportCSV}
-                                    className="w-full text-left px-3 py-2.5 hover:bg-neutral-50 text-sm flex items-center gap-2"
+                                    onClick={() => { handleExportCSV(); setShowExportMenu(false); }}
+                                    className="w-full text-left px-4 py-3 hover:bg-neutral-800 text-sm flex items-center gap-3 text-white transition-colors rounded-t-lg"
                                 >
-                                    <FileSpreadsheet size={16} className="text-green-600" />
-                                    <span>Download CSV</span>
+                                    <FileSpreadsheet size={16} className="text-emerald-400" />
+                                    <span>CSV</span>
                                 </button>
                                 <button
-                                    onClick={handleExportPDF}
-                                    className="w-full text-left px-3 py-2.5 hover:bg-neutral-50 text-sm flex items-center gap-2 border-t border-neutral-100"
+                                    onClick={() => { handleExportPDF(); setShowExportMenu(false); }}
+                                    className="w-full text-left px-4 py-3 hover:bg-neutral-800 text-sm flex items-center gap-3 border-t border-neutral-700 text-white transition-colors rounded-b-lg"
                                 >
-                                    <FileText size={16} className="text-red-600" />
-                                    <span>Export PDF (PO Style)</span>
+                                    <FileText size={16} className="text-rose-400" />
+                                    <span>PDF</span>
                                 </button>
                             </div>
                         )}
@@ -389,10 +402,11 @@ export const IngredientsManifest = ({
                 <div className="overflow-x-auto">
                     <table className="w-full text-sm">
                         <thead>
-                            <tr className="border-b border-neutral-200 text-neutral-500 text-xs uppercase">
+                            <tr className="border-b border-white/15 text-white/50 text-xs uppercase">
                                 <th className="text-left py-2 font-bold">Ingredient</th>
                                 <th className="text-left py-2 font-bold">Type</th>
                                 <th className="text-right py-2 font-bold">Per Unit</th>
+                                <th className="text-right py-2 font-bold">$/Unit</th>
                                 <th className="text-right py-2 font-bold">Total ({config.manifest.weightScale})</th>
                                 <th className="text-right py-2 font-bold">Volume ({config.manifest.volumeScale})</th>
                                 <th className="text-right py-2 font-bold">Cost</th>
@@ -400,71 +414,81 @@ export const IngredientsManifest = ({
                         </thead>
                         <tbody>
                             {manifestItems.map(item => (
-                                <tr key={item.id} className="border-b border-neutral-100 hover:bg-neutral-50">
-                                    <td className="py-2 font-medium text-neutral-800">{item.name}</td>
+                                <tr key={item.id} className="border-b border-white/10 hover:bg-white/10 transition-colors">
+                                    <td className="py-2 font-medium text-white/90">{item.name}</td>
                                     <td className="py-2">
-                                        <span className={`px-2 py-0.5 rounded text-xs font-bold uppercase ${typeColors[item.type] || 'bg-neutral-100 text-neutral-600'}`}>
+                                        <span className={`px-2 py-0.5 rounded text-xs font-bold uppercase ${typeColors[item.type] || 'bg-white/15 text-white/70'}`}>
                                             {item.type}
                                         </span>
                                     </td>
-                                    <td className="py-2 text-right font-mono text-neutral-600">
+                                    <td className="py-2 text-right font-mono text-white/60">
                                         {item.amountPerUnit.toFixed(2)}g
                                     </td>
-                                    <td className="py-2 text-right font-mono font-bold text-neutral-800">
+                                    <td className="py-2 text-right font-mono text-amber-400">
+                                        ${item.costPerUnit.toFixed(4)}
+                                    </td>
+                                    <td className="py-2 text-right font-mono font-bold text-white/90">
                                         {convertFromGrams(item.scaledAmount, config.manifest.weightScale).toLocaleString()}
                                         {config.manifest.weightScale}
                                     </td>
-                                    <td className="py-2 text-right font-mono text-neutral-500">
+                                    <td className="py-2 text-right font-mono text-white/50">
                                         {convertFromMl(item.scaledAmount / recipeConfig.density, config.manifest.volumeScale).toLocaleString()}
                                         {config.manifest.volumeScale}
                                     </td>
-                                    <td className="py-2 text-right font-mono text-green-600">
+                                    <td className="py-2 text-right font-mono text-emerald-400">
                                         ${item.totalCost.toFixed(2)}
                                     </td>
                                 </tr>
                             ))}
                         </tbody>
                         <tfoot>
-                            <tr className="border-t-2 border-neutral-300 bg-neutral-50 font-bold">
-                                <td className="py-3 text-neutral-800">TOTAL</td>
+                            <tr className="border-t border-white/20 bg-white/5 font-bold">
+                                <td className="py-3 text-white/80 text-sm uppercase">TOTAL</td>
                                 <td className="py-3"></td>
-                                <td className="py-3"></td>
-                                <td className="py-3 text-right font-mono text-neutral-800">
+                                <td className="py-3 text-right font-mono text-white/60">
+                                    {totalWeightPerUnit.toFixed(2)}g
+                                </td>
+                                <td className="py-3 text-right">
+                                    <span className="badge-amber">${totalCostPerUnit.toFixed(4)}</span>
+                                </td>
+                                <td className="py-3 text-right font-mono text-white/90">
                                     {convertFromGrams(totalWeight, config.manifest.weightScale).toLocaleString()}{config.manifest.weightScale}
                                 </td>
-                                <td className="py-3 text-right font-mono text-neutral-600">
+                                <td className="py-3 text-right font-mono text-white/60">
                                     {convertFromMl(totalVolumeMl, config.manifest.volumeScale).toLocaleString()}{config.manifest.volumeScale}
                                 </td>
-                                <td className="py-3 text-right font-mono text-green-700">${totalCost.toFixed(2)}</td>
+                                <td className="py-3 text-right">
+                                    <span className="badge-green">${totalCost.toFixed(2)}</span>
+                                </td>
                             </tr>
                         </tfoot>
                     </table>
                 </div>
 
-                {/* Summary Cards */}
+                {/* Summary Cards - Glass Style with Spotlight */}
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-3 pt-2">
-                    <div className="bg-slate-700 p-3 rounded-lg text-center">
-                        <div className="text-xs text-slate-300 font-bold uppercase">Base Units</div>
-                        <div className="text-xl font-black text-white">{baseUnits.toFixed(0)}</div>
-                    </div>
-                    <div className="bg-slate-600 p-3 rounded-lg text-center shadow-lg">
-                        <div className="text-xs text-slate-300 font-bold uppercase">Total Weight</div>
-                        <div className="text-xl font-black text-white">
+                    <SpotlightCard className="bg-white/10 backdrop-blur-sm p-3 rounded-lg text-center border border-white/15">
+                        <div className="text-xs text-white/50 font-bold uppercase">Base Units</div>
+                        <div className="text-xl font-black text-white/90">{baseUnits.toFixed(0)}</div>
+                    </SpotlightCard>
+                    <SpotlightCard className="bg-white/10 backdrop-blur-sm p-3 rounded-lg text-center border border-white/15">
+                        <div className="text-xs text-white/50 font-bold uppercase">Total Weight</div>
+                        <div className="text-xl font-black text-white/90">
                             {convertFromGrams(totalWeight, config.manifest.weightScale).toLocaleString()}
-                            <span className="text-sm ml-1 text-slate-400">{config.manifest.weightScale}</span>
+                            <span className="text-sm ml-1 text-white/40">{config.manifest.weightScale}</span>
                         </div>
-                    </div>
-                    <div className="bg-slate-600 p-3 rounded-lg text-center shadow-lg">
-                        <div className="text-xs text-slate-300 font-bold uppercase">Total Volume</div>
-                        <div className="text-xl font-black text-white">
+                    </SpotlightCard>
+                    <SpotlightCard className="bg-white/10 backdrop-blur-sm p-3 rounded-lg text-center border border-white/15">
+                        <div className="text-xs text-white/50 font-bold uppercase">Total Volume</div>
+                        <div className="text-xl font-black text-white/90">
                             {convertFromMl(totalVolumeMl, config.manifest.volumeScale).toLocaleString()}
-                            <span className="text-sm ml-1 text-slate-400">{config.manifest.volumeScale}</span>
+                            <span className="text-sm ml-1 text-white/40">{config.manifest.volumeScale}</span>
                         </div>
-                    </div>
-                    <div className="bg-slate-800 p-3 rounded-lg text-center">
-                        <div className="text-xs text-emerald-400 font-bold uppercase">Materials Cost</div>
+                    </SpotlightCard>
+                    <SpotlightCard className="bg-emerald-500/15 backdrop-blur-sm p-3 rounded-lg text-center border border-emerald-400/30" opacity={0.15}>
+                        <div className="text-xs text-emerald-400/80 font-bold uppercase">Materials Cost</div>
                         <div className="text-xl font-black text-emerald-400">${totalCost.toFixed(2)}</div>
-                    </div>
+                    </SpotlightCard>
                 </div>
             </div>
         </Card>

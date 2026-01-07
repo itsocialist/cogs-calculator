@@ -246,15 +246,15 @@ export const RecipesView = ({
             {/* Header Actions */}
             <div className="flex flex-wrap gap-3 items-center justify-between">
                 <div className="flex items-center gap-2">
-                    <BookOpen className="text-slate-600" size={24} />
-                    <h2 className="text-xl font-bold text-slate-800">Recipe Library</h2>
-                    <span className="text-sm text-slate-500">({recipes.length} saved)</span>
+                    <BookOpen className="text-white/60" size={24} />
+                    <h2 className="text-xl font-bold text-white/90">Recipe Library</h2>
+                    <span className="text-sm text-white/50">({recipes.length} saved)</span>
                 </div>
 
                 <div className="flex gap-2">
                     <button
                         onClick={() => setShowSaveModal(true)}
-                        className="flex items-center gap-2 bg-slate-800 text-white px-4 py-2 rounded-lg hover:bg-slate-700 transition-colors text-sm font-medium"
+                        className="flex items-center gap-2 bg-white/15 backdrop-blur-sm text-white px-4 py-2 rounded-lg hover:bg-white/20 transition-colors text-sm font-medium border border-white/10"
                     >
                         <Save size={16} />
                         Save Current
@@ -262,7 +262,7 @@ export const RecipesView = ({
 
                     <button
                         onClick={handleImportClick}
-                        className="flex items-center gap-2 bg-slate-100 text-slate-700 px-4 py-2 rounded-lg hover:bg-slate-200 transition-colors text-sm font-medium border border-slate-300"
+                        className="flex items-center gap-2 bg-white/10 text-white/70 px-4 py-2 rounded-lg hover:bg-white/15 transition-colors text-sm font-medium border border-white/10"
                     >
                         <Upload size={16} />
                         Import
@@ -280,48 +280,48 @@ export const RecipesView = ({
 
             {/* Import Error */}
             {importError && (
-                <div className="bg-red-50 border border-red-300 text-red-700 px-4 py-2 rounded-lg text-sm">
+                <div className="bg-red-500/10 border border-red-500/30 text-red-300 px-4 py-2 rounded-lg text-sm">
                     {importError}
                 </div>
             )}
 
             {/* Save Modal */}
             {showSaveModal && (
-                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50" onClick={() => setShowSaveModal(false)}>
-                    <div className="bg-white rounded-xl p-6 w-full max-w-md shadow-xl" onClick={e => e.stopPropagation()}>
+                <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50" onClick={() => setShowSaveModal(false)}>
+                    <div className="bg-stone-900/95 border border-white/15 rounded-xl p-6 w-full max-w-md shadow-xl" onClick={e => e.stopPropagation()}>
                         <div className="flex items-center justify-between mb-4">
-                            <h3 className="text-lg font-bold text-slate-800">Save Recipe</h3>
-                            <button onClick={() => setShowSaveModal(false)} className="text-slate-400 hover:text-slate-600">
+                            <h3 className="text-lg font-bold text-white/90">Save Recipe</h3>
+                            <button onClick={() => setShowSaveModal(false)} className="text-white/40 hover:text-white/70 transition-colors">
                                 <X size={20} />
                             </button>
                         </div>
 
                         <div className="space-y-4">
                             <div>
-                                <label className="block text-sm font-medium text-slate-600 mb-1">Recipe Name *</label>
+                                <label className="block text-sm font-medium text-white/60 mb-1">Recipe Name *</label>
                                 <input
                                     type="text"
                                     value={newRecipeName}
                                     onChange={(e) => setNewRecipeName(e.target.value)}
                                     placeholder="e.g., CBD Muscle Balm 500mg"
-                                    className="w-full border-2 border-slate-300 rounded-lg px-3 py-2 text-sm focus:border-slate-600 focus:outline-none"
+                                    className="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-sm text-white placeholder-white/40 focus:border-amber-400/50 focus:outline-none"
                                     autoFocus
                                 />
                             </div>
 
                             <div>
-                                <label className="block text-sm font-medium text-slate-600 mb-1">Description (optional)</label>
+                                <label className="block text-sm font-medium text-white/60 mb-1">Description (optional)</label>
                                 <textarea
                                     value={newRecipeDescription}
                                     onChange={(e) => setNewRecipeDescription(e.target.value)}
                                     placeholder="Notes about this recipe..."
                                     rows={2}
-                                    className="w-full border-2 border-slate-300 rounded-lg px-3 py-2 text-sm focus:border-slate-600 focus:outline-none resize-none"
+                                    className="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-sm text-white placeholder-white/40 focus:border-amber-400/50 focus:outline-none resize-none"
                                 />
                             </div>
 
-                            <div className="bg-slate-50 rounded-lg p-3 text-sm text-slate-600">
-                                <div className="font-medium mb-1">Current Formula:</div>
+                            <div className="bg-white/5 border border-white/10 rounded-lg p-3 text-sm text-white/60">
+                                <div className="font-medium mb-1 text-white/70">Current Formula:</div>
                                 <div>• {activeIngredients.length} active ingredient(s)</div>
                                 <div>• {inactiveIngredients.length} base/inactive ingredient(s)</div>
                                 <div>• Base unit: {recipeConfig.baseUnitLabel} ({recipeConfig.baseUnitSize}g)</div>
@@ -332,14 +332,14 @@ export const RecipesView = ({
                         <div className="flex gap-3 mt-6">
                             <button
                                 onClick={() => setShowSaveModal(false)}
-                                className="flex-1 px-4 py-2 border border-slate-300 rounded-lg text-slate-600 hover:bg-slate-50 transition-colors"
+                                className="flex-1 px-4 py-2 border border-white/20 rounded-lg text-white/60 hover:bg-white/5 transition-colors"
                             >
                                 Cancel
                             </button>
                             <button
                                 onClick={handleSave}
                                 disabled={!newRecipeName.trim()}
-                                className="flex-1 px-4 py-2 bg-slate-800 text-white rounded-lg hover:bg-slate-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                className="flex-1 px-4 py-2 bg-white/15 text-white rounded-lg hover:bg-white/20 transition-colors disabled:opacity-50 disabled:cursor-not-allowed border border-white/10"
                             >
                                 Save Recipe
                             </button>
@@ -350,15 +350,15 @@ export const RecipesView = ({
 
             {/* Recipe List */}
             {sortedRecipes.length === 0 ? (
-                <div className="bg-slate-50 rounded-xl border border-slate-200 p-8 text-center">
-                    <BookOpen size={48} className="mx-auto text-slate-300 mb-4" />
-                    <h3 className="text-lg font-medium text-slate-600 mb-2">No Saved Recipes</h3>
-                    <p className="text-sm text-slate-500 mb-4">
+                <div className="bg-white/5 rounded-xl border border-white/10 p-8 text-center">
+                    <BookOpen size={48} className="mx-auto text-white/20 mb-4" />
+                    <h3 className="text-lg font-medium text-white/70 mb-2">No Saved Recipes</h3>
+                    <p className="text-sm text-white/50 mb-4">
                         Save your current recipe configuration to quickly load it later.
                     </p>
                     <button
                         onClick={() => setShowSaveModal(true)}
-                        className="inline-flex items-center gap-2 bg-slate-800 text-white px-4 py-2 rounded-lg hover:bg-slate-700 transition-colors text-sm font-medium"
+                        className="inline-flex items-center gap-2 bg-white/15 backdrop-blur-sm text-white px-4 py-2 rounded-lg hover:bg-white/20 transition-colors text-sm font-medium border border-white/10"
                     >
                         <Save size={16} />
                         Save Current Recipe
@@ -369,16 +369,16 @@ export const RecipesView = ({
                     {sortedRecipes.map((recipe) => (
                         <div
                             key={recipe.id}
-                            className="bg-slate-50 rounded-xl border border-slate-200 p-4 hover:border-slate-300 transition-colors"
+                            className="bg-white/5 rounded-xl border border-white/10 p-4 hover:border-white/20 transition-colors"
                         >
                             <div className="flex items-start justify-between gap-4">
                                 <div className="flex-1 min-w-0">
-                                    <h3 className="font-bold text-slate-800 truncate">{recipe.name}</h3>
+                                    <h3 className="font-bold text-white/90 truncate">{recipe.name}</h3>
                                     {recipe.description && (
-                                        <p className="text-sm text-slate-500 mt-1 line-clamp-2">{recipe.description}</p>
+                                        <p className="text-sm text-white/50 mt-1 line-clamp-2">{recipe.description}</p>
                                     )}
 
-                                    <div className="flex flex-wrap gap-4 mt-2 text-xs text-slate-500">
+                                    <div className="flex flex-wrap gap-4 mt-2 text-xs text-white/40">
                                         <span className="flex items-center gap-1">
                                             <Clock size={12} />
                                             {formatDate(recipe.updatedAt)}
@@ -396,7 +396,7 @@ export const RecipesView = ({
                                             {recipe.tags.map(tag => (
                                                 <span
                                                     key={tag}
-                                                    className="inline-flex items-center gap-1 bg-slate-200 text-slate-600 px-2 py-0.5 rounded text-xs"
+                                                    className="inline-flex items-center gap-1 bg-white/10 text-white/60 px-2 py-0.5 rounded text-xs"
                                                 >
                                                     <Tag size={10} />
                                                     {tag}
@@ -409,14 +409,14 @@ export const RecipesView = ({
                                 <div className="flex gap-1">
                                     <button
                                         onClick={() => handleLoad(recipe)}
-                                        className="px-3 py-1.5 bg-slate-800 text-white rounded-lg hover:bg-slate-700 transition-colors text-sm font-medium"
+                                        className="px-3 py-1.5 bg-white/15 text-white rounded-lg hover:bg-white/20 transition-colors text-sm font-medium border border-white/10"
                                     >
                                         Load
                                     </button>
 
                                     <button
                                         onClick={() => handleDuplicate(recipe.id, recipe.name)}
-                                        className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-200 rounded transition-colors"
+                                        className="p-1.5 text-white/40 hover:text-white/70 hover:bg-white/10 rounded transition-colors"
                                         title="Duplicate"
                                     >
                                         <Copy size={16} />
@@ -424,7 +424,7 @@ export const RecipesView = ({
 
                                     <button
                                         onClick={() => handleExport(recipe.id)}
-                                        className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-200 rounded transition-colors"
+                                        className="p-1.5 text-white/40 hover:text-white/70 hover:bg-white/10 rounded transition-colors"
                                         title="Export"
                                     >
                                         <Download size={16} />
@@ -433,8 +433,8 @@ export const RecipesView = ({
                                     <button
                                         onClick={() => handleDelete(recipe.id)}
                                         className={`p-1.5 rounded transition-colors ${confirmDelete === recipe.id
-                                            ? 'bg-red-100 text-red-600'
-                                            : 'text-slate-400 hover:text-red-600 hover:bg-red-50'
+                                            ? 'bg-red-500/20 text-red-400'
+                                            : 'text-white/40 hover:text-red-400 hover:bg-red-500/10'
                                             }`}
                                         title={confirmDelete === recipe.id ? 'Click again to confirm' : 'Delete'}
                                     >

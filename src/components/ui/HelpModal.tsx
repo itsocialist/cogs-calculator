@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { X, ChevronDown, ChevronRight, HelpCircle, Zap, Calculator, Bug, Lightbulb, Settings } from 'lucide-react';
+import { X, ChevronDown, ChevronRight, HelpCircle, Zap, Calculator, Bug, Lightbulb, Settings, BarChart3 } from 'lucide-react';
 import { useCalculator } from '../../hooks/useCalculator';
 
 interface HelpSectionProps {
@@ -98,7 +98,7 @@ export function HelpModal({ isOpen, onClose, calculatorData }: HelpModalProps) {
                     >
                         <ol className="space-y-2 list-decimal list-inside">
                             <li><strong>Set Base Unit</strong> — Define your recipe's base unit (default: 1 fl oz)</li>
-                            <li><strong>Add Ingredients</strong> — Enter active (cannabinoids) and inactive ingredients with costs</li>
+                            <li><strong>Add Ingredients</strong> — Enter active (cannabinoids) and inactive ingredients with costs (defaults to grams)</li>
                             <li><strong>Set Batch Volume</strong> — Enter how much you're making (in L, ml, or fl oz)</li>
                             <li><strong>Configure SKUs</strong> — Define product sizes, quantities, and pricing</li>
                             <li><strong>Review KPIs</strong> — Check COGS, margins, and potency at the top</li>
@@ -106,7 +106,59 @@ export function HelpModal({ isOpen, onClose, calculatorData }: HelpModalProps) {
                             <li><strong>Take Notes</strong> — Click "Notes" to save notes and sticky notes</li>
                         </ol>
                         <div className="mt-3 p-2 bg-yellow-50 rounded text-xs">
-                            💡 <strong>Tip:</strong> Use sticky notes for quick reminders, or the notepad for detailed notes. Toggle the "Aa" button to switch between handwritten and typed fonts.
+                            💡 <strong>Tip:</strong> All calculations work directly in the UI - no JSON required! Ingredients default to grams (g) for easy entry. Use sticky notes for quick reminders, or the notepad for detailed notes.
+                        </div>
+                    </HelpSection>
+
+                    {/* Level 1.5: Analytics Dashboard */}
+                    <HelpSection
+                        title="Analytics Dashboard"
+                        icon={<BarChart3 size={18} className="text-purple-600" />}
+                        level="intermediate"
+                    >
+                        <div className="space-y-4">
+                            <p className="text-xs text-neutral-600">
+                                The Analytics tab helps you visualize costs and margins. Here's what each chart shows:
+                            </p>
+
+                            <div className="grid gap-3">
+                                <div className="p-2 border rounded-lg bg-neutral-50/50">
+                                    <strong className="text-neutral-800 text-xs block mb-1">💰 Cost Breakdown (Donut)</strong>
+                                    <p className="text-xs text-neutral-500">
+                                        Shows where your money goes. Split into Ingredients, Labor, Packaging, and Logistics.
+                                        Use this to spot your biggest expense categories.
+                                    </p>
+                                </div>
+
+                                <div className="p-2 border rounded-lg bg-neutral-50/50">
+                                    <strong className="text-neutral-800 text-xs block mb-1">📉 Cost Waterfall (Bar)</strong>
+                                    <p className="text-xs text-neutral-500">
+                                        Visualizes the journey from Manufacturing Cost → Landed Cost → Wholesale Price → MSRP.
+                                        The steps connecting the bars show your margins.
+                                    </p>
+                                </div>
+
+                                <div className="p-2 border rounded-lg bg-neutral-50/50">
+                                    <strong className="text-neutral-800 text-xs block mb-1">🎯 Margin Gauges</strong>
+                                    <p className="text-xs text-neutral-500">
+                                        Color-coded health check for your margins.
+                                        <br />
+                                        <span className="text-green-600 font-bold">Green:</span> Healthy (&gt;50%)
+                                        <br />
+                                        <span className="text-yellow-600 font-bold">Yellow:</span> Caution (30-50%)
+                                        <br />
+                                        <span className="text-red-600 font-bold">Red:</span> Low (&lt;30%)
+                                    </p>
+                                </div>
+
+                                <div className="p-2 border rounded-lg bg-neutral-50/50">
+                                    <strong className="text-neutral-800 text-xs block mb-1">🧪 Cannabinoid Potency (Bar)</strong>
+                                    <p className="text-xs text-neutral-500">
+                                        Compares target vs. actual potency for each cannabinoid.
+                                        Only active ingredients (cannabinoids) appear here.
+                                    </p>
+                                </div>
+                            </div>
                         </div>
                     </HelpSection>
 
@@ -151,7 +203,92 @@ export function HelpModal({ isOpen, onClose, calculatorData }: HelpModalProps) {
                         </div>
                     </HelpSection>
 
-                    {/* Level 3: Debug Insights (Advanced) */}
+                    {/* Config Settings */}
+                    <HelpSection
+                        title="Config Settings"
+                        icon={<Settings size={18} className="text-slate-600" />}
+                        level="basic"
+                    >
+                        <p>The <strong>Config tab</strong> lets you customize display units:</p>
+                        <ul className="mt-2 space-y-1 text-xs">
+                            <li>• <strong>Batch</strong>: Weight (g/kg) or Volume (ml/L/fl oz)</li>
+                            <li>• <strong>Manifest</strong>: Display scale for weights and volumes</li>
+                            <li>• <strong>SKU Defaults</strong>: Default unit for new SKUs (g/ml/oz)</li>
+                        </ul>
+                        <p className="mt-2 text-xs text-neutral-500">Settings persist to your browser's localStorage.</p>
+                    </HelpSection>
+
+                    {/* Tips & Best Practices - MOVED UP */}
+                    <HelpSection
+                        title="Tips & Best Practices"
+                        icon={<Lightbulb size={18} className="text-amber-500" />}
+                        level="basic"
+                    >
+                        <ul className="space-y-2">
+                            <li>✅ <strong>Start with your recipe</strong> — Define base unit first, then add ingredients</li>
+                            <li>✅ <strong>Check the formula weight</strong> — Should be close to batch weight (green = OK, red = over)</li>
+                            <li>✅ <strong>Use Snapshots</strong> — Save different formulations to compare costs</li>
+                            <li>✅ <strong>Industry standard</strong> — Cannabis salves typically label as "500mg CBD per 1oz jar"</li>
+                            <li>⚠️ <strong>Weight allocation</strong> — Don't over-allocate SKU quantities beyond batch size</li>
+                        </ul>
+                    </HelpSection>
+
+                    {/* Version History - Combined */}
+                    <HelpSection
+                        title="Version History"
+                        icon={<Zap size={18} className="text-orange-500" />}
+                        level="basic"
+                    >
+                        <div className="space-y-4">
+                            {/* v0.1.5 */}
+                            <div>
+                                <h4 className="font-bold text-neutral-700 mb-2 text-sm">v0.1.5 — Tools & Usability</h4>
+                                <div className="space-y-2">
+                                    <div className="p-2 bg-purple-50 border border-purple-200 rounded text-xs text-purple-700">
+                                        <strong>🛠️ Tools Menu:</strong> New unified Tools menu with Calculator, Unit Converter, Dosage Calc, Math, Notes, and Stickies.
+                                    </div>
+                                    <div className="p-2 bg-blue-50 border border-blue-200 rounded text-xs text-blue-700">
+                                        <strong>🪟 Floating Panels:</strong> Tools are now non-blocking and draggable. Run multiple tools at once!
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* v0.1.3 */}
+                            <div>
+                                <h4 className="font-bold text-neutral-700 mb-2 text-sm">v0.1.3 — Analytics Dashboard</h4>
+                                <div className="p-3 bg-purple-50 border border-purple-200 rounded-lg">
+                                    <p className="text-xs text-purple-700">
+                                        <strong>📊 Analytics Tab:</strong> Interactive charts for cost breakdown, margin gauges (red/yellow/green), waterfall, ingredient pies, and cannabinoid bars.
+                                    </p>
+                                </div>
+                            </div>
+
+                            {/* v0.1.2 */}
+                            <div>
+                                <h4 className="font-bold text-neutral-700 mb-2 text-sm">v0.1.2 — Potency & Cost</h4>
+                                <div className="space-y-2">
+                                    <div className="p-2 bg-green-50 border border-green-200 rounded text-xs text-green-700">
+                                        <strong>🐛 Potency Fix:</strong> KPI now shows potency per base recipe unit, not SKU.
+                                    </div>
+                                    <div className="p-2 bg-blue-50 border border-blue-200 rounded text-xs text-blue-700">
+                                        <strong>✨ Cost/Unit:</strong> New $/Unit column in Ingredients Manifest.
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* v0.1.1 */}
+                            <div>
+                                <h4 className="font-bold text-neutral-700 mb-2 text-sm">v0.1.1 — Initial Release</h4>
+                                <div className="space-y-2">
+                                    <div className="p-2 bg-blue-50 border border-blue-200 rounded text-xs text-blue-700">
+                                        Ingredient defaults set to grams. COST/GRAM KPI fixed.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </HelpSection>
+
+                    {/* Debug Insights - MOVED TO BOTTOM */}
                     <HelpSection
                         title="Debug Insights"
                         icon={<Bug size={18} className="text-purple-600" />}
@@ -204,35 +341,6 @@ export function HelpModal({ isOpen, onClose, calculatorData }: HelpModalProps) {
                                 Calculator data not available. Close and reopen Help from the Manufacturing tab to see live debug data.
                             </p>
                         )}
-                    </HelpSection>
-
-                    {/* Additional Sections */}
-                    <HelpSection
-                        title="Config Settings"
-                        icon={<Settings size={18} className="text-slate-600" />}
-                        level="basic"
-                    >
-                        <p>The <strong>Config tab</strong> lets you customize display units:</p>
-                        <ul className="mt-2 space-y-1 text-xs">
-                            <li>• <strong>Batch</strong>: Weight (g/kg) or Volume (ml/L/fl oz)</li>
-                            <li>• <strong>Manifest</strong>: Display scale for weights and volumes</li>
-                            <li>• <strong>SKU Defaults</strong>: Default unit for new SKUs (g/ml/oz)</li>
-                        </ul>
-                        <p className="mt-2 text-xs text-neutral-500">Settings persist to your browser's localStorage.</p>
-                    </HelpSection>
-
-                    <HelpSection
-                        title="Tips & Best Practices"
-                        icon={<Lightbulb size={18} className="text-amber-500" />}
-                        level="basic"
-                    >
-                        <ul className="space-y-2">
-                            <li>✅ <strong>Start with your recipe</strong> — Define base unit first, then add ingredients</li>
-                            <li>✅ <strong>Check the formula weight</strong> — Should be close to batch weight (green = OK, red = over)</li>
-                            <li>✅ <strong>Use Snapshots</strong> — Save different formulations to compare costs</li>
-                            <li>✅ <strong>Industry standard</strong> — Cannabis salves typically label as "500mg CBD per 1oz jar"</li>
-                            <li>⚠️ <strong>Weight allocation</strong> — Don't over-allocate SKU quantities beyond batch size</li>
-                        </ul>
                     </HelpSection>
                 </div>
 

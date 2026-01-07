@@ -1,4 +1,4 @@
-import { Settings } from 'lucide-react';
+import { Scale } from 'lucide-react';
 import { Card } from '../ui/Card';
 import { NumberInput } from '../ui/NumberInput';
 import { RecipeSection } from '../recipe/RecipeSection';
@@ -109,18 +109,19 @@ export const ManufacturingView = ({
             {/* SECTION 2: Batch Scaling - Volume/weight based */}
             <Card
                 title="Batch Scaling"
-                icon={Settings}
+                icon={Scale}
+                summary={`${getBatchDisplayValue().toLocaleString()} ${getBatchSuffix()} → ${calculatedUnits.toLocaleString()} units`}
+                tooltip="Set your batch volume (L, ml, or fl oz). The calculator converts volume to weight using density and determines how many base units you can produce."
                 collapsible
-                headerClassName="bg-blue-50 border-b border-blue-100"
             >
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 items-end">
                     <div className="lg:col-span-2">
-                        <label className="text-xs font-bold text-neutral-400 uppercase">Product Name</label>
+                        <label className="text-[10px] font-bold text-white/50 uppercase">Product Name</label>
                         <input
                             type="text"
                             value={batchConfig.productName}
                             onChange={(e) => setBatchConfig({ ...batchConfig, productName: e.target.value })}
-                            className="w-full bg-neutral-50 border border-neutral-300 rounded px-2 py-1.5 text-sm font-bold mt-1"
+                            className="w-full bg-white/15 backdrop-blur-sm border-0 rounded-lg px-2 py-1.5 text-sm font-bold text-white/90 mt-1 focus:outline-none focus:ring-1 focus:ring-white/30"
                         />
                     </div>
                     <NumberInput
@@ -135,32 +136,63 @@ export const ManufacturingView = ({
                 </div>
 
                 {/* Batch Summary */}
-                <div className="mt-4 pt-4 border-t border-neutral-100 grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                <div className="mt-4 pt-4 border-t border-white/10 grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
                     <div>
-                        <span className="text-neutral-500">Weight: </span>
-                        <span className="font-bold text-neutral-800">
+                        <span className="text-white/50">Weight: </span>
+                        <span className="badge-neutral">
                             {convertFromGrams(batchWeightGrams, config.manifest.weightScale).toLocaleString()}{config.manifest.weightScale}
                         </span>
                     </div>
                     <div>
-                        <span className="text-neutral-500">Volume: </span>
-                        <span className="font-bold text-neutral-800">
+                        <span className="text-white/50">Volume: </span>
+                        <span className="badge-neutral">
                             {convertFromMl(batchVolumeMl, config.manifest.volumeScale).toLocaleString()}{config.manifest.volumeScale === 'floz' ? ' fl oz' : config.manifest.volumeScale}
                         </span>
                     </div>
                     <div>
-                        <span className="text-neutral-500">Base Units: </span>
-                        <span className="font-bold text-neutral-800">{calculatedUnits.toLocaleString()}</span>
-                        <span className="text-neutral-400 text-xs ml-1">({recipeConfig.baseUnitLabel})</span>
+                        <span className="text-white/50">Base Units: </span>
+                        <span className="badge-amber">{calculatedUnits.toLocaleString()}</span>
+                        <span className="text-white/40 text-xs ml-1">({recipeConfig.baseUnitLabel})</span>
                     </div>
                     <div>
-                        <span className="text-neutral-500">Formula: </span>
-                        <span className={`font-mono font-bold ${totalBatchWeightGrams > batchWeightGrams ? 'text-red-500' : 'text-green-600'}`}>
-                            {totalBatchWeightGrams.toLocaleString()}g
-                            {totalBatchWeightGrams > batchWeightGrams && (
-                                <span className="text-xs ml-1">⚠️ Over</span>
-                            )}
-                        </span>
+                        <span className="text-white/50">Formula: </span>
+                        {(() => {
+                            const variance = totalBatchWeightGrams - batchWeightGrams;
+                            const variancePercent = batchWeightGrams > 0 ? Math.abs(variance / batchWeightGrams * 100) : 0;
+
+                            // Determine badge class based on variance percentage
+                            let badgeClass = 'badge-green';
+                            let statusIcon = '✓';
+                            let statusText = 'within tolerance';
+
+                            if (variancePercent >= 5) {
+                                badgeClass = 'text-xs font-mono font-bold px-2 py-0.5 rounded border bg-red-500/20 text-red-400 border-red-500/30';
+                                statusIcon = '❌';
+                                statusText = 'action required';
+                            } else if (variancePercent >= 2) {
+                                badgeClass = 'badge-amber';
+                                statusIcon = '⚠️';
+                                statusText = 'review recommended';
+                            }
+
+                            const tooltipText = variance > 0
+                                ? `Formula weight is ${Math.abs(variance).toFixed(0)}g over target batch weight. This ${variancePercent.toFixed(1)}% variance is ${statusText}.`
+                                : variance < 0
+                                    ? `Formula weight is ${Math.abs(variance).toFixed(0)}g under target batch weight. This ${variancePercent.toFixed(1)}% variance is ${statusText}.`
+                                    : `Formula weight matches target batch weight exactly.`;
+
+                            return (
+                                <span
+                                    className={`${badgeClass} cursor-help`}
+                                    title={tooltipText}
+                                >
+                                    {totalBatchWeightGrams.toLocaleString(undefined, { maximumFractionDigits: 0 })}g / {batchWeightGrams.toLocaleString(undefined, { maximumFractionDigits: 0 })}g
+                                    <span className="ml-1">
+                                        ({variance >= 0 ? '+' : ''}{variancePercent.toFixed(1)}%) {statusIcon}
+                                    </span>
+                                </span>
+                            );
+                        })()}
                     </div>
                 </div>
             </Card>

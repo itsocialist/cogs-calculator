@@ -27,4 +27,6 @@ jobs:
           folder: dist
           branch: gh-pages
           target-folder: staging
-          clean: true
+          # CRITICAL: clean must be false to prevent wiping production content
+          # clean: true deletes ALL files from gh-pages, not just staging folder!
+          clean: false

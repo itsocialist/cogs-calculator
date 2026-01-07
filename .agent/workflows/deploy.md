@@ -4,22 +4,24 @@ description: Deploy COGS calculator to GitHub Pages
 
 # Deploy Workflow
 
-Before deploying, complete this checklist:
+Production deployment - requires release tag first.
 
 ## Pre-Deploy Checklist
 
-### 1. Update Help Modal with Latest Features
+### 1. Ensure release is tagged
+If not already tagged, run `/release` workflow first:
+```bash
+gh release list
+```
+
+### 2. Update Help Modal with Latest Features (if needed)
 - Open `src/components/ui/HelpModal.tsx`
 - Add any new features to the "How to Use" section
 - Update "How Calculations Work" if formulas changed
 - Update "Config Settings" if new config options added
-- Update "Tips & Best Practices" if relevant
-
-### 2. Update Version (if significant changes)
-- Consider adding version display in footer or help modal
-- Document breaking changes in help
 
 ### 3. Verify Build
+// turbo
 ```bash
 cd /Users/briandawson/workspace/db-utiliities/cogs-calculator
 npm run build
@@ -28,7 +30,7 @@ npm run build
 ### 4. Commit All Changes
 ```bash
 git add -A
-git commit -m "feat: <describe changes>"
+git commit -m "chore: prepare for production deploy"
 git push origin main
 ```
 
@@ -42,4 +44,12 @@ npx gh-pages -d dist
 ### 6. Verify Deployment
 - Wait 1-2 minutes for GitHub Pages to update
 - Visit https://itsocialist.github.io/cogs-calculator/
-- Test key features after login
+- Test key features
+
+### 7. Close related issues
+```bash
+gh issue close <issue-numbers>
+```
+
+## Rollback
+If issues found, use `/release` rollback instructions.

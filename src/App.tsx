@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { FlaskConical, Truck, History, BookOpen, Cookie, Printer, Save, Download, FileJson, HelpCircle, Settings2, Calculator, FileText } from 'lucide-react';
+import { FlaskConical, Truck, History, BookOpen, Cookie, Printer, Download, FileJson, HelpCircle, Settings2, Calculator, FileText, BarChart3, Wrench, ArrowRightLeft, Target, StickyNote as StickyNoteIcon } from 'lucide-react';
+import { AnalyticsTab } from './components/analytics';
 import { TabButton } from './components/ui/TabButton';
 import { KPIGrid } from './components/dashboard/KPIGrid';
 import { ManufacturingView } from './components/views/ManufacturingView';
@@ -17,13 +18,18 @@ import { DraggableMathPanel } from './components/ui/DraggableMathPanel';
 import { NotesPanel } from './components/ui/NotesPanel';
 import { StickyNote } from './components/ui/StickyNote';
 import { ParticleField } from './components/ui/ParticleField';
+import { CalculatorModal, UnitConverterModal, DosageCalculatorModal } from './components/tools';
 
 function App() {
-  const [activeTab, setActiveTab] = useState<'manufacturing' | 'logistics' | 'snapshots' | 'recipes' | 'edibles' | 'config'>('manufacturing');
+  const [activeTab, setActiveTab] = useState<'manufacturing' | 'logistics' | 'analytics' | 'snapshots' | 'recipes' | 'edibles' | 'config'>('manufacturing');
   const [showActions, setShowActions] = useState(false);
   const [showHelp, setShowHelp] = useState(false);
   const [showMath, setShowMath] = useState(false);
   const [showNotes, setShowNotes] = useState(false);
+  const [showTools, setShowTools] = useState(false);
+  const [showCalculator, setShowCalculator] = useState(false);
+  const [showUnitConverter, setShowUnitConverter] = useState(false);
+  const [showDosageCalc, setShowDosageCalc] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(() => {
     // Check for existing session on mount
     const session = localStorage.getItem('rolos-auth-session');
@@ -83,11 +89,6 @@ function App() {
     document.body.appendChild(downloadAnchorNode);
     downloadAnchorNode.click();
     downloadAnchorNode.remove();
-  };
-
-  const handleSaveSnapshot = () => {
-    calc.saveSnapshot();
-    alert("Snapshot Saved!");
   };
 
 
@@ -197,47 +198,123 @@ function App() {
 
   return (
     <ConfigProvider>
-      <div className="min-h-screen bg-neutral-100 font-sans print:bg-white print:p-0">
-        {/* Sticky Header */}
-        <div className="sticky top-0 z-40 bg-neutral-100/95 backdrop-blur-sm border-b-2 border-neutral-300 shadow-sm print:static print:border-none">
-          <div className="max-w-7xl mx-auto px-4 md:px-8 py-4">
+      {/* Darker ethereal background with botanical image */}
+      <div
+        className="min-h-screen font-sans print:bg-white print:p-0 relative"
+        style={{
+          backgroundImage: 'url(/cogs-calculator/login-bg.png)',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundAttachment: 'fixed',
+        }}
+      >
+        {/* Dark overlay to dim the background - increased opacity for better contrast */}
+        <div className="fixed inset-0 bg-gradient-to-br from-stone-900/80 via-stone-900/70 to-stone-900/80 pointer-events-none" />
+
+        {/* Floating particles - biology & chemistry connections */}
+        <div className="fixed inset-0 opacity-25 pointer-events-none print:hidden">
+          <ParticleField particleCount={35} connectionDistance={80} />
+        </div>
+
+        {/* Warm ambient glow orbs */}
+        <div className="fixed top-0 left-1/4 w-96 h-96 bg-amber-400/10 rounded-full blur-3xl pointer-events-none animate-pulse" />
+        <div className="fixed bottom-0 right-1/4 w-80 h-80 bg-emerald-400/8 rounded-full blur-3xl pointer-events-none animate-pulse" style={{ animationDelay: '2s' }} />
+        <div className="fixed top-1/2 right-0 w-64 h-64 bg-amber-300/8 rounded-full blur-3xl pointer-events-none animate-pulse" style={{ animationDelay: '4s' }} />
+
+        {/* Sticky Header - Liquid Glass */}
+        <div className="sticky top-0 z-40 print:static print:border-none">
+          {/* Stacked glass layers - darkened for better contrast */}
+          <div className="absolute inset-0 bg-stone-900/60 backdrop-blur-2xl" />
+          <div className="absolute inset-0 bg-gradient-to-b from-white/15 to-white/5" />
+          <div className="absolute inset-x-0 bottom-0 h-px bg-white/20" />
+          <div className="absolute inset-0 shadow-lg shadow-black/30" />
+          <div className="relative max-w-7xl mx-auto px-4 md:px-8 py-4">
             {/* Header */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 print:hidden">
               <div>
-                <h1 className="text-3xl font-black tracking-tight text-neutral-900">ROLOS KITCHEN</h1>
-                <p className="text-neutral-500 font-medium">COGS & Potency Calculator</p>
+                <h1 className="text-3xl font-light tracking-[0.15em] text-white/90">ROLOS KITCHEN</h1>
+                <p className="text-amber-200/60 text-sm tracking-widest italic">by Dawson Bros</p>
               </div>
 
               <div className="flex gap-2 relative">
-                <div className="flex bg-neutral-900 rounded-xl p-1 shadow-lg overflow-x-auto max-w-[calc(100vw-2rem)] md:max-w-none no-scrollbar">
+                <div className="flex bg-stone-700/75 backdrop-blur-sm border border-stone-500/40 rounded-xl p-1 shadow-lg overflow-x-auto max-w-[calc(100vw-2rem)] md:max-w-none no-scrollbar">
                   <TabButton active={activeTab === 'manufacturing'} onClick={() => setActiveTab('manufacturing')} icon={FlaskConical} label="Manufacturing" />
                   <TabButton active={activeTab === 'logistics'} onClick={() => setActiveTab('logistics')} icon={Truck} label="Logistics" />
+                  <TabButton active={activeTab === 'analytics'} onClick={() => setActiveTab('analytics')} icon={BarChart3} label="Analytics" />
                   <TabButton active={activeTab === 'snapshots'} onClick={() => setActiveTab('snapshots')} icon={History} label="Snapshots" />
                   <TabButton active={activeTab === 'recipes'} onClick={() => setActiveTab('recipes')} icon={BookOpen} label="Recipes" />
                   <TabButton active={activeTab === 'edibles'} onClick={() => setActiveTab('edibles')} icon={Cookie} label="Edibles" />
-                  <TabButton active={activeTab === 'config'} onClick={() => setActiveTab('config')} icon={Settings2} label="Config" />
                 </div>
 
                 <div className="flex gap-2 h-full">
-                  <button
-                    onClick={() => setShowMath(!showMath)}
-                    className={`border border-neutral-200 rounded-xl px-3 md:px-4 py-2 font-medium transition-colors shadow-sm flex items-center gap-2 ${showMath ? 'bg-neutral-800 text-white border-neutral-800' : 'bg-white text-neutral-600 hover:bg-neutral-50'}`}
-                    title="See the Math"
+                  {/* Tools Dropdown */}
+                  <div
+                    className="relative"
+                    onMouseLeave={() => setShowTools(false)}
                   >
-                    <Calculator size={18} />
-                    <span className="hidden md:inline">Math</span>
-                  </button>
+                    <button
+                      onClick={() => setShowTools(!showTools)}
+                      className={`border border-neutral-200 text-neutral-600 rounded-xl px-4 py-3 font-medium hover:bg-neutral-50 transition-colors shadow-sm h-full flex items-center gap-2 ${(showTools || showCalculator || showUnitConverter || showDosageCalc || showMath || showNotes) ? 'bg-neutral-50 border-neutral-300' : 'bg-white'}`}
+                    >
+                      <Wrench size={18} />
+                      <span className="hidden md:inline">Tools</span>
+                    </button>
 
-                  <button
-                    onClick={() => setShowNotes(!showNotes)}
-                    className={`border border-neutral-200 rounded-xl px-3 md:px-4 py-2 font-medium transition-colors shadow-sm flex items-center gap-2 ${showNotes ? 'bg-neutral-800 text-white border-neutral-800' : 'bg-white text-neutral-600 hover:bg-neutral-50'}`}
-                    title="Notes"
+                    {showTools && (
+                      <div className="absolute right-0 top-full pt-2 w-56 z-50 animate-in fade-in slide-in-from-top-2">
+                        <div className="bg-white rounded-xl shadow-xl border border-neutral-200 overflow-hidden">
+                          <div className="p-1">
+                            <button onClick={() => { setShowMath(!showMath); setShowTools(false); }} className="w-full text-left px-3 py-2 hover:bg-neutral-50 rounded-lg text-sm flex items-center gap-2 group">
+                              <div className={`p-1.5 rounded-md ${showMath ? 'bg-amber-100 text-amber-700' : 'bg-neutral-100 text-neutral-500 group-hover:bg-neutral-200'}`}>
+                                <Calculator size={16} />
+                              </div>
+                              <span className={showMath ? 'font-medium text-amber-900' : 'text-neutral-700'}>Math Tape</span>
+                            </button>
+
+                            <button onClick={() => { setShowNotes(!showNotes); setShowTools(false); }} className="w-full text-left px-3 py-2 hover:bg-neutral-50 rounded-lg text-sm flex items-center gap-2 group">
+                              <div className={`p-1.5 rounded-md ${showNotes ? 'bg-yellow-100 text-yellow-700' : 'bg-neutral-100 text-neutral-500 group-hover:bg-neutral-200'}`}>
+                                <FileText size={16} />
+                              </div>
+                              <span className={showNotes ? 'font-medium text-yellow-900' : 'text-neutral-700'}>Notepad</span>
+                            </button>
+
+                            <button onClick={() => { notesData.createSticky(); setShowTools(false); }} className="w-full text-left px-3 py-2 hover:bg-neutral-50 rounded-lg text-sm flex items-center gap-2 group">
+                              <div className="p-1.5 rounded-md bg-neutral-100 text-neutral-500 group-hover:bg-neutral-200">
+                                <StickyNoteIcon size={16} />
+                              </div>
+                              <span className="text-neutral-700">New Sticky</span>
+                            </button>
+                          </div>
+
+                          <div className="border-t border-neutral-100 p-1">
+                            <button onClick={() => { setShowCalculator(true); setShowTools(false); }} className="w-full text-left px-3 py-2 hover:bg-neutral-50 rounded-lg text-sm flex items-center gap-2 group">
+                              <div className="p-1.5 rounded-md bg-stone-100 text-stone-500 group-hover:bg-stone-200">
+                                <Calculator size={16} />
+                              </div>
+                              <span className="text-neutral-700">Calculator</span>
+                            </button>
+                            <button onClick={() => { setShowUnitConverter(true); setShowTools(false); }} className="w-full text-left px-3 py-2 hover:bg-neutral-50 rounded-lg text-sm flex items-center gap-2 group">
+                              <div className="p-1.5 rounded-md bg-stone-100 text-stone-500 group-hover:bg-stone-200">
+                                <ArrowRightLeft size={16} />
+                              </div>
+                              <span className="text-neutral-700">Unit Converter</span>
+                            </button>
+                            <button onClick={() => { setShowDosageCalc(true); setShowTools(false); }} className="w-full text-left px-3 py-2 hover:bg-neutral-50 rounded-lg text-sm flex items-center gap-2 group">
+                              <div className="p-1.5 rounded-md bg-stone-100 text-stone-500 group-hover:bg-stone-200">
+                                <Target size={16} />
+                              </div>
+                              <span className="text-neutral-700">Dosage Calc</span>
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  <div
+                    className="relative"
+                    onMouseLeave={() => setShowActions(false)}
                   >
-                    <FileText size={18} />
-                    <span className="hidden md:inline">Notes</span>
-                  </button>
-
-                  <div className="relative">
                     <button
                       onClick={() => setShowActions(!showActions)}
                       className="bg-white border border-neutral-200 text-neutral-600 rounded-xl px-4 py-3 font-medium hover:bg-neutral-50 transition-colors shadow-sm h-full flex items-center gap-2"
@@ -246,22 +323,24 @@ function App() {
                     </button>
 
                     {showActions && (
-                      <div className="absolute right-0 top-full mt-2 w-48 bg-white rounded-xl shadow-xl border border-neutral-200 overflow-hidden z-50 animate-in fade-in slide-in-from-top-2">
-                        <button onClick={() => window.print()} className="w-full text-left px-4 py-3 hover:bg-neutral-50 text-sm flex items-center gap-2">
-                          <Printer size={16} /> Print Report
-                        </button>
-                        <button onClick={handleExportCSV} className="w-full text-left px-4 py-3 hover:bg-neutral-50 text-sm flex items-center gap-2">
-                          <Download size={16} /> Export CSV
-                        </button>
-                        <button onClick={handleSaveSnapshot} className="w-full text-left px-4 py-3 hover:bg-neutral-50 text-sm flex items-center gap-2 text-blue-600">
-                          <Save size={16} /> Save Snapshot
-                        </button>
-                        <button onClick={handleSaveToDrive} className="w-full text-left px-4 py-3 hover:bg-neutral-50 text-sm flex items-center gap-2 text-green-600">
-                          <FileJson size={16} /> Save Config (JSON)
-                        </button>
-                        <button onClick={() => { setShowHelp(true); setShowActions(false); }} className="w-full text-left px-4 py-3 hover:bg-neutral-50 text-sm flex items-center gap-2 border-t border-neutral-100">
-                          <HelpCircle size={16} /> Help & Guide
-                        </button>
+                      <div className="absolute right-0 top-full pt-2 w-48 z-50 animate-in fade-in slide-in-from-top-2">
+                        <div className="bg-white rounded-xl shadow-xl border border-neutral-200 overflow-hidden">
+                          <button onClick={() => window.print()} className="w-full text-left px-4 py-3 hover:bg-neutral-50 text-sm flex items-center gap-2">
+                            <Printer size={16} /> Print Report
+                          </button>
+                          <button onClick={handleExportCSV} className="w-full text-left px-4 py-3 hover:bg-neutral-50 text-sm flex items-center gap-2">
+                            <Download size={16} /> Export CSV
+                          </button>
+                          <button onClick={handleSaveToDrive} className="w-full text-left px-4 py-3 hover:bg-neutral-50 text-sm flex items-center gap-2 text-green-600">
+                            <FileJson size={16} /> Save Config (JSON)
+                          </button>
+                          <button onClick={() => { setShowHelp(true); setShowActions(false); }} className="w-full text-left px-4 py-3 hover:bg-neutral-50 text-sm flex items-center gap-2 border-t border-neutral-100">
+                            <HelpCircle size={16} /> Help & Guide
+                          </button>
+                          <button onClick={() => { setActiveTab('config'); setShowActions(false); }} className="w-full text-left px-4 py-3 hover:bg-neutral-50 text-sm flex items-center gap-2">
+                            <Settings2 size={16} /> Config
+                          </button>
+                        </div>
                       </div>
                     )}
                   </div>
@@ -287,137 +366,172 @@ function App() {
               wholesalePrice={calc.pricing.wholesale}
               msrp={calc.pricing.msrp}
               totalUnits={calc.skuCalculations.reduce((sum, s) => sum + s.quantity, 0)}
+              baseUnits={calc.batchScale.calculatedBaseUnits}
               totalRevenue={calc.skuCalculations.reduce((sum, s) => sum + (s.wholesalePrice * s.quantity), 0)}
               totalCOGS={calc.skuCalculations.reduce((sum, s) => sum + (s.fullyLoadedCost * s.quantity), 0)}
               cannabinoidTotals={calc.cannabinoidTotals}
+              totalBatchWeight={calc.totalBatchWeightGrams}
             />
           </div>
         </div>
 
-        {/* Main Content */}
-        <div className="max-w-7xl mx-auto px-4 md:px-8 pt-6 pb-24 space-y-6">
-          {activeTab === 'manufacturing' && (
-            <ManufacturingView
-              recipeConfig={calc.recipeConfig}
-              setRecipeConfig={calc.setRecipeConfig}
-              batchConfig={calc.batchConfig}
-              setBatchConfig={calc.setBatchConfig}
-              activeIngredients={calc.activeIngredients}
-              addActive={calc.addActive}
-              removeActive={calc.removeActive}
-              setActiveIngredients={calc.setActiveIngredients}
-              inactiveIngredients={calc.inactiveIngredients}
-              addInactive={calc.addInactive}
-              removeInactive={calc.removeInactive}
-              setInactiveIngredients={calc.setInactiveIngredients}
-              skus={calc.skus}
-              skuCalculations={calc.skuCalculations}
-              totalBatchWeightGrams={calc.totalBatchWeightGrams}
-              totalWeightAllocated={calc.totalWeightAllocated}
-              isOverAllocated={calc.isOverAllocated}
-              defaultPackaging={calc.defaultPackaging}
-              addSKU={calc.addSKU}
-              removeSKU={calc.removeSKU}
-              updateSKU={calc.updateSKU}
-              updateSKUPackaging={calc.updateSKUPackaging}
-              addSKUPackagingItem={calc.addSKUPackagingItem}
-              removeSKUPackagingItem={calc.removeSKUPackagingItem}
-            />
-          )}
+        {/* Main Content - with subtle glow for separation */}
+        <div className="max-w-7xl mx-auto px-4 md:px-8 pt-6 pb-24">
+          <div className="space-y-6 relative">
+            {/* Subtle glow behind content for separation */}
+            <div className="absolute inset-0 -m-4 bg-gradient-to-b from-black/20 via-black/30 to-black/20 rounded-3xl blur-xl pointer-events-none" />
+            <div className="relative space-y-6">
+              {activeTab === 'manufacturing' && (
+                <ManufacturingView
+                  recipeConfig={calc.recipeConfig}
+                  setRecipeConfig={calc.setRecipeConfig}
+                  batchConfig={calc.batchConfig}
+                  setBatchConfig={calc.setBatchConfig}
+                  activeIngredients={calc.activeIngredients}
+                  addActive={calc.addActive}
+                  removeActive={calc.removeActive}
+                  setActiveIngredients={calc.setActiveIngredients}
+                  inactiveIngredients={calc.inactiveIngredients}
+                  addInactive={calc.addInactive}
+                  removeInactive={calc.removeInactive}
+                  setInactiveIngredients={calc.setInactiveIngredients}
+                  skus={calc.skus}
+                  skuCalculations={calc.skuCalculations}
+                  totalBatchWeightGrams={calc.totalBatchWeightGrams}
+                  totalWeightAllocated={calc.totalWeightAllocated}
+                  isOverAllocated={calc.isOverAllocated}
+                  defaultPackaging={calc.defaultPackaging}
+                  addSKU={calc.addSKU}
+                  removeSKU={calc.removeSKU}
+                  updateSKU={calc.updateSKU}
+                  updateSKUPackaging={calc.updateSKUPackaging}
+                  addSKUPackagingItem={calc.addSKUPackagingItem}
+                  removeSKUPackagingItem={calc.removeSKUPackagingItem}
+                />
+              )}
 
-          {activeTab === 'logistics' && (
-            <LogisticsView
-              logistics={calc.logistics}
-              setLogistics={calc.setLogistics}
-              pricing={calc.pricing}
-              setPricing={calc.setPricing}
-              fullyLoadedCost={calc.fullyLoadedCost}
-              manufCostPerUnit={calc.manufCostPerUnit}
-              totalDistroFeesPerUnit={calc.totalDistroFeesPerUnit}
-              labTestPerUnit={calc.labTestPerUnit}
-              shippingPerUnit={calc.shippingPerUnit}
-              addDistroFee={calc.addDistroFee}
-              removeDistroFee={calc.removeDistroFee}
-              updateDistroFee={calc.updateDistroFee}
-            />
-          )}
+              {activeTab === 'logistics' && (
+                <LogisticsView
+                  logistics={calc.logistics}
+                  setLogistics={calc.setLogistics}
+                  pricing={calc.pricing}
+                  setPricing={calc.setPricing}
+                  fullyLoadedCost={calc.fullyLoadedCost}
+                  manufCostPerUnit={calc.manufCostPerUnit}
+                  totalDistroFeesPerUnit={calc.totalDistroFeesPerUnit}
+                  labTestPerUnit={calc.labTestPerUnit}
+                  shippingPerUnit={calc.shippingPerUnit}
+                  addDistroFee={calc.addDistroFee}
+                  removeDistroFee={calc.removeDistroFee}
+                  updateDistroFee={calc.updateDistroFee}
+                />
+              )}
+
+              {activeTab === 'analytics' && (
+                <AnalyticsTab data={calc} />
+              )}
 
 
-          {activeTab === 'snapshots' && (
-            <SnapshotsView
-              snapshots={calc.snapshots}
-              onLoad={(snap) => {
-                calc.loadSnapshot(snap);
-                setActiveTab('manufacturing');
-              }}
-              onDelete={(id) => calc.setSnapshots(calc.snapshots.filter(s => s.id !== id))}
-            />
-          )}
+              {activeTab === 'snapshots' && (
+                <SnapshotsView
+                  snapshots={calc.snapshots}
+                  onLoad={(snap) => {
+                    calc.loadSnapshot(snap);
+                    setActiveTab('manufacturing');
+                  }}
+                  onDelete={(id) => calc.setSnapshots(calc.snapshots.filter(s => s.id !== id))}
+                  onSave={() => calc.saveSnapshot()}
+                  onImport={(json) => {
+                    try {
+                      const data = JSON.parse(json);
+                      const snap: import('./lib/types').Snapshot = {
+                        id: Date.now(),
+                        name: data.name || `Imported ${new Date().toLocaleTimeString()}`,
+                        config: {
+                          recipeConfig: data.recipeConfig,
+                          batchConfig: data.batchConfig,
+                          activeIngredients: data.activeIngredients,
+                          inactiveIngredients: data.inactiveIngredients,
+                          skus: data.skus,
+                          logistics: data.logistics,
+                          pricing: data.pricing,
+                        },
+                        cost: 0, // Will be recalculated on load
+                      };
+                      calc.setSnapshots([snap, ...calc.snapshots]);
+                    } catch (e) {
+                      console.error('Failed to import snapshot:', e);
+                    }
+                  }}
+                />
+              )}
 
-          {activeTab === 'recipes' && (
-            <RecipesView
-              recipes={recipeLib.recipes}
-              recipeConfig={calc.recipeConfig}
-              activeIngredients={calc.activeIngredients}
-              inactiveIngredients={calc.inactiveIngredients}
-              onSaveRecipe={recipeLib.saveRecipe}
-              onLoadRecipe={(recipe) => {
-                calc.setRecipeConfig(recipe.recipeConfig);
-                calc.setActiveIngredients(recipe.activeIngredients.map((ing, idx) => ({
-                  ...ing,
-                  id: idx + 1,
-                  type: 'active' as const,
-                  unit: 'g' as const,
-                  densityGPerMl: 1.0,
-                  gramsPerRecipeUnit: ing.amount,
-                  gramsInBatch: 0,
-                })));
-                calc.setInactiveIngredients(recipe.inactiveIngredients.map((ing, idx) => ({
-                  ...ing,
-                  id: 100 + idx + 1,
-                  unit: 'g' as const,
-                  densityGPerMl: 1.0,
-                  gramsPerRecipeUnit: ing.amount,
-                  gramsInBatch: 0,
-                })));
-                setActiveTab('manufacturing');
-              }}
-              onDeleteRecipe={recipeLib.deleteRecipe}
-              onDuplicateRecipe={recipeLib.duplicateRecipe}
-              onExportRecipe={recipeLib.exportRecipe}
-              onImportRecipe={recipeLib.importRecipe}
-            />
-          )}
+              {activeTab === 'recipes' && (
+                <RecipesView
+                  recipes={recipeLib.recipes}
+                  recipeConfig={calc.recipeConfig}
+                  activeIngredients={calc.activeIngredients}
+                  inactiveIngredients={calc.inactiveIngredients}
+                  onSaveRecipe={recipeLib.saveRecipe}
+                  onLoadRecipe={(recipe) => {
+                    calc.setRecipeConfig(recipe.recipeConfig);
+                    calc.setActiveIngredients(recipe.activeIngredients.map((ing, idx) => ({
+                      ...ing,
+                      id: idx + 1,
+                      type: 'active' as const,
+                      unit: 'g' as const,
+                      densityGPerMl: 1.0,
+                      gramsPerRecipeUnit: ing.amount,
+                      gramsInBatch: 0,
+                    })));
+                    calc.setInactiveIngredients(recipe.inactiveIngredients.map((ing, idx) => ({
+                      ...ing,
+                      id: 100 + idx + 1,
+                      unit: 'g' as const,
+                      densityGPerMl: 1.0,
+                      gramsPerRecipeUnit: ing.amount,
+                      gramsInBatch: 0,
+                    })));
+                    setActiveTab('manufacturing');
+                  }}
+                  onDeleteRecipe={recipeLib.deleteRecipe}
+                  onDuplicateRecipe={recipeLib.duplicateRecipe}
+                  onExportRecipe={recipeLib.exportRecipe}
+                  onImportRecipe={recipeLib.importRecipe}
+                />
+              )}
 
-          {activeTab === 'edibles' && (
-            <EdiblesCalculator
-              onApplyToManufacturing={(data) => {
-                calc.setRecipeConfig(data.recipeConfig);
-                calc.setActiveIngredients(data.activeIngredients.map((ing, idx) => ({
-                  ...ing,
-                  id: idx + 1,
-                  type: 'active' as const,
-                  unit: 'g' as const,
-                  densityGPerMl: 1.0,
-                  gramsPerRecipeUnit: ing.amount,
-                  gramsInBatch: 0,
-                })));
-                calc.setInactiveIngredients(data.inactiveIngredients.map((ing, idx) => ({
-                  ...ing,
-                  id: 100 + idx + 1,
-                  unit: 'g' as const,
-                  densityGPerMl: 1.0,
-                  gramsPerRecipeUnit: ing.amount,
-                  gramsInBatch: 0,
-                })));
-                setActiveTab('manufacturing');
-              }}
-            />
-          )}
+              {activeTab === 'edibles' && (
+                <EdiblesCalculator
+                  onApplyToManufacturing={(data) => {
+                    calc.setRecipeConfig(data.recipeConfig);
+                    calc.setActiveIngredients(data.activeIngredients.map((ing, idx) => ({
+                      ...ing,
+                      id: idx + 1,
+                      type: 'active' as const,
+                      unit: 'g' as const,
+                      densityGPerMl: 1.0,
+                      gramsPerRecipeUnit: ing.amount,
+                      gramsInBatch: 0,
+                    })));
+                    calc.setInactiveIngredients(data.inactiveIngredients.map((ing, idx) => ({
+                      ...ing,
+                      id: 100 + idx + 1,
+                      unit: 'g' as const,
+                      densityGPerMl: 1.0,
+                      gramsPerRecipeUnit: ing.amount,
+                      gramsInBatch: 0,
+                    })));
+                    setActiveTab('manufacturing');
+                  }}
+                />
+              )}
 
-          {activeTab === 'config' && (
-            <ConfigView />
-          )}
+              {activeTab === 'config' && (
+                <ConfigView />
+              )}
+            </div>
+          </div>
         </div>
 
         {/* Help Modal */}
@@ -446,8 +560,13 @@ function App() {
             onDelete={notesData.deleteSticky}
           />
         ))}
+
+        {/* Tools Modals */}
+        <CalculatorModal isOpen={showCalculator} onClose={() => setShowCalculator(false)} />
+        <UnitConverterModal isOpen={showUnitConverter} onClose={() => setShowUnitConverter(false)} />
+        <DosageCalculatorModal isOpen={showDosageCalc} onClose={() => setShowDosageCalc(false)} />
       </div>
-    </ConfigProvider>
+    </ConfigProvider >
   );
 }
 
