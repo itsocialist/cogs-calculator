@@ -98,7 +98,7 @@ function App() {
       <div
         className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden"
         style={{
-          backgroundImage: 'url(/cogs-calculator/login-bg.png)',
+          backgroundImage: 'url(/login-bg.png)',
           backgroundSize: 'cover',
           backgroundPosition: 'center',
         }}
@@ -202,10 +202,11 @@ function App() {
       <div
         className="min-h-screen font-sans print:bg-white print:p-0 relative"
         style={{
-          backgroundImage: 'url(/cogs-calculator/login-bg.png)',
+          backgroundImage: 'url(/login-bg.png)',
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           backgroundAttachment: 'fixed',
+          zoom: 0.85, // 15% zoom out for better viewport density
         }}
       >
         {/* Dark overlay to dim the background - increased opacity for better contrast */}

@@ -1,46 +1,72 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import type { StickyNoteData } from '../components/ui/StickyNote';
 import type { NoteEntry } from '../components/ui/NotesPanel';
+import { useHybridStorage, TABLES } from './useHybridStorage';
 
-const NOTES_STORAGE_KEY = 'rolos-notes';
-const STICKIES_STORAGE_KEY = 'rolos-stickies';
+interface NotesData {
+    notes: NoteEntry[];
+    stickies: StickyNoteData[];
+}
 
 export function useNotes() {
-    const [notes, setNotes] = useState<NoteEntry[]>(() => {
-        const saved = localStorage.getItem(NOTES_STORAGE_KEY);
-        return saved ? JSON.parse(saved) : [];
+    // Use hybrid storage for notes (localStorage + Supabase sync)
+    const {
+        data,
+        setData,
+        isLoaded,
+        isSyncing,
+    } = useHybridStorage<NotesData>({
+        table: TABLES.NOTES,
+        sessionKey: 'all',
+        defaultValue: { notes: [], stickies: [] },
+        // No legacy key - we'll handle migration manually for the two separate keys
     });
 
-    const [stickies, setStickies] = useState<StickyNoteData[]>(() => {
-        const saved = localStorage.getItem(STICKIES_STORAGE_KEY);
-        return saved ? JSON.parse(saved) : [];
-    });
-
-    // Persist notes
+    // Handle legacy migration on first load
+    const hasMigrated = useRef(false);
     useEffect(() => {
-        localStorage.setItem(NOTES_STORAGE_KEY, JSON.stringify(notes));
-    }, [notes]);
+        if (!isLoaded || hasMigrated.current) return;
+        hasMigrated.current = true;
 
-    // Persist stickies
+        // Check for legacy keys
+        const legacyNotes = localStorage.getItem('rolos-notes');
+        const legacyStickies = localStorage.getItem('rolos-stickies');
+
+        if ((legacyNotes || legacyStickies) && data.notes.length === 0 && data.stickies.length === 0) {
+            try {
+                const notes = legacyNotes ? JSON.parse(legacyNotes) : [];
+                const stickies = legacyStickies ? JSON.parse(legacyStickies) : [];
+                setData({ notes, stickies });
+            } catch {
+                // Invalid JSON, ignore
+            }
+        }
+    }, [isLoaded, data, setData]);
+
+    // Ref for stable access in callbacks
+    const dataRef = useRef(data);
     useEffect(() => {
-        localStorage.setItem(STICKIES_STORAGE_KEY, JSON.stringify(stickies));
-    }, [stickies]);
+        dataRef.current = data;
+    }, [data]);
 
     const saveNote = useCallback((note: NoteEntry) => {
-        setNotes(prev => {
-            const existing = prev.findIndex(n => n.id === note.id);
+        setData(prev => {
+            const existing = prev.notes.findIndex(n => n.id === note.id);
             if (existing >= 0) {
-                const updated = [...prev];
+                const updated = [...prev.notes];
                 updated[existing] = note;
-                return updated;
+                return { ...prev, notes: updated };
             }
-            return [...prev, note];
+            return { ...prev, notes: [...prev.notes, note] };
         });
-    }, []);
+    }, [setData]);
 
     const deleteNote = useCallback((id: string) => {
-        setNotes(prev => prev.filter(n => n.id !== id));
-    }, []);
+        setData(prev => ({
+            ...prev,
+            notes: prev.notes.filter(n => n.id !== id)
+        }));
+    }, [setData]);
 
     const createSticky = useCallback(() => {
         const newSticky: StickyNoteData = {
@@ -54,21 +80,32 @@ export function useNotes() {
             isPinned: false,
             createdAt: Date.now(),
         };
-        setStickies(prev => [...prev, newSticky]);
+        setData(prev => ({
+            ...prev,
+            stickies: [...prev.stickies, newSticky]
+        }));
         return newSticky;
-    }, []);
+    }, [setData]);
 
     const updateSticky = useCallback((updatedSticky: StickyNoteData) => {
-        setStickies(prev => prev.map(s => s.id === updatedSticky.id ? updatedSticky : s));
-    }, []);
+        setData(prev => ({
+            ...prev,
+            stickies: prev.stickies.map(s => s.id === updatedSticky.id ? updatedSticky : s)
+        }));
+    }, [setData]);
 
     const deleteSticky = useCallback((id: string) => {
-        setStickies(prev => prev.filter(s => s.id !== id));
-    }, []);
+        setData(prev => ({
+            ...prev,
+            stickies: prev.stickies.filter(s => s.id !== id)
+        }));
+    }, [setData]);
 
     return {
-        notes,
-        stickies,
+        notes: data.notes,
+        stickies: data.stickies,
+        isLoaded,
+        isSyncing,
         saveNote,
         deleteNote,
         createSticky,

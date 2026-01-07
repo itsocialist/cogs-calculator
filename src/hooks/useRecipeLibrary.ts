@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import type {
     SavedRecipe,
     RecipeConfig,
@@ -7,34 +7,15 @@ import type {
     RecipeMode,
     EdibleProductType
 } from '../lib/types';
-
-const STORAGE_KEY = 'rolos_kitchen_recipes';
+import { useHybridStorage, TABLES } from './useHybridStorage';
 
 // Generate unique ID
 const generateId = () => `recipe_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 
-// Load recipes from localStorage
-const loadRecipes = (): SavedRecipe[] => {
-    try {
-        const stored = localStorage.getItem(STORAGE_KEY);
-        return stored ? JSON.parse(stored) : [];
-    } catch (e) {
-        console.error('Failed to load recipes:', e);
-        return [];
-    }
-};
-
-// Save recipes to localStorage
-const saveRecipesToStorage = (recipes: SavedRecipe[]) => {
-    try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(recipes));
-    } catch (e) {
-        console.error('Failed to save recipes:', e);
-    }
-};
-
 export interface UseRecipeLibraryReturn {
     recipes: SavedRecipe[];
+    isLoaded: boolean;
+    isSyncing: boolean;
     saveRecipe: (
         name: string,
         recipeConfig: RecipeConfig,
@@ -56,12 +37,24 @@ export interface UseRecipeLibraryReturn {
 }
 
 export function useRecipeLibrary(): UseRecipeLibraryReturn {
-    const [recipes, setRecipes] = useState<SavedRecipe[]>([]);
+    // Use hybrid storage for recipes (localStorage + Supabase sync)
+    const {
+        data: recipes,
+        setData: setRecipes,
+        isLoaded,
+        isSyncing,
+    } = useHybridStorage<SavedRecipe[]>({
+        table: TABLES.RECIPES,
+        sessionKey: 'library',
+        defaultValue: [],
+        legacyKey: 'rolos_kitchen_recipes', // Migrate from old localStorage key
+    });
 
-    // Load on mount
+    // Ref for stable access in callbacks
+    const recipesRef = useRef(recipes);
     useEffect(() => {
-        setRecipes(loadRecipes());
-    }, []);
+        recipesRef.current = recipes;
+    }, [recipes]);
 
     // Save a new recipe
     const saveRecipe = useCallback((
@@ -107,55 +100,52 @@ export function useRecipeLibrary(): UseRecipeLibraryReturn {
             tags: options?.tags,
         };
 
-        const updated = [...recipes, newRecipe];
-        setRecipes(updated);
-        saveRecipesToStorage(updated);
-
+        setRecipes(prev => [...prev, newRecipe]);
         return newRecipe;
-    }, [recipes]);
+    }, [setRecipes]);
 
     // Load a recipe by ID
     const loadRecipe = useCallback((id: string): SavedRecipe | undefined => {
-        return recipes.find(r => r.id === id);
-    }, [recipes]);
+        return recipesRef.current.find(r => r.id === id);
+    }, []);
 
     // Update an existing recipe
     const updateRecipe = useCallback((
         id: string,
         updates: Partial<Omit<SavedRecipe, 'id' | 'createdAt'>>
     ): SavedRecipe | undefined => {
-        const index = recipes.findIndex(r => r.id === id);
-        if (index === -1) return undefined;
+        let updatedRecipe: SavedRecipe | undefined;
 
-        const updatedRecipe: SavedRecipe = {
-            ...recipes[index],
-            ...updates,
-            updatedAt: new Date().toISOString(),
-        };
+        setRecipes(prev => {
+            const index = prev.findIndex(r => r.id === id);
+            if (index === -1) return prev;
 
-        const updated = [...recipes];
-        updated[index] = updatedRecipe;
-        setRecipes(updated);
-        saveRecipesToStorage(updated);
+            updatedRecipe = {
+                ...prev[index],
+                ...updates,
+                updatedAt: new Date().toISOString(),
+            };
+
+            const updated = [...prev];
+            updated[index] = updatedRecipe;
+            return updated;
+        });
 
         return updatedRecipe;
-    }, [recipes]);
+    }, [setRecipes]);
 
     // Delete a recipe
     const deleteRecipe = useCallback((id: string): boolean => {
-        const index = recipes.findIndex(r => r.id === id);
-        if (index === -1) return false;
+        const exists = recipesRef.current.some(r => r.id === id);
+        if (!exists) return false;
 
-        const updated = recipes.filter(r => r.id !== id);
-        setRecipes(updated);
-        saveRecipesToStorage(updated);
-
+        setRecipes(prev => prev.filter(r => r.id !== id));
         return true;
-    }, [recipes]);
+    }, [setRecipes]);
 
     // Duplicate a recipe with new name
     const duplicateRecipe = useCallback((id: string, newName: string): SavedRecipe | undefined => {
-        const original = recipes.find(r => r.id === id);
+        const original = recipesRef.current.find(r => r.id === id);
         if (!original) return undefined;
 
         const now = new Date().toISOString();
@@ -167,19 +157,16 @@ export function useRecipeLibrary(): UseRecipeLibraryReturn {
             updatedAt: now,
         };
 
-        const updated = [...recipes, duplicate];
-        setRecipes(updated);
-        saveRecipesToStorage(updated);
-
+        setRecipes(prev => [...prev, duplicate]);
         return duplicate;
-    }, [recipes]);
+    }, [setRecipes]);
 
     // Export recipe as JSON string
     const exportRecipe = useCallback((id: string): string | undefined => {
-        const recipe = recipes.find(r => r.id === id);
+        const recipe = recipesRef.current.find(r => r.id === id);
         if (!recipe) return undefined;
         return JSON.stringify(recipe, null, 2);
-    }, [recipes]);
+    }, []);
 
     // Import recipe from JSON string
     const importRecipe = useCallback((json: string): SavedRecipe | undefined => {
@@ -202,19 +189,18 @@ export function useRecipeLibrary(): UseRecipeLibraryReturn {
                 updatedAt: now,
             };
 
-            const updated = [...recipes, imported];
-            setRecipes(updated);
-            saveRecipesToStorage(updated);
-
+            setRecipes(prev => [...prev, imported]);
             return imported;
         } catch (e) {
             console.error('Failed to import recipe:', e);
             return undefined;
         }
-    }, [recipes]);
+    }, [setRecipes]);
 
     return {
         recipes,
+        isLoaded,
+        isSyncing,
         saveRecipe,
         loadRecipe,
         updateRecipe,

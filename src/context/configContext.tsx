@@ -1,4 +1,5 @@
-import { createContext, useContext, useState, useEffect, type ReactNode } from 'react';
+import { createContext, useContext, type ReactNode } from 'react';
+import { useHybridStorage, TABLES } from '../hooks/useHybridStorage';
 
 // Unit scale options
 export type WeightScale = 'g' | 'kg';
@@ -78,6 +79,8 @@ export function convertFromGrams(grams: number, scale: WeightScale): number {
 // Context
 interface ConfigContextType {
     config: UnitConfig;
+    isLoaded: boolean;
+    isSyncing: boolean;
     setConfig: (config: UnitConfig) => void;
     updateBatchConfig: (updates: Partial<UnitConfig['batch']>) => void;
     updateManifestConfig: (updates: Partial<UnitConfig['manifest']>) => void;
@@ -90,45 +93,44 @@ interface ConfigContextType {
 
 const ConfigContext = createContext<ConfigContextType | null>(null);
 
-const STORAGE_KEY = 'rolos-unit-config';
-
 export function ConfigProvider({ children }: { children: ReactNode }) {
-    const [config, setConfigState] = useState<UnitConfig>(() => {
-        const saved = localStorage.getItem(STORAGE_KEY);
-        if (saved) {
-            try {
-                return { ...DEFAULT_CONFIG, ...JSON.parse(saved) };
-            } catch {
-                return DEFAULT_CONFIG;
-            }
-        }
-        return DEFAULT_CONFIG;
+    // Use hybrid storage for config (localStorage + Supabase sync)
+    const {
+        data: storedConfig,
+        setData: setStoredConfig,
+        isLoaded,
+        isSyncing,
+    } = useHybridStorage<UnitConfig>({
+        table: TABLES.CONFIG,
+        sessionKey: 'units',
+        defaultValue: DEFAULT_CONFIG,
+        legacyKey: 'rolos-unit-config', // Migrate from old localStorage key
     });
 
-    // Persist to localStorage
-    useEffect(() => {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(config));
-    }, [config]);
+    // Merge with defaults to ensure all fields exist
+    const config = { ...DEFAULT_CONFIG, ...storedConfig };
 
     const setConfig = (newConfig: UnitConfig) => {
-        setConfigState(newConfig);
+        setStoredConfig(newConfig);
     };
 
     const updateBatchConfig = (updates: Partial<UnitConfig['batch']>) => {
-        setConfigState(prev => ({ ...prev, batch: { ...prev.batch, ...updates } }));
+        setStoredConfig(prev => ({ ...prev, batch: { ...prev.batch, ...updates } }));
     };
 
     const updateManifestConfig = (updates: Partial<UnitConfig['manifest']>) => {
-        setConfigState(prev => ({ ...prev, manifest: { ...prev.manifest, ...updates } }));
+        setStoredConfig(prev => ({ ...prev, manifest: { ...prev.manifest, ...updates } }));
     };
 
     const updateSKUConfig = (updates: Partial<UnitConfig['sku']>) => {
-        setConfigState(prev => ({ ...prev, sku: { ...prev.sku, ...updates } }));
+        setStoredConfig(prev => ({ ...prev, sku: { ...prev.sku, ...updates } }));
     };
 
     return (
         <ConfigContext.Provider value={{
             config,
+            isLoaded,
+            isSyncing,
             setConfig,
             updateBatchConfig,
             updateManifestConfig,

@@ -109,7 +109,7 @@ export function useHybridStorage<T>({
                         .from(table)
                         .select('data, updated_at')
                         .eq('session_id', `${deviceId.current}-${sessionKey}`)
-                        .single();
+                        .maybeSingle(); // Use maybeSingle to avoid 406 errors when no record exists
 
                     if (!error && cloudData?.data) {
                         // Cloud data exists - use it if we don't have local data

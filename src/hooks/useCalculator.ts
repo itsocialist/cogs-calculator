@@ -1,5 +1,6 @@
 
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect, useCallback } from 'react';
+import { useHybridStorage, TABLES } from './useHybridStorage';
 import type {
     BatchConfig,
     ActiveIngredient,
@@ -136,24 +137,21 @@ export function useCalculator() {
     const [logistics, setLogistics] = useState<LogisticsConfig>(DEFAULT_LOGISTICS);
     const [pricing, setPricing] = useState({ wholesale: 25, msrp: 55 });
 
-    // Snapshots with localStorage persistence
-    const [snapshots, setSnapshots] = useState<Snapshot[]>(() => {
-        try {
-            const saved = localStorage.getItem('rolos-cogs-snapshots');
-            return saved ? JSON.parse(saved) : [];
-        } catch {
-            return [];
-        }
+    // Snapshots with hybrid storage (localStorage + Supabase sync)
+    const {
+        data: snapshots,
+        setData: setSnapshotsData,
+    } = useHybridStorage<Snapshot[]>({
+        table: TABLES.SNAPSHOTS,
+        sessionKey: 'all',
+        defaultValue: [],
+        legacyKey: 'rolos-cogs-snapshots', // Migrate from old localStorage key
     });
 
-    // Persist snapshots to localStorage
-    useEffect(() => {
-        try {
-            localStorage.setItem('rolos-cogs-snapshots', JSON.stringify(snapshots));
-        } catch (e) {
-            console.error('Failed to save snapshots:', e);
-        }
-    }, [snapshots]);
+    // Wrapper to match existing setSnapshots API
+    const setSnapshots = useCallback((newSnapshots: Snapshot[] | ((prev: Snapshot[]) => Snapshot[])) => {
+        setSnapshotsData(newSnapshots);
+    }, [setSnapshotsData]);
 
     // -------------------------------------------------------------------------
     // CORE CALCULATION LOOP
