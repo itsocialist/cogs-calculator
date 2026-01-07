@@ -14,6 +14,7 @@
     "deploy:staging": "git push origin staging"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.89.0",
     "clsx": "^2.1.1",
     "exceljs": "^4.4.0",
     "lucide-react": "^0.562.0",
