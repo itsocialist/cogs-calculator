@@ -233,6 +233,25 @@ export function HelpModal({ isOpen, onClose, calculatorData }: HelpModalProps) {
                         </ul>
                     </HelpSection>
 
+                    {/* Known Issues & Workarounds */}
+                    <HelpSection
+                        title="Known Issues & Workarounds"
+                        icon={<Bug size={18} className="text-orange-600" />}
+                        level="intermediate"
+                    >
+                        <div className="space-y-3">
+                            <div className="p-3 bg-amber-50 border border-amber-200 rounded-lg">
+                                <h4 className="font-bold text-amber-800 mb-1 text-sm">⚠️ Multi-Device Sync Conflicts</h4>
+                                <p className="text-xs text-amber-700 mb-2">
+                                    <strong>Issue:</strong> When editing the same recipe/snapshot on multiple devices before syncing, the last device to sync will overwrite earlier changes.
+                                </p>
+                                <p className="text-xs text-amber-700">
+                                    <strong>Mitigation:</strong> Refresh the app before making changes to pull the latest data from the cloud. A conflict resolution UI is planned for a future release.
+                                </p>
+                            </div>
+                        </div>
+                    </HelpSection>
+
                     {/* Version History - Combined */}
                     <HelpSection
                         title="Version History"
